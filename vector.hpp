@@ -132,19 +132,6 @@ T & ft::vector<T>::operator [] (int index)
     return block[index];
 }
  
-template<typename T>
-
-unsigned int ft::vector<T>::size()const
-{
-    return vector_size;
-}
-template<typename T>
-
-unsigned int ft::vector<T>::capacity()const
-{
-    return vector_capacity;
-}
- 
  
 template<typename T>
 
@@ -172,20 +159,59 @@ void ft::vector<T>::reserve(int n)
         std::swap(block,block_copy);
         alloc.deallocate(block_copy,size());
     }
+    vector_size +=1;
     vector_capacity = n;
 }
 
 template<typename T>
 
+unsigned int ft::vector<T>::size()const
+{
+    return vector_size;
+}
+template<typename T>
+
+unsigned int ft::vector<T>::capacity()const
+{
+    return vector_capacity;
+}
+ 
+template<typename T>
+
 void ft::vector<T>::push_back(const T & val)
 {
+    if(empty())
+    {
+        block = alloc.allocate(1);
+        block[vector_size] = val;
+        vector_size++; 
+        vector_capacity++; 
+    }
+    else if(vector_size < vector_capacity)
+    {
+        block[vector_size] = val;
+        vector_size++;
+    }
+    else if (vector_size == capacity())
+    {
+        vector_capacity = vector_capacity * 2;//2
+        block_copy = alloc.allocate(size());
+        for (unsigned int i = 0; i < size(); i++)
+        {
+            block_copy[i] = std::move(block[i]);
+        }
+        alloc.deallocate(block,size());
+        block = alloc.allocate(capacity());
+        for (unsigned int i = 0; i < size(); i++)
+        {
+            block[i] = std::move(block_copy[i]);
+        }
+        alloc.deallocate(block_copy,size());
+        block[vector_size] = val;
+        vector_size++; 
+    }
     
-    if(vector_size == vector_capacity)
-        reserve((vector_size * 2) + 1);
-    // cout << vector_capacity << endl;
-    // cout << vector_size << endl;
-    block[vector_size] = val;
-    vector_size++;   
+    
 }
  
 template<typename T>
@@ -202,25 +228,21 @@ void ft::vector<T>::resize(int n)
 {
     if(n < 0 || n > 2147483647)
         throw length_error();
-    int i;
- 
-    i = 0;
-    while (i < n)
-    {
-        block_copy[i] = block[i];
-        i++;
-    } 
-    alloc.deallocate(block,5);
-     
-    block = alloc.allocate(n);
 
-    i = 0;
-    while (i < n)
+    block_copy = alloc.allocate(size());
+    for (unsigned int i = 0; i < size(); i++)
     {
-        block[i] = block_copy[i];
-        i++;
+        block_copy[i] = std::move(block[i]);
     }
+    alloc.deallocate(block,size());
+    block = alloc.allocate(n);
+    for (unsigned int i = 0; i < n; i++)
+    {
+        block[i] = std::move(block_copy[i]);
+    }
+    alloc.deallocate(block_copy,size());
     vector_size = n;
+    vector_capacity = n;
 }
  
 
@@ -232,39 +254,48 @@ void ft::vector<T>::resize(int n,const T * val)
         throw logic_error();
 } 
 
+// fix erroe in resize
 template<typename T>
 
 void ft::vector<T>::resize(int n,const T & val)
 {
+    int  i;
+
     if(n < 0 || n > 2147483647)
         throw length_error();
     
-    int i;
+    block_copy = alloc.allocate(size());
     
-
     i = 0;
-    while (i < n)
+    while(i < size())
     {
-        block_copy[i] = block[i];
+        block_copy[i] = std::move(block[i]);
         i++;
     }
-    alloc.deallocate(block,capacity());
+    alloc.deallocate(block,size());
     block = alloc.allocate(n);
-
     i = 0;
-    while (i < n)
+    
+    while(i < size())
     {
-        block[i] = block_copy[i];
+        block[i] = std::move(block_copy[i]);
         i++;
     }
+    while(i < n)
+    {
+        block[i] = val;
+        i++;
+    }
+    alloc.deallocate(block_copy,size());
     vector_size = n;
+    vector_capacity = n;
 } 
 
 template<typename T>
 
 ft::vector<T>::~vector()
 {
-    // alloc.deallocate(block,vector_size);
+    alloc.deallocate(block,vector_size);
 }
 
 

@@ -6,41 +6,31 @@
 #include <iomanip>
 #include <string>
  
+ #define MAX_RAM 4294967296
+#define BUFFER_SIZE 4096
+struct Buffer
+{
+int idx;
+char buff[BUFFER_SIZE];
+};
+#define COUNT (MAX_RAM / (int)sizeof(Buffer))
+
 int main()
 {
 
-  
-    vector<int> v(2);
+  ft::vector<int> myvector;
 
- 
+  // set some initial content:
+  for (int i=1;i<10;i++) myvector.push_back(i);
 
-    v.push_back(1);
-    v.push_back(2);//
-    v.push_back(1);
-    v.push_back(1);
-    v.push_back(1);
-    
-  
-  
-    cout << v.size() << endl;
-    cout << v.capacity() << endl;
-        
-  
-  cout << "========\n";
-    ft::vector<int> vec(2);
+  myvector.resize(5);
+  myvector.resize(8,100);
+  myvector.resize(12);
 
- 
+  std::cout << "myvector contains:";
+  for (int i=0;i<myvector.size();i++)
+    std::cout << ' ' << myvector[i];
+  std::cout << '\n';
+  
 
-    vec.push_back(1);
-    vec.push_back(2);//
-    vec.push_back(1);
-    vec.push_back(1);
-    vec.push_back(1);
-    
-  
-  
-    cout << vec.size() << endl;
-    cout << vec.capacity() << endl;
-        
-    return 0;
 }
