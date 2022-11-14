@@ -26,15 +26,34 @@ namespace ft
     {
         private:
             T * block;
-            T * block_copy;
             size_t vector_size;
             size_t vector_capacity;
             A _alloc;
             T tmp;
             
-            
+            void realloc_(typename A::size_type s)
+            {
+                T * block_copy;
+                if(!empty())
+                {
+                    block_copy = _alloc.allocate(size());
+                    for (size_type i = 0; i < size(); i++)
+                    {
+                        _alloc.construct(block_copy + i,block[i]);
+                        _alloc.destroy(block + i);
+                    }
+                    _alloc.deallocate(block,size());
+                    block = _alloc.allocate(s);
+                    for (size_type i = 0; i < size(); i++)
+                    {
+                        _alloc.construct(block + i,block_copy[i]);
+                        _alloc.destroy(block_copy + i);
+                    }
+                    _alloc.deallocate(block_copy,size());
+                    // vector_capacity = s;
+                }
+            }
         public:
-        
         typedef  A allocator_type;
         typedef typename allocator_type::value_type      value_type;// the data entred by user
 
@@ -103,6 +122,7 @@ namespace ft
         }
         void push_back (const value_type& val)
         {
+                 
             if(empty())
             {
                 block = _alloc.allocate(1);
@@ -117,27 +137,65 @@ namespace ft
             }
             else if (vector_size == capacity())
             {
-                vector_capacity = vector_capacity * 2;//2
-                block_copy = _alloc.allocate(size());
-                for (size_type i = 0; i < size(); i++)
-                {
-                    block_copy[i] = std::move(block[i]);
-                }
-                _alloc.deallocate(block,size());
-                block = _alloc.allocate(capacity());
-                for (size_type i = 0; i < size(); i++)
-                {
-                    block[i] = std::move(block_copy[i]);
-                }
-                _alloc.deallocate(block_copy,size());
+                vector_capacity = (vector_capacity * 2) ;//2
+                realloc_(capacity());
                 block[vector_size] = val;
                 vector_size++; 
             }
         }
-        ~vector()
+        reference operator[] (size_type n)
         {
-
+           return block[n];
         }
+        const_reference operator[] (size_type n) const
+        {
+            return block[n];
+        }
+        size_type max_size() const
+        {
+            return _alloc.max_size();
+        }
+        void resize (size_type n, value_type val = value_type())
+        {
+            if(n < size())
+                realloc_(n);
+            if (n > capacity())
+            {
+                realloc_(n);
+                for (size_type i = size(); i < n; i++)
+                    _alloc.construct(block + i,val);
+                vector_capacity = n;
+                vector_size = n;
+            }
+            else if (n > size())
+            {
+                realloc_(n);
+                for (size_type i = size(); i < n; i++)
+                    _alloc.construct(block + i,val);
+                vector_size = n;
+            }
+        }
+        void reserve (size_type n)
+        {
+            try {
+                if(n > capacity())
+                {
+                   
+                   realloc_(n); 
+                    
+                    if(empty())
+                        vector_capacity = n - 1;
+                    else
+                        vector_capacity = n ;
+                    // cout << "n: " <<  n << endl;
+                }
+                
+            }   
+            catch (const std::length_error& le) {
+                std::cerr << "Length error: " << le.what() << '\n';
+            }
+        }
+        
     };
 }
 
