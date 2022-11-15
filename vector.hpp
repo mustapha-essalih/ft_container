@@ -36,20 +36,20 @@ namespace ft
                 T * block_copy;
                 if(!empty())
                 {
-                    block_copy = _alloc.allocate(size());
-                    for (size_type i = 0; i < size(); i++)
+                    block_copy = _alloc.allocate(capacity());//here in past error of munmap_chunk(): invalid pointer
+                    for (size_type i = 0; i < capacity() && i < size(); i++)
                     {
                         _alloc.construct(block_copy + i,block[i]);
                         _alloc.destroy(block + i);
                     }
-                    _alloc.deallocate(block,size());
+                    _alloc.deallocate(block,capacity());
                     block = _alloc.allocate(s);
                     for (size_type i = 0; i < size(); i++)
                     {
                         _alloc.construct(block + i,block_copy[i]);
                         _alloc.destroy(block_copy + i);
                     }
-                    _alloc.deallocate(block_copy,size());
+                    _alloc.deallocate(block_copy,capacity());
                     // vector_capacity = s;
                 }
             }
@@ -158,7 +158,10 @@ namespace ft
         void resize (size_type n, value_type val = value_type())
         {
             if(n < size())
+            {
                 realloc_(n);
+                vector_size = n;
+            }
             if (n > capacity())
             {
                 realloc_(n);
