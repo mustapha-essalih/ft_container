@@ -1,44 +1,36 @@
 #include "vector.hpp"
 
-
- 
-#include <iostream>
-#include <iomanip>
-#include <string>
- 
- 
+#include "iterator.hpp"
+  
 
 int main()
 {
-   ft::vector<int> vec;
-  
-    // 5 elements are inserted
-    // in the vector
-    vec.push_back(1);
-    vec.push_back(2);
-    vec.push_back(3);
-    vec.push_back(4);
-    vec.push_back(5);
-  
-    cout << "Contents of vector before resizing:"
-         << endl;
-  
-    // displaying the contents of 
-    // the vector before resizing
-    for (int i = 0; i < vec.size(); i++)
-        cout << vec[i] << " ";
-  
-    cout << endl;
-  
-    // vector is resized
-    vec.resize(12, 9);
-  
-    cout << "Contents of vector after resizing:" 
-         << endl;
-      
-    // displaying the contents 
-    // of the vector after resizing
-    for (int i = 0; i < vec.size(); i++)
-        cout << vec[i] << " ";
-    
+    ft::vector<int> myvector;
+  for (int i=1; i<=5; i++) myvector.push_back(i);
+
+  std::cout << "myvector contains:";
+    for (ft::vector<int>::iterator it = myvector.begin() ; it != myvector.end(); ++it)
+        std::cout << ' ' << *it;
+  std::cout << '\n';
+
+    // base difference_type  iterator_type iterator_category
+
+
+    // vector<int> v;
+
+     
 }
+
+
+
+
+
+
+
+
+
+
+
+// cout << "size: " << myvector.size() << endl;
+// cout << "capacity: " << myvector.capacity() << endl;
+//

@@ -10,11 +10,11 @@ O_FILES = $(C_FILES:.cpp=.o)
 
 all : $(NAME)
 
-%.o: %.cpp vector.hpp
+%.o: %.cpp vector.hpp iterator.hpp
 	@${CC} ${C_FLAGS} -c $< -o $@
 
 
-${NAME}: ${O_FILES} vector.hpp
+${NAME}: ${O_FILES} vector.hpp iterator.hpp
 	@${CC} ${C_FLAGS} ${O_FILES} -o ${NAME}
 
 clean:

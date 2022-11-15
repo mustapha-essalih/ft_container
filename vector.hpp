@@ -2,6 +2,9 @@
 #define VECTOR_HPP
 
 
+#include "iterator.hpp"
+#include <iomanip>
+#include <cstddef>
 #include <map>
 #include <stack>
 #include <vector>
@@ -9,6 +12,7 @@
 #include <string>
 #include <exception>
 #include <algorithm>     
+#include<iterator>
 
 
 using std::string;
@@ -66,9 +70,13 @@ namespace ft
         typedef typename allocator_type::reference       reference;
         typedef typename allocator_type::const_reference const_reference;
 
-        typedef typename allocator_type::pointer         iterator;
+        // typedef typename allocator_type::pointer         iterator;
         typedef typename allocator_type::const_pointer   const_iterator;
+        typedef  ft::iterator<value_type>iterator;
+         
+     
 
+        
         
         // if pass alloactor call the allocator if not passed an allocetor will enter to default constructor is optonal
         vector(const allocator_type& alloc = allocator_type())// by this syntax we call a default constructor of another class 
@@ -122,7 +130,6 @@ namespace ft
         }
         void push_back (const value_type& val)
         {
-                 
             if(empty())
             {
                 block = _alloc.allocate(1);
@@ -142,6 +149,11 @@ namespace ft
                 block[vector_size] = val;
                 vector_size++; 
             }
+        }
+        void pop_back()
+        {
+            _alloc.destroy(&block[size() - 1]);
+            --vector_size;
         }
         reference operator[] (size_type n)
         {
@@ -190,13 +202,21 @@ namespace ft
                         vector_capacity = n - 1;
                     else
                         vector_capacity = n ;
-                    // cout << "n: " <<  n << endl;
+                    // because if vector is empty capacity incremanet by 1 and if call reserve method will print capacity +1
                 }
                 
             }   
             catch (const std::length_error& le) {
                 std::cerr << "Length error: " << le.what() << '\n';
             }
+        }
+        pointer begin()
+        {
+            return &block[0];
+        }
+        pointer end()
+        {
+            return &block[size()];
         }
         
     };
