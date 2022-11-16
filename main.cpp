@@ -5,14 +5,19 @@
 
 int main()
 {
+     ft::vector<int> v;
+    v.push_back(11);
+    v.push_back(12);
+    v.push_back(13);
+    v.push_back(14);
+    v.push_back(15);
+ 
+    // prints all the elements
+    cout << "The vector elements in reverse order are:\n";
+    for (auto it = v.rbegin(); it != v.rend(); it++)
+        cout << *it << " ";
     
-    ft::vector<int> myvector;
-  for (int i=1; i<=5; i++) myvector.push_back(i);
 
-  std::cout << "myvector contains:";
-  for (ft::vector<int>::iterator it = myvector.begin() ; it != myvector.end(); ++it)
-    std::cout << ' ' << *it;
-  std::cout << '\n';   
 }
 
 

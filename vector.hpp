@@ -28,35 +28,7 @@ namespace ft
     template < typename T, typename A = std::allocator<T>>
     class vector
     {
-        private:
-            T * block;
-            size_t vector_size;
-            size_t vector_capacity;
-            A _alloc;
-            T tmp;
-            
-            void realloc_(typename A::size_type s)
-            {
-                T * block_copy;
-                if(!empty())
-                {
-                    block_copy = _alloc.allocate(capacity());//here in past error of munmap_chunk(): invalid pointer
-                    for (size_type i = 0; i < capacity() && i < size(); i++)
-                    {
-                        _alloc.construct(block_copy + i,block[i]);
-                        _alloc.destroy(block + i);
-                    }
-                    _alloc.deallocate(block,capacity());
-                    block = _alloc.allocate(s);
-                    for (size_type i = 0; i < size(); i++)
-                    {
-                        _alloc.construct(block + i,block_copy[i]);
-                        _alloc.destroy(block_copy + i);
-                    }
-                    _alloc.deallocate(block_copy,capacity());
-                    // vector_capacity = s;
-                }
-            }
+        
         public:
         typedef  A allocator_type;
         typedef typename allocator_type::value_type      value_type;// the data entred by user
@@ -71,8 +43,10 @@ namespace ft
         typedef typename allocator_type::const_reference const_reference;
 
         // typedef typename allocator_type::pointer         iterator;
-        typedef typename allocator_type::const_pointer   const_iterator;
+        // typedef typename allocator_type::const_pointer   const_iterator;
         typedef  ft::iterator<value_type>iterator;
+        typedef  ft::reverse_iterator<value_type>reverse_iterator;
+        // typedef  ft::iterator<const_pointer>const_iterator;
          
     
 
@@ -223,7 +197,59 @@ namespace ft
             return iterator(&block[size()]);
 
         }
-        
+        // const_iterator begin()const
+        // {
+        //     // iterator it(&block[0]);
+        //     // return it;
+        //     return const_iterator(&block[0]);
+        // }
+        // const_iterator end() const 
+        // {
+        //     // iterator it(&block[size()]);
+        //     // return it;
+        //     return const_iterator(&block[size()]);
+
+        // }
+        reverse_iterator rbegin()
+        {
+            // return the element before last element
+
+            return reverse_iterator(&block[size() - 1]);
+        }
+        reverse_iterator rend()
+        {
+            // return the element before first element
+            return reverse_iterator(&block[-1]);
+        }
+        private:
+            T * block;
+            size_t vector_size;
+            size_t vector_capacity;
+            A _alloc;
+            T tmp;
+            
+            void realloc_(typename A::size_type s)
+            {
+                T * block_copy;
+                if(!empty())
+                {
+                    block_copy = _alloc.allocate(capacity());//here in past error of munmap_chunk(): invalid pointer
+                    for (size_type i = 0; i < capacity() && i < size(); i++)
+                    {
+                        _alloc.construct(block_copy + i,block[i]);
+                        _alloc.destroy(block + i);
+                    }
+                    _alloc.deallocate(block,capacity());
+                    block = _alloc.allocate(s);
+                    for (size_type i = 0; i < size(); i++)
+                    {
+                        _alloc.construct(block + i,block_copy[i]);
+                        _alloc.destroy(block_copy + i);
+                    }
+                    _alloc.deallocate(block_copy,capacity());
+                    // vector_capacity = s;
+                }
+            }
     };
 }
 

@@ -33,6 +33,7 @@ class iterator
         typedef T value_type;
         typedef 	std::ptrdiff_t difference_type;
         typedef  T*         pointer;
+        typedef const T*         const_iterator;
         typedef T& reference;
         // typedef typename allocator_type::pointer         pointer;
         typedef size_t size_type;
@@ -65,7 +66,7 @@ class iterator
         {
             return blcok_; // print the address of iterator
         }
-        reference operator--()
+        iterator operator--()
         {
             --blcok_;
             return  *this;
@@ -88,12 +89,86 @@ class iterator
         {
             return blcok_ == obj.blcok_;
         }
-        // std::ostream & operator << (std::ostream & COUT, const iterator<value_type> & it)
-        // {
-        //     COUT << it.blcok_;
-        //     return COUT;
-        // }
+      
         ~iterator()
+        {
+
+        }
+
+        private:
+            pointer blcok_;
+};
+
+
+    template < typename T>
+
+class reverse_iterator  
+{
+    
+    public:
+        typedef T value_type;
+        typedef 	std::ptrdiff_t difference_type;
+        typedef  T*         pointer;
+        typedef T& reference;
+        typedef size_t size_type;
+
+        reverse_iterator()
+        {
+            
+        }
+        reverse_iterator(pointer p):blcok_(p)
+        {
+        }
+        reverse_iterator &operator++()
+        {
+            --blcok_;
+            return *this;
+        }
+        bool operator!=(  reverse_iterator &  obj)
+        {
+            return blcok_ != obj.blcok_;
+        }
+        bool operator!=(  reverse_iterator  obj)
+        {
+            return blcok_ != obj.blcok_;
+        }
+        reference operator*() const 
+        {
+            return *blcok_; 
+        }
+        pointer operator->()
+        {
+            return blcok_; // print the address of reverse_iterator
+        }
+        reverse_iterator & operator--()
+        {
+            ++blcok_;
+            return  *this;
+        }
+        reverse_iterator operator++(int)
+        {
+            
+            reverse_iterator temp = *this;
+            // ++*this;
+            blcok_--;
+            return temp;
+
+        }
+        reverse_iterator  operator--(int)
+        {
+            reverse_iterator temp = *this;
+            blcok_++;
+
+            // --*this;
+            return temp;
+            
+        }
+        bool operator==(  reverse_iterator  obj)
+        {
+            return blcok_ == obj.blcok_;
+        }
+       
+        ~reverse_iterator()
         {
 
         }
