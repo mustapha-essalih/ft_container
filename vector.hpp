@@ -74,7 +74,7 @@ namespace ft
         typedef typename allocator_type::const_pointer   const_iterator;
         typedef  ft::iterator<value_type>iterator;
          
-     
+    
 
         
         
@@ -210,13 +210,18 @@ namespace ft
                 std::cerr << "Length error: " << le.what() << '\n';
             }
         }
-        pointer begin()
+        iterator begin()
         {
-            return &block[0];
+            // iterator it(&block[0]);
+            // return it;
+            return iterator(&block[0]);
         }
-        pointer end()
+        iterator end()
         {
-            return &block[size()];
+            // iterator it(&block[size()]);
+            // return it;
+            return iterator(&block[size()]);
+
         }
         
     };

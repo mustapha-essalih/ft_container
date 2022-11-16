@@ -24,13 +24,12 @@ using std::stack;
 using std::map;
 namespace ft
 {
-    template < typename T,typename A = std::allocator<T>>
+    template < typename T>
 
 class iterator  
 {
     
     public:
-        typedef  A allocator_type;
         typedef T value_type;
         typedef 	std::ptrdiff_t difference_type;
         typedef  T*         pointer;
@@ -44,7 +43,6 @@ class iterator
         }
         iterator(pointer p):blcok_(p)
         {
-             
         }
         iterator &operator++()
         {
@@ -55,13 +53,17 @@ class iterator
         {
             return blcok_ != obj.blcok_;
         }
-        bool operator!=(  pointer  obj)
+        bool operator!=(  iterator  obj)
         {
-            return blcok_ != obj;
+            return blcok_ != obj.blcok_;
         }
-       reference operator*() const 
+        reference operator*() const 
         {
             return *blcok_; 
+        }
+        pointer operator->()
+        {
+            return blcok_; // print the address of iterator
         }
         reference operator--()
         {
@@ -82,10 +84,15 @@ class iterator
             return temp;
             
         }
-        bool operator==(  pointer  obj)
+        bool operator==(  iterator  obj)
         {
-            return blcok_ == obj;
+            return blcok_ == obj.blcok_;
         }
+        // std::ostream & operator << (std::ostream & COUT, const iterator<value_type> & it)
+        // {
+        //     COUT << it.blcok_;
+        //     return COUT;
+        // }
         ~iterator()
         {
 
@@ -95,7 +102,7 @@ class iterator
             pointer blcok_;
 };
 
- 
+
 }
 
 
