@@ -5,19 +5,18 @@
 
 int main()
 {
-     ft::vector<int> v;
-    v.push_back(11);
-    v.push_back(12);
-    v.push_back(13);
-    v.push_back(14);
-    v.push_back(15);
- 
-    // prints all the elements
-    cout << "The vector elements in reverse order are:\n";
-    for (auto it = v.rbegin(); it != v.rend(); it++)
-        cout << *it << " ";
-    
+    ft::vector<int> v;
 
+    v.push_back(1);
+    v.push_back(2);
+    v.push_back(3);
+
+    ft::vector<int>::iterator i = v.begin();
+
+    i++;
+    cout << &v[1] << endl;
+    cout << i.base();
+     
 }
 
 

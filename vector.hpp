@@ -42,12 +42,19 @@ namespace ft
         typedef typename allocator_type::reference       reference;
         typedef typename allocator_type::const_reference const_reference;
 
-        // typedef typename allocator_type::pointer         iterator;
-        // typedef typename allocator_type::const_pointer   const_iterator;
+// const_iterators don't allow you to change the values that they point to, regular iterators do.
+
+
+        typedef const T         const_value;
+        
         typedef  ft::iterator<value_type>iterator;
+
+        typedef  ft::const_iterator<const_value>const_iterator;
+
         typedef  ft::reverse_iterator<value_type>reverse_iterator;
-        // typedef  ft::iterator<const_pointer>const_iterator;
-         
+        
+        typedef  ft::const_reverse_iterator<value_type>const_reverse_iterator;
+          
     
 
         
@@ -66,7 +73,8 @@ namespace ft
             vector_capacity = n;
             _alloc = alloc;
             block = _alloc.allocate(n);
-            _alloc.construct(block,val);
+            for (size_type i = 0; i < n; i++)
+                _alloc.construct(block + i,val);
         }
     // template <class InputIterator>         vector (InputIterator first, InputIterator last,                 const allocator_type& alloc = allocator_type());
         vector (const vector& x)
@@ -186,6 +194,7 @@ namespace ft
         }
         iterator begin()
         {
+            cout << "HERE\n";
             // iterator it(&block[0]);
             // return it;
             return iterator(&block[0]);
@@ -197,19 +206,19 @@ namespace ft
             return iterator(&block[size()]);
 
         }
-        // const_iterator begin()const
-        // {
-        //     // iterator it(&block[0]);
-        //     // return it;
-        //     return const_iterator(&block[0]);
-        // }
-        // const_iterator end() const 
-        // {
-        //     // iterator it(&block[size()]);
-        //     // return it;
-        //     return const_iterator(&block[size()]);
+        const_iterator begin()const
+        {
+            // iterator it(&block[0]);
+            // return it;
+            return const_iterator(&block[0]);
+        }
+        const_iterator end() const 
+        {
+            // iterator it(&block[size()]);
+            // return it;
+            return const_iterator(&block[size()]);
 
-        // }
+        }
         reverse_iterator rbegin()
         {
             // return the element before last element
@@ -220,6 +229,17 @@ namespace ft
         {
             // return the element before first element
             return reverse_iterator(&block[-1]);
+        }
+        const_reverse_iterator rbegin() const
+        {
+            // return the element before last element
+
+            return const_reverse_iterator(&block[size() - 1]);
+        }
+        const_reverse_iterator rend() const
+        {
+            // return the element before first element
+            return const_reverse_iterator(&block[-1]);
         }
         private:
             T * block;

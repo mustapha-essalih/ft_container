@@ -30,17 +30,19 @@ class iterator
 {
     
     public:
+
         typedef T value_type;
+        
+        typedef T * const constant_pointer;
         typedef 	std::ptrdiff_t difference_type;
         typedef  T*         pointer;
-        typedef const T*         const_iterator;
+        typedef const T         const_value;
         typedef T& reference;
         // typedef typename allocator_type::pointer         pointer;
         typedef size_t size_type;
 
         iterator()
-        {
-            
+        {   
         }
         iterator(pointer p):blcok_(p)
         {
@@ -89,7 +91,8 @@ class iterator
         {
             return blcok_ == obj.blcok_;
         }
-      
+        // return the address of iterator
+        constant_pointer & base() const { return blcok_; }
         ~iterator()
         {
 
@@ -167,7 +170,7 @@ class reverse_iterator
         {
             return blcok_ == obj.blcok_;
         }
-       
+
         ~reverse_iterator()
         {
 
@@ -177,6 +180,162 @@ class reverse_iterator
             pointer blcok_;
 };
 
+// const_iterators don't allow you to change the values that they point to, regular iterators do.
+
+
+ template < typename T>
+
+class const_iterator  
+{
+    
+    public:
+        typedef T value_type;
+        typedef 	std::ptrdiff_t difference_type;
+        typedef  T*         pointer;
+        typedef T& reference;
+        typedef size_t size_type;
+
+        const_iterator()
+        {
+            
+        }
+        const_iterator(pointer p):blcok_(p)
+        {
+        }
+        const_iterator &operator++()
+        {
+            ++blcok_;
+            return *this;
+        }
+        bool operator!=(  const_iterator &  obj) const
+        {
+            return blcok_ != obj.blcok_;
+        }
+        bool operator!=(  const_iterator  obj) const
+        {
+            return blcok_ != obj.blcok_;
+        }
+        reference operator*() const 
+        {
+            return *blcok_; 
+        }
+        pointer operator->()  
+        {
+            return blcok_; // print the address of const_iterator
+        }
+        const_iterator & operator--()
+        {
+            --blcok_;
+            return  *this;
+        }
+        const_iterator operator++(int)
+        {
+            
+            const_iterator temp = *this;
+            // ++*this;
+            blcok_++;
+            return temp;
+
+        }
+        const_iterator  operator--(int)
+        {
+            const_iterator temp = *this;
+            blcok_--;
+
+            // --*this;
+            return temp;
+            
+        }
+        bool operator==(  const_iterator  obj) const
+        {
+            return blcok_ == obj.blcok_;
+        }
+       
+        ~const_iterator()
+        {
+
+        }
+
+        private:
+            pointer blcok_;
+};
+
+template < typename T>
+
+class const_reverse_iterator  
+{
+    
+    public:
+        typedef T value_type;
+        typedef 	std::ptrdiff_t difference_type;
+        typedef  T*         pointer;
+        typedef T& reference;
+        typedef size_t size_type;
+
+        const_reverse_iterator()
+        {
+            
+        }
+        const_reverse_iterator(pointer p):blcok_(p)
+        {
+        }
+        const_reverse_iterator &operator++()
+        {
+            --blcok_;
+            return *this;
+        }
+        bool operator!=(  const_reverse_iterator &  obj)
+        {
+            return blcok_ != obj.blcok_;
+        }
+        bool operator!=(  const_reverse_iterator  obj)
+        {
+            return blcok_ != obj.blcok_;
+        }
+        reference operator*() const 
+        {
+            return *blcok_; 
+        }
+        pointer operator->()
+        {
+            return blcok_; // print the address of const_reverse_iterator
+        }
+        const_reverse_iterator & operator--()
+        {
+            ++blcok_;
+            return  *this;
+        }
+        const_reverse_iterator operator++(int)
+        {
+            
+            const_reverse_iterator temp = *this;
+            // ++*this;
+            blcok_--;
+            return temp;
+
+        }
+        const_reverse_iterator  operator--(int)
+        {
+            const_reverse_iterator temp = *this;
+            blcok_++;
+
+            // --*this;
+            return temp;
+            
+        }
+        bool operator==(  const_reverse_iterator  obj)
+        {
+            return blcok_ == obj.blcok_;
+        }
+       
+        ~const_reverse_iterator()
+        {
+
+        }
+
+        private:
+            pointer blcok_;
+};
 
 }
 
