@@ -4,17 +4,19 @@ CC = c++
 
 C_FILES = main.cpp 
 
+H_FILES = vector.hpp iterator.hpp  iterator_traits.hpp
+
 C_FLAGS = #-Wall -Wextra -Werror -std=c++98
 
 O_FILES = $(C_FILES:.cpp=.o)
 
 all : $(NAME)
 
-%.o: %.cpp vector.hpp iterator.hpp
+%.o: %.cpp ${H_FILES}
 	@${CC} ${C_FLAGS} -c $< -o $@
 
 
-${NAME}: ${O_FILES} vector.hpp iterator.hpp
+${NAME}: ${O_FILES} ${H_FILES}
 	@${CC} ${C_FLAGS} ${O_FILES} -o ${NAME}
 
 clean:

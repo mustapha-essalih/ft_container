@@ -1,34 +1,19 @@
 #include "vector.hpp"
 
 #include "iterator.hpp"
+
+#include "iterator_traits.hpp"
+
+
+
+int main () 
+{  
+    
+    
+    
   
 
-int main()
-{
-    ft::vector<int> v;
-
-    v.push_back(1);
-    v.push_back(2);
-    v.push_back(3);
-
-    ft::vector<int>::iterator i = v.begin();
-
-    i++;
-    cout << &v[1] << endl;
-    cout << i.base();
-     
+    return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-// cout << "size: " << myvector.size() << endl;
-// cout << "capacity: " << myvector.capacity() << endl;
-//
+ 

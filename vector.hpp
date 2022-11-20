@@ -42,22 +42,16 @@ namespace ft
         typedef typename allocator_type::reference       reference;
         typedef typename allocator_type::const_reference const_reference;
 
+        // we use typename with member types
+
+
 // const_iterators don't allow you to change the values that they point to, regular iterators do.
 
 
-        typedef const T         const_value;
-        
+
         typedef  ft::iterator<value_type>iterator;
+        typedef  ft::iterator<const T>const_iterator;
 
-        typedef  ft::const_iterator<const_value>const_iterator;
-
-        typedef  ft::reverse_iterator<value_type>reverse_iterator;
-        
-        typedef  ft::const_reverse_iterator<value_type>const_reverse_iterator;
-          
-    
-
-        
         
         // if pass alloactor call the allocator if not passed an allocetor will enter to default constructor is optonal
         vector(const allocator_type& alloc = allocator_type())// by this syntax we call a default constructor of another class 
@@ -194,52 +188,23 @@ namespace ft
         }
         iterator begin()
         {
-            cout << "HERE\n";
-            // iterator it(&block[0]);
-            // return it;
-            return iterator(&block[0]);
-        }
+            iterator it(&block[0]);
+            return it;
+         }
         iterator end()
         {
-            // iterator it(&block[size()]);
-            // return it;
-            return iterator(&block[size()]);
-
+            iterator it(&block[size()]);
+            return it;
         }
         const_iterator begin()const
         {
-            // iterator it(&block[0]);
-            // return it;
-            return const_iterator(&block[0]);
+            const_iterator it(&block[0]);
+            return it;
         }
         const_iterator end() const 
         {
-            // iterator it(&block[size()]);
-            // return it;
-            return const_iterator(&block[size()]);
-
-        }
-        reverse_iterator rbegin()
-        {
-            // return the element before last element
-
-            return reverse_iterator(&block[size() - 1]);
-        }
-        reverse_iterator rend()
-        {
-            // return the element before first element
-            return reverse_iterator(&block[-1]);
-        }
-        const_reverse_iterator rbegin() const
-        {
-            // return the element before last element
-
-            return const_reverse_iterator(&block[size() - 1]);
-        }
-        const_reverse_iterator rend() const
-        {
-            // return the element before first element
-            return const_reverse_iterator(&block[-1]);
+            const_iterator it(&block[size()]);
+            return it;
         }
         private:
             T * block;
