@@ -51,8 +51,9 @@ namespace ft
 
 
     template <class Iterator>
-    struct iterator_traits
+    struct iterator_traits // to call this you will pass T
     {
+         
         typedef typename Iterator::value_type value_type;
         typedef typename Iterator::difference_type difference_type;
         typedef typename Iterator::pointer pointer;

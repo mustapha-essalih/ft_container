@@ -1,8 +1,14 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
+#include "vector.hpp"
 
 #include "iterator.hpp"
+
+#include "iterator_traits.hpp"
+
+
+#include "reverse_iterator.hpp"
 #include <iomanip>
 #include <cstddef>
 #include <map>
@@ -51,6 +57,8 @@ namespace ft
 
         typedef  ft::iterator<value_type>iterator;
         typedef  ft::iterator<const T>const_iterator;
+        typedef  ft::reverse_iterator<iterator> reverse_iterator;
+        typedef  ft::reverse_iterator<const_iterator>const_reverse_iterator;
 
         
         // if pass alloactor call the allocator if not passed an allocetor will enter to default constructor is optonal
@@ -190,7 +198,7 @@ namespace ft
         {
             iterator it(&block[0]);
             return it;
-         }
+        }
         iterator end()
         {
             iterator it(&block[size()]);
@@ -204,6 +212,26 @@ namespace ft
         const_iterator end() const 
         {
             const_iterator it(&block[size()]);
+            return it;
+        }
+        reverse_iterator rbegin()
+        {
+            reverse_iterator it(&block[size() - 1]);// pointing to the last element 
+            return it;
+        }
+        reverse_iterator rend()
+        {
+            reverse_iterator it(&block[-1]);// pointing to the before first elemnt
+            return it;
+        }
+        const_reverse_iterator rbegin() const
+        {
+            reverse_iterator it(&block[size() - 1]);// pointing to the last element 
+            return it;
+        }
+        const_reverse_iterator rend() const
+        {
+            reverse_iterator it(&block[-1]);// pointing to the before first elemnt
             return it;
         }
         private:

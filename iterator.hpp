@@ -42,10 +42,13 @@ namespace ft
             }
             // iterator& operator=(const iterator &obj)// std::iterator dont have 
             // {
-            //     if(this != &obj)
-            //     {
-            //         this = obj;
-            //     }
+            //     cout << "here\n";
+            //     // if(this != &obj)
+            //     // {
+            //         // this = obj;
+
+                    
+            //     // }
             //     return *this;
             // }
             iterator& operator+=(value_type obj) {ptr += obj; return *this;}
@@ -60,13 +63,16 @@ namespace ft
                 }
             iterator& operator--() {
                 
-                --ptr; return *this;}
+                --ptr; 
+                return *this;
+            }
             iterator operator++(int)  {
                 
                 iterator tmp(*this); ++ptr; return tmp;}
-            iterator operator--(int)  {
-                
-                iterator tmp(*this); --ptr; return tmp;}
+            iterator operator--(int)  
+            {
+                iterator tmp(*this); --ptr; return tmp;
+            }
             value_type operator-(const iterator& obj) const {return ptr-obj.ptr;}
             iterator operator+(value_type obj) const {return iterator(ptr+obj);}
             iterator operator-(value_type obj) const {return iterator(ptr-obj);} 
