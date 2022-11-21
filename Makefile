@@ -4,7 +4,7 @@ CC = c++
 
 C_FILES = main.cpp 
 
-H_FILES = vector.hpp iterator.hpp  iterator_traits.hpp
+H_FILES = vector.hpp iterator.hpp  iterator_traits.hpp reverse_iterator.hpp
 
 C_FLAGS = #-Wall -Wextra -Werror -std=c++98
 

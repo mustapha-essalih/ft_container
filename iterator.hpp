@@ -54,10 +54,19 @@ namespace ft
             T* operator->() const {return ptr;}
             T& operator[](value_type obj) const {return ptr[obj];}
             
-            iterator& operator++() {++ptr; return *this;}
-            iterator& operator--() {--ptr; return *this;}
-            iterator operator++(int)  {iterator tmp(*this); ++ptr; return tmp;}
-            iterator operator--(int)  {iterator tmp(*this); --ptr; return tmp;}
+            iterator& operator++() {
+                ++ptr; return *this;
+                
+                }
+            iterator& operator--() {
+                
+                --ptr; return *this;}
+            iterator operator++(int)  {
+                
+                iterator tmp(*this); ++ptr; return tmp;}
+            iterator operator--(int)  {
+                
+                iterator tmp(*this); --ptr; return tmp;}
             value_type operator-(const iterator& obj) const {return ptr-obj.ptr;}
             iterator operator+(value_type obj) const {return iterator(ptr+obj);}
             iterator operator-(value_type obj) const {return iterator(ptr-obj);} 
