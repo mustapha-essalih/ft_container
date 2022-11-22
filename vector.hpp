@@ -147,6 +147,19 @@ namespace ft
         {
             return block[n];
         }
+        reference at (size_type n)
+        {
+            if(n >= size())
+                throw std::out_of_range();
+            return block[n];
+        }
+        const_reference at (size_type n) const
+        {
+            if(n >= size())
+                throw std::out_of_range();
+            return block[n];
+        }
+
         size_type max_size() const
         {
             return _alloc.max_size();

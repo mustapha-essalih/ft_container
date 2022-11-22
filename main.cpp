@@ -1,28 +1,35 @@
 #include "vector.hpp"
-
 #include "iterator.hpp"
-
 #include "iterator_traits.hpp"
-
-
 #include "reverse_iterator.hpp"
 
-int main() 
-{
+#include "std_mechanism.hpp"
 
-    ft::vector<int> myvector (5);  // 5 default-constructed ints
-
-    ft::vector<int>::reverse_iterator rit = myvector.rbegin();
-
-    int i = 0;
-    for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
-        *rit = ++i;
  
 
  
-  std::cout << "myvector contains:";
-  for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-    std::cout << ' ' << *it;
-  std::cout << '\n';
-    return 0;
+bool mypredicate (int i, int j) {
+  return (i==j);
+}
+
+int main () {
+  int myints[] = {20,40,60,80,100};               //   myints: 20 40 60 80 100
+ 
+  vector<int>myvector (myints,myints + 5);     // myvector: 20 40 60 80 100
+
+  // using default comparison:
+  if ( ft::equal (myvector.begin(), myvector.end(), myints) )
+    std::cout << "The contents of both sequences are equal.\n";
+  else
+    std::cout << "The contents of both sequences differ.\n";
+
+  myvector[3]=81;                                 // myvector: 20 40 60 81 100
+
+  // using predicate comparison:
+  if ( ft::equal (myvector.begin(), myvector.end(), myints, mypredicate) )
+    std::cout << "The contents of both sequences are equal.\n";
+  else
+    std::cout << "The contents of both sequences differ.\n";
+
+  return 0;
 }
