@@ -2,9 +2,8 @@
 #define ITERATOR_TRAITS_HPP
 
 
-// is an interface
-#include "iterator.hpp"
-
+// is an interface 
+#include "../iterators/iterator.hpp" 
 #include <iomanip>
 #include <cstddef>
 #include <map>

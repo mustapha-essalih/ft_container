@@ -74,6 +74,66 @@ namespace ft{
         return true;
     }
 
+
+    template<class T1,class T2> 
+class pair
+{
+    public:
+
+        typedef T1 first_type;
+        typedef T2 second_type;
+
+        T1 first{};
+        T2 second{};
+
+        // default
+        pair()
+        {
+        }
+        // copy constructor
+        pair (const pair<T1,T2> & pr)
+        {
+            first = pr.first;
+            second = pr.second;
+        }
+        template <typename v1, typename v2>
+        bool operator!= ( const pair<v1,v2>& rhs)const
+        {
+            return rhs.first != first && rhs.second != second ;
+        }
+        template< typename v1, typename v2 > // shoule recrete templete to ignor compilation error
+        pair & operator = (const pair<v1,v2> & pr)
+        {
+            if(this != &pr)
+            {
+                first = pr.first;
+                second = pr.second;
+            }
+            return *this;
+        }
+        // initialization
+        pair (const first_type& a, const second_type& b)
+        {
+            first = a;
+            second = b;
+        }
+        ~pair()
+        {
+
+        }
+
+
+};
+
+// is functun returns piar object
+
+template <class T1, class T2>  
+pair<T1,T2> make_pair (T1 x, T2 y)
+{
+    return ( ft::pair<T1,T2>(x,y) );
+}
+
+
 }
 
 

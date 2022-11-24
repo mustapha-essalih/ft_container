@@ -2,8 +2,7 @@
 #define ITERATOR_HPP
 #include <cstddef>
 
-
-#include "vector.hpp"
+#include "../vector/vector.hpp" 
 
 #include <iomanip>
 #include <cstddef>

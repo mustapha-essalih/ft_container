@@ -4,7 +4,9 @@ CC = c++
 
 C_FILES = main.cpp 
 
-H_FILES = vector.hpp iterator.hpp  iterator_traits.hpp reverse_iterator.hpp std_mechanism.hpp
+H_FILES = ./vector/vector.hpp ./iterators/iterator.hpp  ./iterators/iterator_traits.hpp ./iterators/reverse_iterator.hpp ./type_traits/std_mechanism.hpp ./map/map.hpp
+
+
 
 C_FLAGS = #-Wall -Wextra -Werror -std=c++98
 

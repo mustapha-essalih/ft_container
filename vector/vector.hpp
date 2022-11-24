@@ -1,14 +1,12 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include "vector.hpp"
+#include "../vector/vector.hpp"
+#include "../iterators/iterator.hpp"
+#include "../iterators/iterator_traits.hpp"
+#include "../iterators/reverse_iterator.hpp"
 
-#include "iterator.hpp"
-
-#include "iterator_traits.hpp"
-
-
-#include "reverse_iterator.hpp"
+#include "../type_traits/std_mechanism.hpp"
 #include <iomanip>
 #include <cstddef>
 #include <map>
@@ -28,6 +26,9 @@ using std::vector;
 using std::stack;
 using std::map;
 
+//  ft::vector<int> v;
+
+//     v[4] = 3;
 
 namespace ft
 {

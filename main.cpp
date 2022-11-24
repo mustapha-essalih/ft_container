@@ -1,35 +1,30 @@
-#include "vector.hpp"
-#include "iterator.hpp"
-#include "iterator_traits.hpp"
-#include "reverse_iterator.hpp"
+#include "./vector/vector.hpp"
+#include "./iterators/iterator.hpp"
+#include "./iterators/iterator_traits.hpp"
+#include "./iterators/reverse_iterator.hpp"
 
-#include "std_mechanism.hpp"
+#include "./type_traits/std_mechanism.hpp"
+#include "./map/map.hpp"
 
  
 
+
  
-bool mypredicate (int i, int j) {
-  return (i==j);
+int main()
+{
+
+
+
+
+
+
+
 }
 
-int main () {
-  int myints[] = {20,40,60,80,100};               //   myints: 20 40 60 80 100
- 
-  vector<int>myvector (myints,myints + 5);     // myvector: 20 40 60 80 100
 
-  // using default comparison:
-  if ( ft::equal (myvector.begin(), myvector.end(), myints) )
-    std::cout << "The contents of both sequences are equal.\n";
-  else
-    std::cout << "The contents of both sequences differ.\n";
 
-  myvector[3]=81;                                 // myvector: 20 40 60 81 100
+    // std::map<std::string, int> ages;
+   
 
-  // using predicate comparison:
-  if ( ft::equal (myvector.begin(), myvector.end(), myints, mypredicate) )
-    std::cout << "The contents of both sequences are equal.\n";
-  else
-    std::cout << "The contents of both sequences differ.\n";
-
-  return 0;
-}
+    // std::cout << "Fred's age is " << ages["Fred"] << std::endl;
+    

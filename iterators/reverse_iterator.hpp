@@ -1,14 +1,12 @@
 #ifndef REVERSE_ITERATOR_HPP
 #define REVERSE_ITERATOR_HPP
 
-#include "vector.hpp"
+#include "../vector/vector.hpp"
+#include "../iterators/iterator.hpp"
+#include "../iterators/iterator_traits.hpp"
+#include "../iterators/reverse_iterator.hpp"
 
-#include "iterator.hpp"
-
-#include "iterator_traits.hpp"
-
-
-#include "reverse_iterator.hpp"
+#include "../type_traits/std_mechanism.hpp"
 #include <iomanip>
 #include <cstddef>
 #include <map>
