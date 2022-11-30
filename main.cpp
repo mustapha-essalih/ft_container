@@ -5,26 +5,28 @@
 
 #include "./type_traits/std_mechanism.hpp"
 #include "./map/map.hpp"
+#include "./map/avl_tree.hpp"
 
  
 
-
+ 
  
 int main()
 {
+	 
+	avl_tree obj;
+
+    obj.insert(20);
+    obj.insert(30);
+    obj.insert(40);
+    obj.insert(50);
+    obj.insert(55);
+    obj.insert(0);
+    obj.insert(1);
 
 
 
-
-
-
-
+    
+	return 0;
 }
 
-
-
-    // std::map<std::string, int> ages;
-   
-
-    // std::cout << "Fred's age is " << ages["Fred"] << std::endl;
-    
