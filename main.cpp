@@ -5,7 +5,7 @@
 
 #include "./type_traits/std_mechanism.hpp"
 #include "./map/map.hpp"
-#include "./map/avl_tree.hpp"
+#include "./map/bst.hpp"
 
  
 
@@ -14,7 +14,7 @@
 int main()
 {
 	 
-	avl_tree obj;
+	bst obj;
 
     obj.insert(20);
     obj.insert(30);
