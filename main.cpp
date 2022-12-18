@@ -15,7 +15,7 @@ int main()
 {
 	 
 	bst obj;
-
+ 
     obj.insert(20);
     obj.insert(30);
     obj.insert(40);
