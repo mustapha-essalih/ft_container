@@ -1,32 +1,60 @@
-#include "./vector/vector.hpp"
-#include "./iterators/iterator.hpp"
-#include "./iterators/iterator_traits.hpp"
-#include "./iterators/reverse_iterator.hpp"
+#include "bst.hpp"
+#include "type_traits.hpp"
 
-#include "./type_traits/std_mechanism.hpp"
-#include "./map/map.hpp"
-#include "./map/bst.hpp"
 
- 
 
- 
- 
+
+
+
+
+
+
+
+
+
+
+
+
+// implement pair  and make pair
+// implement map(what is map, how map work...)
+
+
+
+
 int main()
 {
-	 
-	bst obj;
+	ft::pair<int, char> PAIR1;
+    ft::pair<string, double> PAIR2("GeeksForGeeks", 1.23);
+    ft::pair<string, double> PAIR3;
  
-    obj.insert(20);
-    obj.insert(30);
-    obj.insert(40);
-    obj.insert(50);
-    obj.insert(55);
-    obj.insert(0);
-    obj.insert(1);
+    PAIR1.first = 100;
+    PAIR1.second = 'G';
+ 
+    PAIR3 = ft::make_pair("GeeksForGeeks is Best", 4.56);
+ 
+    cout << PAIR1.first << " ";
+    cout << PAIR1.second << endl;
+ 
+    cout << PAIR2.first << " ";
+    cout << PAIR2.second << endl;
+ 
+    cout << PAIR3.first << " ";
+    cout << PAIR3.second << endl;
 
 
 
-    
-	return 0;
+
+ 	return 0;
 }
 
+
+
+
+
+
+// void func()
+// {
+// 	system("leaks ft_container");
+// }
+
+// atexit(func);
