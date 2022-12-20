@@ -12,7 +12,8 @@
 #include <exception>
 #include <algorithm>     
 #include<iterator>
-#include "type_traits.hpp"
+// #include "type_traits.hpp"
+// #include "iterator.hpp"
 
 #include <utility>
 
@@ -36,9 +37,8 @@ class Node
         Node<A> * right;
         Node<A>()
         {
-            cout << "DDDD\n";
         }
-        Node<A>(A v):value(v)
+        Node<A>(A v):value(v)// inistaializaion list for const value 
         {
             left = right = nullptr;
         }
@@ -67,6 +67,7 @@ class bst
                 return;
             inOrder(root->left);
             cout << root->value.first << endl;
+            cout << root->value.second << endl;
             inOrder(root->right);
         }
         Node<T> * createNewNode(Node<T> * root, T data)// must handle if data entred equal data
@@ -81,13 +82,36 @@ class bst
 
                 return n;
             }
+            // her comapre using opearators of pair here two objects data and root->value
             else if(data < root->value)
                 root->left = createNewNode(root->left,data);
             else 
                 root->right = createNewNode(root->right,data);
+            
             return root;
         }
-                 
+
+        T minValue(Node<T>* node)
+        {
+            Node<T>* tmp = node;
+        
+            /* loop down to find the leftmost leaf */
+            while (tmp->left != nullptr) 
+                tmp = tmp->left;
+            return (tmp->value);
+        }
+        T maxValue(Node<T>* node)
+        {
+            Node<T>* tmp = node;
+        
+            /* loop down to find the leftmost leaf */
+            while (tmp->right != nullptr) 
+                tmp = tmp->right;
+            return (tmp->value);
+        }
+ 
+
+
 
         // T value => obj.first , obj.second
         void insert(T value)// when insert insert key and value in one time

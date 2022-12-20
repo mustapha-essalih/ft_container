@@ -1,6 +1,7 @@
 #include "bst.hpp"
 #include "type_traits.hpp"
 #include "map.hpp"
+#include "iterator.hpp"
 
 
 
@@ -24,7 +25,10 @@ int main()
 {
 
 	ft::map<int,int> m;
-	
+
+	ft::map<int,int>::iterator it = m.begin();
+ 	
+ 	cout << it.ptr;
 	 
 
 
