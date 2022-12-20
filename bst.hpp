@@ -12,6 +12,7 @@
 #include <exception>
 #include <algorithm>     
 #include<iterator>
+#include "type_traits.hpp"
 
 #include <utility>
 
@@ -24,104 +25,85 @@ using std::map;
 using std::pair;
 
 
+ 
+template <typename A>
+class Node
+{
+    public:
+        A value;
+    
+        Node<A> * left;
+        Node<A> * right;
+        Node<A>()
+        {
+            cout << "DDDD\n";
+        }
+        Node<A>(A v):value(v)
+        {
+            left = right = nullptr;
+        }
+         
+};
 
-
+// ft::pair<int,int> b;
+template<typename T  , typename Allocator = std::allocator<Node<T> > >
 
 class bst
 {
     private:
-        typedef struct Node{
-
-            int data;
-            Node *left;
-            Node *right;
-
-            Node(int item)
-            {
-                data = item;
-                right = left = nullptr;
-            }
-        }Node;
-
-        
-        Node * newNode(Node * root, int data)// must handle if data entred equal data
-        {
-            if(!root)
-            {
-                Node * newNode = new Node(data);
-                return newNode;
-            }
-            else if(data < root->data)
-                root->left = newNode(root->left,data);
-            else 
-                root->right = newNode(root->right,data);
- 
-            return root;
-        }
+        Allocator alloc;
+              
     
     public:
-        Node * root;
+        Node<T> * root;
 
         bst()
         {
             root = nullptr;
         }
-
-        void free_(Node * root) 
-        {
-            if(!root)
-                return;
-            free_(root->left);
-            delete root;
-            free_(root->right);
-        }
-
-        Node * search(Node * root, int data)// always search in one direction left direction or right direction
-        {
-            if(!root)
-                return nullptr;
-            else if(root->data == data)
-                return root;
-            else if(data < root->data)
-                return search(root->left,data);
-            else
-                return search(root->right,data);
-             
-        }
-
-        bool search(int data)
-        {
-            if(!search(root,data))
-                return false;
-            else
-                return true;
-        }
-
-        void inOrder(Node * root)// root left right
+        void inOrder(Node<T> * root)// root left right
         {
             if(!root)// if empty
                 return;
             inOrder(root->left);
-            cout << root->data << endl;
+            cout << root->value.first << endl;
             inOrder(root->right);
         }
-
-        void insert(int data)
+        Node<T> * createNewNode(Node<T> * root, T data)// must handle if data entred equal data
         {
-            root = newNode(root,data);
+            // because i have problem of cpoy eelments
+            if(!root)
+            {
+                Node<T>tmp(data);
+
+                Node<T> * n = alloc.allocate(sizeof(Node<T>));
+                alloc.construct(n,tmp);
+
+                return n;
+            }
+            else if(data < root->value)
+                root->left = createNewNode(root->left,data);
+            else 
+                root->right = createNewNode(root->right,data);
+            return root;
         }
+                 
 
-        
-
+        // T value => obj.first , obj.second
+        void insert(T value)// when insert insert key and value in one time
+        {
+            root = createNewNode(root,value);
+        }
+         
         ~bst()
         {
-            if(root)
-                free_(root);
+            // use iterator
+            // if(root)
+            //     free_(root); 
         }
 };
 
 
-
-
+// bast<ft::pair<int,int>>
 
 #endif
