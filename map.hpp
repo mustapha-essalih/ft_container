@@ -35,54 +35,70 @@ namespace ft
     {
  
         public:
-        typedef  Key key_type; 
-        typedef  T mapped_type;
-                //    because key will not duplicate or chande key value
-        typedef  ft::pair<const key_type,mapped_type> value_type;
 
-        typedef  std::less<key_type> key_compare;
-        typedef     Allocator  allocator_type;
-        typedef typename allocator_type::reference	reference;
-        typedef typename allocator_type::const_reference		const_reference;
-        typedef typename allocator_type::pointer	pointer;
-        typedef typename allocator_type::const_pointer	const_pointer;
-        typedef typename allocator_type::size_type       size_type;
-        typedef   ft::iterator<T>  iterator;
+                typedef  Key key_type; 
+                typedef  T mapped_type;
+                        //    because key will not duplicate or chande key value
+                typedef  ft::pair<const key_type,mapped_type> value_type;
+
+                typedef  std::less<key_type> key_compare;
+                typedef     Allocator  allocator_type;
+                typedef typename allocator_type::reference	reference;
+                typedef typename allocator_type::const_reference		const_reference;
+                typedef typename allocator_type::pointer	pointer;
+                typedef typename allocator_type::const_pointer	const_pointer;
+                typedef typename allocator_type::size_type       size_type;
+
+
+                typedef   ft::iterator<value_type>  iterator;
              
             map()
             {
-                b.insert(ft::make_pair<key_type,mapped_type>(10,20));     
-                b.insert(ft::make_pair<key_type,mapped_type>(20,20));     
-                b.insert(ft::make_pair<key_type,mapped_type>(30,20)); 
-
-                // b.insert(ft::make_pair<key_type,mapped_type>(4,20));     
-                // b.insert(ft::make_pair<key_type,mapped_type>(11,20));     
-                // b.insert(ft::make_pair<key_type,mapped_type>(12,20));     
-                // b.insert(ft::make_pair<key_type,mapped_type>(13,20));     
-                // b.insert(ft::make_pair<key_type,mapped_type>(110,20));     
-                // b.insert(ft::make_pair<key_type,mapped_type>(-5,20));     
-                // b.insert(ft::make_pair<key_type,mapped_type>(-1,20));     
- 
-                // cout << b.minValue(b.root).first << endl;             
-                // cout << b.maxValue(b.root).first << endl;             
-
-                // b.findSmaller(b.root);
-
-                
+                the_size = 0;
+                b.insert(ft::make_pair<key_type,mapped_type>(10,254));
+                b.insert(ft::make_pair<key_type,mapped_type>(11,24));
+                b.insert(ft::make_pair<key_type,mapped_type>(9,2555));
+                b.insert(ft::make_pair<key_type,mapped_type>(8,202));
+                b.insert(ft::make_pair<key_type,mapped_type>(7,2979));
+                b.insert(ft::make_pair<key_type,mapped_type>(12,60));
+             	 
 
             }
+            bool empty() const
+            {
+                if(the_size == 0)
+                    return true;
+                return false;
+            }
+
+            size_type size() const
+            {
+                the_size++;
+                return the_size;
+            }
+            
             iterator begin()
             {
-                iterator i(b.minValue(b.root).first);
+                
+                iterator i(b.minValue(b.root)->value);
+
                 return i;
             }
             
+            iterator end()
+            {
+                b.n = b.findSuccessor(b.maxValue(b.root),b.endOf(b.root));
+                
+                iterator i(b);
+                return i;
+            }
             ~map()
             {
                 
             }
         private:
             bst<value_type> b;
+            size_type the_size;
     };
     
     

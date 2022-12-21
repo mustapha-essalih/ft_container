@@ -31,29 +31,45 @@ namespace ft
         {
             
             public:
-                T * ptr;
+                T  ptr;
+                 
 
                 typedef typename std::iterator<std::bidirectional_iterator_tag,T>::value_type value_type;
 
-                iterator() : ptr(0) 
+                iterator()  
                 {
                 }
-                iterator(T obj) : ptr(obj)
+                // iterator(bst<T> b) : ptr(obj)
+                // {
+
+                //     //  cout << ptr->first.fisrt;
+                //    // begin()
+                // }
+                iterator(T obj):ptr(obj)  
                 {
-                     
+
                 }
+                iterator(bst<T> b): ptr(b.root->v)
+                {
+                }
+                
                 iterator(const iterator & obj) : ptr(obj.ptr) 
                 {
-                    cout << "GGGGG\n";
+                                         
                 }
-                T& operator*() const {return ptr;}
-                T* operator->() const {return ptr;}
                 iterator& operator++() 
                 {
-                    ++ptr; 
+                   
+                    b.findSuccessor(b.root,ptr);
+
                     return *this;
                     
                 } 
+                T * operator->() 
+                {
+                    return &ptr;
+                }
+                 
                 iterator operator++(int)  
                 {
                     iterator tmp(*this); 
@@ -67,10 +83,13 @@ namespace ft
                 {
                 }
         private:
+        bst<T> b;
+
 };
 
 }
 
 
+                // T& operator*() const {return ptr;}
 
 #endif

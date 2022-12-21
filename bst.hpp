@@ -32,7 +32,7 @@ class Node
 {
     public:
         A value;
-    
+        A v;
         Node<A> * left;
         Node<A> * right;
         Node<A>()
@@ -56,18 +56,23 @@ class bst
     
     public:
         Node<T> * root;
+        Node<T>* succ;
+        Node<T>* n;
 
         bst()
         {
             root = nullptr;
+            succ = nullptr;
         }
-        void inOrder(Node<T> * root)// root left right
+        T inOrder(Node<T> * root)// root left right
         {
             if(!root)// if empty
                 return;
             inOrder(root->left);
-            cout << root->value.first << endl;
-            cout << root->value.second << endl;
+
+            
+            // cout << root->value.first << endl;
+            // cout << root->value.second << endl;
             inOrder(root->right);
         }
         Node<T> * createNewNode(Node<T> * root, T data)// must handle if data entred equal data
@@ -90,17 +95,26 @@ class bst
             
             return root;
         }
-
-        T minValue(Node<T>* node)
+    // return pointer
+        Node<T> * minValue(Node<T>* node)
         {
             Node<T>* tmp = node;
         
             /* loop down to find the leftmost leaf */
             while (tmp->left != nullptr) 
                 tmp = tmp->left;
-            return (tmp->value);
+            return (tmp);
         }
-        T maxValue(Node<T>* node)
+        Node<T>* maxValue(Node<T>* node)
+        {
+            Node<T>* tmp = node;
+        
+            /* loop down to find the leftmost leaf */
+            while (tmp->right != nullptr) 
+                tmp = tmp->right;
+            return (tmp);
+        }
+        T endOf(Node<T>* node)
         {
             Node<T>* tmp = node;
         
@@ -109,10 +123,32 @@ class bst
                 tmp = tmp->right;
             return (tmp->value);
         }
- 
+        Node<T>* findMinimum(Node<T>* r)
+        {
+            while (r->left)
+                r = r->left;    
+            return r;
+        }
+        Node<T>* findSuccessor(Node<T>* root, T key)
+        { 
+            if (root == nullptr)
+                return succ;
+            
+            if (root->value == key)
+            {
+                if (root->right != nullptr)
+                    return findMinimum(root->right);
+            }
+            else if (key < root->value)
+            {
+                succ = root;
+                return findSuccessor(root->left, key);
+            }
+            else 
+                return findSuccessor(root->right, key);
 
-
-
+            return succ;
+        }
         // T value => obj.first , obj.second
         void insert(T value)// when insert insert key and value in one time
         {
