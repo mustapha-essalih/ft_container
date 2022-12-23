@@ -56,12 +56,12 @@ namespace ft
             {
                 the_size = 0;
 
-
-                a.insert(ft::make_pair<key_type,mapped_type>(20,58));
-                a.insert(ft::make_pair<key_type,mapped_type>(30,96));
+                /// handle if have one element
+                a.insert(ft::make_pair<key_type,mapped_type>(5,966));
+                a.insert(ft::make_pair<key_type,mapped_type>(30,800));
                 a.insert(ft::make_pair<key_type,mapped_type>(50,14));
                 a.insert(ft::make_pair<key_type,mapped_type>(60,20));
-                a.insert(ft::make_pair<key_type,mapped_type>(70,96));
+                a.insert(ft::make_pair<key_type,mapped_type>(70,926));
                 a.insert(ft::make_pair<key_type,mapped_type>(80,87));
                 a.insert(ft::make_pair<key_type,mapped_type>(90,12));
                 a.insert(ft::make_pair<key_type,mapped_type>(100,84));

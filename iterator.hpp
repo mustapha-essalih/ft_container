@@ -33,8 +33,10 @@ namespace ft
             
             public:
                 T  ptr;
-                 
 
+                int i;
+                int i2;
+                
                 typedef typename std::iterator<std::bidirectional_iterator_tag,T>::value_type value_type;
 
                 iterator()  
@@ -43,14 +45,17 @@ namespace ft
                  
                 iterator(T obj,avl<T> * tmp):ptr(obj)// initialization list for const value of first
                 {
+                    i = 0;
+                    
+
                     a = alloc.allocate(sizeof(avl<T>));// because if not alloc when want access to member in avl hi segfault
                     
-                  
                     alloc.construct(a,*tmp);
 
-                    // cout << tmp->root->data.first;
+                    a->succ =  a->findSuccessor(a->root,ptr);
+                     
 
-                    a->succ = a->findSuccessor(a->root,ptr);
+                   
                 }
                 iterator(Node<T> * obj)// we pass pointer for end()
                 {
@@ -58,29 +63,20 @@ namespace ft
                  
                 iterator& operator++() 
                 {
-                    // ptr = a->succ->data;
-                    
-                    a->succ = a->findSuccessor(a->root,a->succ->data);
-
-
-                    return *this;
-                    
+                     
+                    a->succ =  a->findSuccessor(a->root,a->succ->data);
+                        
+                    return *this;                    
                 } 
+
                 T * operator->() 
                 {
-                    return &a->succ->data;
+                    return &a->succ->data; 
                 }
-                 
-                iterator operator++(int)  
+                
+                bool operator!=(const iterator& obj) const//
                 {
-                    iterator tmp(*this); 
-                     
-                    
-                    return tmp;
-                }
-                bool operator!=(const iterator& obj) const
-                {
-                    return ptr != obj.ptr;
+                    return a->succ != nullptr;
                 }
                 
                 ~iterator()

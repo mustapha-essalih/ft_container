@@ -49,9 +49,6 @@ namespace ft
                 }
                 pair( const T1& a, const T2& b ):first(a),second(b)
                 {
-                    // cout << "2\n";
-                    // *this = *this;
-
                 }
                  
                 pair& operator = ( const pair  & other )

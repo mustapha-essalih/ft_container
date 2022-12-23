@@ -77,9 +77,11 @@ class avl
 
         Node<T> * root;
         Node<T> * succ;
+        int i;
     
         avl()
         {
+            i = 0;
             root = nullptr;        
             succ = nullptr;        
         }
@@ -193,8 +195,22 @@ class avl
                 r = r->left;    
             return r;
         }
+        T findMX(Node<T>* r)
+        {
+            Node<T>* tmp = r;
+        
+            /* loop down to find the leftmost leaf */
+            while (tmp->right != nullptr) 
+                tmp = tmp->right;
+            return (tmp->data);
+        }
         Node<T>* findSuccessor(Node<T>* root, T key)
-        { 
+        {
+            if(root == this->root && findMinimum(this->root)->data == key && i == 0)
+            {
+                i = 1;
+                return findMinimum(this->root);
+            }
             if (root == nullptr)
                 return succ;
             
@@ -213,6 +229,7 @@ class avl
 
             return succ;
         }
+        
         ~avl()
         {
 
