@@ -23,7 +23,7 @@ using std::map;
 using std::pair;
 
 #include "type_traits.hpp"
-#include "bst.hpp"
+#include "avl.hpp"
 #include "iterator.hpp"
 
 
@@ -55,15 +55,18 @@ namespace ft
             map()
             {
                 the_size = 0;
-                b.insert(ft::make_pair<key_type,mapped_type>(10,254));
-                b.insert(ft::make_pair<key_type,mapped_type>(11,24));
-                b.insert(ft::make_pair<key_type,mapped_type>(9,2555));
-                b.insert(ft::make_pair<key_type,mapped_type>(8,202));
-                b.insert(ft::make_pair<key_type,mapped_type>(7,2979));
-                b.insert(ft::make_pair<key_type,mapped_type>(12,60));
-             	 
 
-            }
+
+                a.insert(ft::make_pair<key_type,mapped_type>(20,58));
+                a.insert(ft::make_pair<key_type,mapped_type>(30,96));
+                a.insert(ft::make_pair<key_type,mapped_type>(50,14));
+                a.insert(ft::make_pair<key_type,mapped_type>(60,20));
+                a.insert(ft::make_pair<key_type,mapped_type>(70,96));
+                a.insert(ft::make_pair<key_type,mapped_type>(80,87));
+                a.insert(ft::make_pair<key_type,mapped_type>(90,12));
+                a.insert(ft::make_pair<key_type,mapped_type>(100,84));
+
+            }   
             bool empty() const
             {
                 if(the_size == 0)
@@ -79,26 +82,24 @@ namespace ft
             
             iterator begin()
             {
-                
-                iterator i(b.minValue(b.root)->value);
+                 
+                iterator i(a.minValue(a.root),&a);
 
                 return i;
             }
-            
             iterator end()
-            {
-                b.n = b.findSuccessor(b.maxValue(b.root),b.endOf(b.root));
-                
-                iterator i(b);
+            {    
+                iterator i(nullptr);
                 return i;
             }
             ~map()
             {
                 
             }
-        private:
-            bst<value_type> b;
-            size_type the_size;
+        private: 
+            int the_size;
+            avl<value_type> a;
+
     };
     
     
@@ -116,3 +117,4 @@ namespace ft
 
 
 #endif
+ 

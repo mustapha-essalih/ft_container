@@ -1,8 +1,7 @@
 #ifndef ITERATOR_HPP
 #define ITERATOR_HPP
-#include <cstddef>
 
- 
+#include <cstddef>
 #include <iomanip>
 #include <cstddef>
 #include <map>
@@ -13,9 +12,11 @@
 #include <exception>
 #include <algorithm>     
 #include<iterator>
-#include "bst.hpp"
+
+#include "avl.hpp"
 #include "type_traits.hpp"
 #include "map.hpp"
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -25,7 +26,7 @@ using std::map;
 
 namespace ft
 {
-    template < typename T>// if const_iterator will replace T by const T (const int , const double...)
+    template < typename T, typename Allocator = std::allocator<avl<T> > >// if const_iterator will replace T by const T (const int , const double...)
 
         class iterator  : public std::iterator<std::bidirectional_iterator_tag,T>
         {
@@ -39,51 +40,55 @@ namespace ft
                 iterator()  
                 {
                 }
-                // iterator(bst<T> b) : ptr(obj)
-                // {
+                 
+                iterator(T obj,avl<T> * tmp):ptr(obj)// initialization list for const value of first
+                {
+                    a = alloc.allocate(sizeof(avl<T>));// because if not alloc when want access to member in avl hi segfault
+                    
+                  
+                    alloc.construct(a,*tmp);
 
-                //     //  cout << ptr->first.fisrt;
-                //    // begin()
-                // }
-                iterator(T obj):ptr(obj)  
-                {
+                    // cout << tmp->root->data.first;
 
+                    a->succ = a->findSuccessor(a->root,ptr);
                 }
-                iterator(bst<T> b): ptr(b.root->v)
+                iterator(Node<T> * obj)// we pass pointer for end()
                 {
                 }
-                
-                iterator(const iterator & obj) : ptr(obj.ptr) 
-                {
-                                         
-                }
+                 
                 iterator& operator++() 
                 {
-                   
-                    b.findSuccessor(b.root,ptr);
+                    // ptr = a->succ->data;
+                    
+                    a->succ = a->findSuccessor(a->root,a->succ->data);
+
 
                     return *this;
                     
                 } 
                 T * operator->() 
                 {
-                    return &ptr;
+                    return &a->succ->data;
                 }
                  
                 iterator operator++(int)  
                 {
                     iterator tmp(*this); 
-                    ++ptr; 
+                     
                     
                     return tmp;
                 }
-                bool operator!=(const iterator& obj) const {return ptr != obj.ptr;}
+                bool operator!=(const iterator& obj) const
+                {
+                    return ptr != obj.ptr;
+                }
                 
                 ~iterator()
                 {
                 }
         private:
-        bst<T> b;
+            avl<T> * a;
+            Allocator alloc;
 
 };
 
@@ -93,3 +98,4 @@ namespace ft
                 // T& operator*() const {return ptr;}
 
 #endif
+ 

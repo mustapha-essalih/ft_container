@@ -12,7 +12,7 @@
 #include <exception>
 #include <algorithm>     
 #include<iterator>
-#include "type_traits.hpp"
+
 
 #include <utility>
 
@@ -120,4 +120,4 @@ namespace ft
 
 
 
-#endif
+#endif 

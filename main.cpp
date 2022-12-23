@@ -1,22 +1,7 @@
-#include "bst.hpp"
+#include "avl.hpp"
+
 #include "type_traits.hpp"
 #include "map.hpp"
-#include "iterator.hpp"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -30,41 +15,28 @@
 
 int main()
 {
-	ft::map<int,int> mymap;
- 
-	ft::map<int,int>::iterator it =   mymap.end();
+    ft::map<int,int>m;
 
+    ft::map<int,int>::iterator it = m.begin();
 
+    cout << it->first << " " << it->second << endl;
 
-  // show content:
-	// for (ft::map<char,int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
-	// 	std::cout << it->first << " => " << it->second << '\n';
+    ++it;
+    
+    cout << it->first << " " << it->second << endl;
 
-	// ft::map<int,int>::iterator it1 = mymap.end();
+    ++it;
+    cout << it->first << " " << it->second << endl;
 
-	
+    ++it;
+    cout << it->first << " " << it->second << endl;
 
-	
-	// ft::map<int,int> m;
+    ++it;
+    
+    cout << it->first << " " << it->second << endl;
 
-	// ft::map<int,int>::iterator myIt = m.begin();
-
-	
-	 
-	// for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-	// 	std::cout << it->first << " => " << it->second << '\n';
-
-
- 	return 0;
+    ++it;
+    
+    cout << it->first << " " << it->second << endl;
+     
 }
-
-
-
-// void func()
-// {
-// 	system("leaks ft_container");
-// }
-
-// atexit(func);
-
- 
