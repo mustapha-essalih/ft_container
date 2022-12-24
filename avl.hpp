@@ -77,13 +77,16 @@ class avl
 
         Node<T> * root;
         Node<T> * succ;
+        Node<T> * tmp;
+        Node<T> * parent;
         int i;
     
         avl()
         {
-            i = 0;
+            i = 1;
             root = nullptr;        
             succ = nullptr;        
+            parent = nullptr;        
         }
  
          
@@ -182,6 +185,8 @@ class avl
 
         Node<T> * minValue(Node<T>* node)
         {
+            if(node == nullptr)
+                return nullptr;
             Node<T>* tmp = node;
         
             /* loop down to find the leftmost leaf */
@@ -208,10 +213,11 @@ class avl
             if (root == nullptr)
                 return succ;
             
-            if (root->data == key)
+            if (root->data == key )
             {
                 if (root->right != nullptr)
                     return findMinimum(root->right);
+               
             }
             else if (key < root->data)
             {
@@ -224,6 +230,7 @@ class avl
             return succ;
         }
         
+          
         ~avl()
         {
 

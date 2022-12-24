@@ -25,45 +25,24 @@ std::map<int,int>m;
 
 
 
-
+// dont end() should print garbeg value
 int main()
 {
-    // copy assignemnt ovearloding
-    // copy constructor
+    ft::map<char,int> mymap;
 
-    ft::map<int,int> mymap;
+  // first insert function version (single parameter):
+  mymap.insert ( ft::pair<char,int>('a',100) );
+  mymap.insert ( ft::pair<char,int>('z',200) );
 
-    // mymap['b'] = 100;
-    // mymap['a'] = 200;
-    // mymap['c'] = 300;
-
-    ft::map<int,int>::iterator it1 = mymap.begin();
-
-    ft::map<int,int>::iterator it;
-    
-    it = it1;
-
-    // ++it;
-    // ++it1;
-    cout << it->first << " " << it->second << endl;
-    // // cout << it->first << endl;
-
-    // ft::map<int,int> m;
-    
-    // ft::map<int,int>::iterator it1 = m.begin();
-
-    // ft::map<int,int>::iterator it(it1);
-    // cout << it->first << " " << it->second << endl;
-
-    // ++it;
-    // cout << it->first << " " << it->second << endl;
-
-    // ++it;
-    // cout << it->first << " " << it->second << endl;
-
-  // show content:
-//   for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-//     std::cout << it->first << " => " << it->second << '\n';
+for (ft::map<char,int>::iterator it = mymap.begin(); it!=mymap.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
+//   ft::pair<ft::map<char,int>::iterator,bool> ret;
+//   ret = mymap.insert ( ft::pair<char,int>('z',500) );
+//   if (ret.second==false) {
+//     std::cout << "element 'z' already existed";
+//     std::cout << " with a value of " << ret.first->second << '\n';
+//   }
 
 
+   
 }

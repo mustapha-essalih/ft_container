@@ -34,23 +34,34 @@ namespace ft
             public:
                 Node<T> * node;
                 Node<T> * max;
+                Node<T> * n;
 
                 
                 typedef typename std::iterator<std::bidirectional_iterator_tag,T>::value_type value_type;
 
                 iterator()  
                 {
+                    a = alloc.allocate(sizeof(avl<T>));
                 }
                 iterator(const iterator & obj):node(obj.node) 
                 {
                     this->a = obj.a;
+                    this->max = obj.a->findMX(obj.a->root);
+                 
+                    i = 0;
                 }
+
+                 
                 iterator & operator = (const iterator & obj)
                 {
-                    cout << obj.a->root->data.first << endl;
+                    if(!obj.node)
+                        return *this;
+                    this->a = alloc.allocate(sizeof(avl<T>));
                     if(this != &obj)
                     {
-                        this->a = obj.a;
+                        // *this->a = *obj.a;
+
+                        *this->a = *obj.a;
                         node = obj.node;
                     }   
                     return *this;
@@ -58,29 +69,49 @@ namespace ft
                  
                 iterator(Node<T> * obj,avl<T> * tmp)// initialization list for const value of first
                 {
+                    if(!obj)
+                        return ;
+                    // if(obj == nullptr)
                     node = obj;
                     
                     a = alloc.allocate(sizeof(avl<T>));// because if not alloc when want access to member in avl hi segfault
                     
                     alloc.construct(a,*tmp);
 
-                    max = a->findMX(a->root); 
+                    max = a->findMX(a->root);
+              
                     i = 0;   
                 }
-                iterator(Node<T> * obj)// we pass pointer for end()
+                iterator(Node<T> * obj):node(obj)// we pass pointer for end()
                 {
+                    // a->tmp  = alloc.allocate(sizeof(Node<T>));
+
                 }
                 
+                bool operator== (const iterator& obj) const
+                {
+                    return node == obj.node;
+                }
                 iterator& operator++() 
                 {
-                    if(node->data == max->data)// here enter two time
+                    if(i == 0)
+                        node = a->findSuccessor(a->root,node->data);// because ignor recal findSuccessor and print duplicate values
+                    if(node == this->max && i == 0)
                         i++;
-                    node = a->findSuccessor(a->root,node->data);
+                    else
+                        node = nullptr;
+                    // cout << node->data.first << endl;
                     
-                 
+                    
+                    
                     return *this;                    
                 } 
 
+                T& operator*() const // (*it).first
+                {
+                    return node->data;
+                }
+                
                 T * operator->() 
                 {
                     return &node->data;
@@ -88,10 +119,9 @@ namespace ft
                 
                 bool operator!=(const iterator& obj) const//
                 {
-                    if(i == 0)
-                        return true;
-                    else
-                        return false;
+                     
+                    
+                    return  !(node == obj.node);
                 }
                 
                 ~iterator()

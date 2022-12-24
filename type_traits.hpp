@@ -44,8 +44,6 @@ namespace ft
                 template<class U, class V>
                 pair (const pair<U,V> & pr):first(pr.first),second(pr.second)
                 {
-                    // cout << "1\n";
-                     
                 }
                 pair( const T1& a, const T2& b ):first(a),second(b)
                 {
