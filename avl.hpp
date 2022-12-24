@@ -180,14 +180,14 @@ class avl
             root = insert(root,data);
         }
 
-        T minValue(Node<T>* node)
+        Node<T> * minValue(Node<T>* node)
         {
             Node<T>* tmp = node;
         
             /* loop down to find the leftmost leaf */
             while (tmp->left != nullptr) 
                 tmp = tmp->left;
-            return (tmp->data);
+            return (tmp);
         }
         Node<T>* findMinimum(Node<T>* r)
         {
@@ -195,22 +195,16 @@ class avl
                 r = r->left;    
             return r;
         }
-        T findMX(Node<T>* r)
+        Node<T>* findMX(Node<T>* r)
         {
             Node<T>* tmp = r;
         
-            /* loop down to find the leftmost leaf */
             while (tmp->right != nullptr) 
                 tmp = tmp->right;
-            return (tmp->data);
+            return (tmp);
         }
         Node<T>* findSuccessor(Node<T>* root, T key)
         {
-            if(root == this->root && findMinimum(this->root)->data == key && i == 0)
-            {
-                i = 1;
-                return findMinimum(this->root);
-            }
             if (root == nullptr)
                 return succ;
             

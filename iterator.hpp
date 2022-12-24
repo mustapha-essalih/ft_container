@@ -32,57 +32,74 @@ namespace ft
         {
             
             public:
-                T  ptr;
+                Node<T> * node;
+                Node<T> * max;
 
-                int i;
-                int i2;
                 
                 typedef typename std::iterator<std::bidirectional_iterator_tag,T>::value_type value_type;
 
                 iterator()  
                 {
                 }
-                 
-                iterator(T obj,avl<T> * tmp):ptr(obj)// initialization list for const value of first
+                iterator(const iterator & obj):node(obj.node) 
                 {
-                    i = 0;
+                    this->a = obj.a;
+                }
+                iterator & operator = (const iterator & obj)
+                {
+                    cout << obj.a->root->data.first << endl;
+                    if(this != &obj)
+                    {
+                        this->a = obj.a;
+                        node = obj.node;
+                    }   
+                    return *this;
+                }
+                 
+                iterator(Node<T> * obj,avl<T> * tmp)// initialization list for const value of first
+                {
+                    node = obj;
                     
-
                     a = alloc.allocate(sizeof(avl<T>));// because if not alloc when want access to member in avl hi segfault
                     
                     alloc.construct(a,*tmp);
 
-                    a->succ =  a->findSuccessor(a->root,ptr);
-                     
-
-                   
+                    max = a->findMX(a->root); 
+                    i = 0;   
                 }
                 iterator(Node<T> * obj)// we pass pointer for end()
                 {
                 }
-                 
+                
                 iterator& operator++() 
                 {
-                     
-                    a->succ =  a->findSuccessor(a->root,a->succ->data);
-                        
+                    if(node->data == max->data)// here enter two time
+                        i++;
+                    node = a->findSuccessor(a->root,node->data);
+                    
+                 
                     return *this;                    
                 } 
 
                 T * operator->() 
                 {
-                    return &a->succ->data; 
+                    return &node->data;
                 }
                 
                 bool operator!=(const iterator& obj) const//
                 {
-                    return a->succ != nullptr;
+                    if(i == 0)
+                        return true;
+                    else
+                        return false;
                 }
                 
                 ~iterator()
                 {
+                    // alloc.deallocate(a,sizeof(a));
                 }
         private:
+        int i ;
             avl<T> * a;
             Allocator alloc;
 
