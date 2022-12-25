@@ -35,64 +35,67 @@ namespace ft
                 Node<T> * node;
                 Node<T> * max;
                 Node<T> * n;
+                
 
                 
                 typedef typename std::iterator<std::bidirectional_iterator_tag,T>::value_type value_type;
 
                 iterator()  
                 {
-                    a = alloc.allocate(sizeof(avl<T>));
+                    i = 0;
                 }
-                iterator(const iterator & obj):node(obj.node) 
+
+                // copy constructor
+                iterator(const iterator & obj)//:node(obj.node) 
                 {
+                    
                     this->a = obj.a;
                     this->max = obj.a->findMX(obj.a->root);
                  
                     i = 0;
                 }
 
-                 
+                // copy constructor for begin()
+                iterator(Node<T> * obj,avl<T> * tmp)// initialization list for const value of first
+                {
+                    if(!obj)// if avl is empty
+                    {
+                        node = nullptr;
+                        return ;
+                    }
+                    a = alloc.allocate(sizeof(avl<T>));// because if not alloc when want access to member in avl hi segfault
+                    node = obj;
+                    
+                    alloc.construct(a,*tmp);
+                    max = a->findMX(a->root);
+            
+                    i = 0;   
+                }
+
+                // aginemnet oveloding
                 iterator & operator = (const iterator & obj)
                 {
-                    if(!obj.node)
+                    i = 0;
+                    if(!obj.node)// if avl is empty 
+                    {
+                        node = nullptr; // when print it->first will seqfault because assign nullptr
                         return *this;
+                    }
                     this->a = alloc.allocate(sizeof(avl<T>));
                     if(this != &obj)
                     {
-                        // *this->a = *obj.a;
-
                         *this->a = *obj.a;
                         node = obj.node;
                     }   
                     return *this;
                 }
                  
-                iterator(Node<T> * obj,avl<T> * tmp)// initialization list for const value of first
-                {
-                    if(!obj)
-                        return ;
-                    // if(obj == nullptr)
-                    node = obj;
-                    
-                    a = alloc.allocate(sizeof(avl<T>));// because if not alloc when want access to member in avl hi segfault
-                    
-                    alloc.construct(a,*tmp);
-
-                    max = a->findMX(a->root);
-              
-                    i = 0;   
-                }
+                // copy constructor for end()
                 iterator(Node<T> * obj):node(obj)// we pass pointer for end()
                 {
-                    // a->tmp  = alloc.allocate(sizeof(Node<T>));
-
                 }
                 
-                bool operator== (const iterator& obj) const
-                {
-                    return node == obj.node;
-                }
-                iterator& operator++() 
+                iterator& operator++() // handle this
                 {
                     if(i == 0)
                         node = a->findSuccessor(a->root,node->data);// because ignor recal findSuccessor and print duplicate values
@@ -100,9 +103,6 @@ namespace ft
                         i++;
                     else
                         node = nullptr;
-                    // cout << node->data.first << endl;
-                    
-                    
                     
                     return *this;                    
                 } 
@@ -117,10 +117,13 @@ namespace ft
                     return &node->data;
                 }
                 
-                bool operator!=(const iterator& obj) const//
+                bool operator == (const iterator& obj) const
                 {
-                     
-                    
+                    return node == obj.node;
+                }
+                
+                bool operator != (const iterator& obj) const//
+                {
                     return  !(node == obj.node);
                 }
                 
@@ -129,16 +132,13 @@ namespace ft
                     // alloc.deallocate(a,sizeof(a));
                 }
         private:
-        int i ;
+
+            int i ;
             avl<T> * a;
             Allocator alloc;
 
 };
 
 }
-
-
-                // T& operator*() const {return ptr;}
-
 #endif
  

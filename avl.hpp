@@ -86,7 +86,8 @@ class avl
             i = 1;
             root = nullptr;        
             succ = nullptr;        
-            parent = nullptr;        
+            parent = nullptr;  
+            tmp = alloc.allocate(1);      
         }
  
          
@@ -153,7 +154,7 @@ class avl
 
             else if(data < root->data)
                 root->left = insert(root->left,data);
-            else if(data > root->data)
+            else //if(data > root->data)
                 root->right = insert(root->right,data);
 
             int bf = getBalanceFactor(root);
@@ -177,7 +178,7 @@ class avl
             }
             return root;
         }    
-        
+     
         void insert(T data)
         {    
             root = insert(root,data);

@@ -83,25 +83,26 @@ namespace ft
             }
             void  insert (const value_type& val)
             {
-
-                iterator  it;
+                // first iteret to tree nd check if element is insted or not 
                  
 
-                for (it = this->begin(); it != this->end(); ++it)
-                    if(*it == val)
-                        cout << "HERE\n";
-                 
                 a.insert(val);
+
+                // iterator it;
+
                  
-                
-                // for (it = this->begin(); it != this->end(); ++it)
-                //     if(*it == val)
-                //         break;
-                // return ft::make_pair<iterator,bool>(it,true);
+                // for ( it = begin(); it != end(); ++it)
+                // {
+                //     cout << it.node->data.first << endl; 
+                //     // if( it.node->data == val)
+                //     // {
+                //     //     cout << "Kira7\n";
+                //     //     break;
+                //     // }
+                // }
             }
             iterator begin()
             {
-                
                 iterator i(a.minValue(a.root),&a);
                 return i;
             }
