@@ -48,10 +48,9 @@ namespace ft
                 // copy constructor
                 iterator(const iterator & obj)//:node(obj.node) 
                 {
-                    
+                    // this->a = alloc.allocate(sizeof(avl<T>));
                     this->a = obj.a;
-                    this->max = obj.a->findMX(obj.a->root);
-                 
+                    
                     i = 0;
                 }
 
@@ -68,7 +67,6 @@ namespace ft
                     
                     alloc.construct(a,*tmp);
                     max = a->findMX(a->root);
-            
                     i = 0;   
                 }
 
@@ -76,6 +74,7 @@ namespace ft
                 iterator & operator = (const iterator & obj)
                 {
                     i = 0;
+
                     if(!obj.node)// if avl is empty 
                     {
                         node = nullptr; // when print it->first will seqfault because assign nullptr
@@ -86,6 +85,7 @@ namespace ft
                     {
                         *this->a = *obj.a;
                         node = obj.node;
+                        max = a->findMX(a->root);
                     }   
                     return *this;
                 }
@@ -98,9 +98,11 @@ namespace ft
                 iterator& operator++() // handle this
                 {
                     if(i == 0)
+                    {
                         node = a->findSuccessor(a->root,node->data);// because ignor recal findSuccessor and print duplicate values
-                    if(node == this->max && i == 0)
-                        i++;
+                        if(node == this->max)
+                            i++;
+                    }
                     else
                         node = nullptr;
                     
@@ -114,6 +116,7 @@ namespace ft
                 
                 T * operator->() 
                 {
+                     
                     return &node->data;
                 }
                 

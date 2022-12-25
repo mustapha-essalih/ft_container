@@ -89,7 +89,10 @@ class avl
             parent = nullptr;  
             tmp = alloc.allocate(1);      
         }
- 
+        bool empty()
+        {
+            return root == nullptr;
+        }
          
         int height(Node<T> * r) 
         {

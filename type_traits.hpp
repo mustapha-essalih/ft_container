@@ -33,8 +33,8 @@ namespace ft
             typedef T2 second_type;
 
             public:
-                T1  first;
-                T2  second;
+                first_type  first;
+                second_type  second;
 
                 pair():first(T1()),second(T2())//to initialze template variable in c11
                 {
@@ -74,7 +74,7 @@ namespace ft
 
         template <typename T1, typename T2>
         bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-        { return lhs.first==rhs.first && lhs.second==rhs.second; }
+        {return lhs.first==rhs.first && lhs.second==rhs.second; }
 
         template <typename T1, typename T2>
         bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
