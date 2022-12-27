@@ -35,6 +35,7 @@ class Node{
         Node<A> * left;
         Node<A> * right;
         Node<A> * parent;
+        Node<A> * tmp;
         
         Node<A>()
         {
@@ -47,25 +48,7 @@ class Node{
         {
         }
 };
-
-// to check if balanced tree or not
-
-// int isBalanced(Node* root)
-// {
-//     if (root == NULL)
-//         return 0;
-//     int lh = isBalanced(root->left);
-//     if (lh == -1)
-//         return -1;
-//     int rh = isBalanced(root->right);
-//     if (rh == -1)
-//         return -1;
  
-//     if (abs(lh - rh) > 1)
-//         return -1;
-//     else
-//         return max(lh, rh) + 1;
-// }
 
 template<typename T  , typename Allocator = std::allocator<Node<T> > >
 
@@ -171,9 +154,15 @@ class avl
             }
 
             else if(data < root->data)
+            {
                 root->left = insert(root->left,data);
+         
+            }
             else //if(data > root->data)
+            {
                 root->right = insert(root->right,data);
+                 
+            }
 
             int bf = getBalanceFactor(root);
 
@@ -223,27 +212,27 @@ class avl
             return (tmp);
         }
 
-        Node<T>* findSuccessor(Node<T>* root, T key)
-        {
-            if (root == nullptr)
-                return succ;
+        // Node<T>* findSuccessor(Node<T>* root, T key)
+        // {
+        //     if (root == nullptr)
+        //         return succ;
             
-            if (root->data == key )
-            {
-                if (root->right != nullptr)
-                    return minValue(root->right);
+        //     if (root->data == key )
+        //     {
+        //         if (root->right != nullptr)
+        //             return minValue(root->right);
                
-            }
-            else if (key < root->data)
-            {
-                succ = root;
-                return findSuccessor(root->left, key);
-            }
-            else 
-                return findSuccessor(root->right, key);
+        //     }
+        //     else if (key < root->data)
+        //     {
+        //         succ = root;
+        //         return findSuccessor(root->left, key);
+        //     }
+        //     else 
+        //         return findSuccessor(root->right, key);
 
-            return succ;
-        }
+        //     return succ;
+        // }
         
           
         ~avl()

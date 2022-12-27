@@ -50,13 +50,26 @@ int main()
     
     // dont forget copy constructor for iterartor(it)
 
-    ft::map<int,int> m;
-    
-    ft::map<int,int>::iterator it;
-    
-    it = m.begin();
+    ft::map<char,int> mymap;
 
-    ++it;
+  // first insert function version (single parameter):
+  ft::pair<ft::map<char,int>::iterator,bool> ret;
+
+    ret =    mymap.insert ( ft::pair<char,int>('a',100) );
+    
+    cout << mymap.insert ( ft::pair<char,int>('a',100) ).second << endl;
+        // std::cout << " with a value of " << ret.first->second << '\n';
+    
+    // mymap.insert ( ft::pair<char,int>('z',200) );
+ 
+    
+
+    // ret = mymap.insert ( ft::pair<char,int>('z',500) );
+    
+    // if (ret.second==false) {
+        
+         
+    // }
 
     
 

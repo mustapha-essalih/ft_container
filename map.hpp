@@ -56,12 +56,12 @@ namespace ft
             {
                 the_size = 0;
                 // /// handle if have one element
-                a.insert(ft::make_pair<key_type,mapped_type>(10,800));
-                a.insert(ft::make_pair<key_type,mapped_type>(20,14));
-                a.insert(ft::make_pair<key_type,mapped_type>(30,20));
-                a.insert(ft::make_pair<key_type,mapped_type>(40,926));
-                a.insert(ft::make_pair<key_type,mapped_type>(50,87));
-                a.insert(ft::make_pair<key_type,mapped_type>(60,12));
+                // a.insert(ft::make_pair<key_type,mapped_type>(10,800));
+                // a.insert(ft::make_pair<key_type,mapped_type>(20,14));
+                // a.insert(ft::make_pair<key_type,mapped_type>(30,20));
+                // a.insert(ft::make_pair<key_type,mapped_type>(40,926));
+                // a.insert(ft::make_pair<key_type,mapped_type>(50,87));
+                // a.insert(ft::make_pair<key_type,mapped_type>(60,12));
 
 
                 // a.insert(ft::make_pair<key_type,mapped_type>(20,800));
@@ -76,20 +76,52 @@ namespace ft
                 // a.inOrder(a.root);
                 
             }   
-            
+            pair<iterator,bool> insert (const value_type& val)
+            {
+                iterator it;
+
+                
+                if(a.empty())
+                {
+                    a.insert(val);
+
+                    it = begin();
+                    
+                    a.node = alloc.allocate(sizeof(a.node));
+                    return ft::make_pair<iterator,bool>(it.node,true);
+                }
+                // else
+                // {
+                //     for (it = begin(); it!=end(); ++it)
+                //     {
+                //         if(it.node->data == val)
+                //         {
+                //             cout << "HERE\n";
+                //             return ft::make_pair<iterator,bool>(it,false);
+                //         }
+                //     }
+                //     a.insert(val);
+
+                // }
+                return ft::make_pair<iterator,bool>(it.node,true);
+            }
             iterator begin()
             {  
-                iterator it(a.minValue(a.root));
+                iterator it(a.minValue(a.root),a.root);
                 return it;
             }
-
+            iterator end()
+            {
+                iterator it(nullptr);
+                return it;
+            }
             ~map()
             {
-
             }
         private: 
             int the_size;
             avl<value_type>  a;
+            Allocator alloc;
     };
     
     
