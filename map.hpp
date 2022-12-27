@@ -55,80 +55,41 @@ namespace ft
             map()
             {
                 the_size = 0;
-
-                /// handle if have one element
-                // a.insert(ft::make_pair<key_type,mapped_type>(60,800));
-                // a.insert(ft::make_pair<key_type,mapped_type>(20,14));
-                // a.insert(ft::make_pair<key_type,mapped_type>(80,20));
-                // a.insert(ft::make_pair<key_type,mapped_type>(90,926));
-                // a.insert(ft::make_pair<key_type,mapped_type>(19,87));
-                // a.insert(ft::make_pair<key_type,mapped_type>(90,12));
-                // a.insert(ft::make_pair<key_type,mapped_type>(100,84));
+                // /// handle if have one element
+                a.insert(ft::make_pair<key_type,mapped_type>(10,800));
+                a.insert(ft::make_pair<key_type,mapped_type>(20,14));
+                a.insert(ft::make_pair<key_type,mapped_type>(30,20));
+                a.insert(ft::make_pair<key_type,mapped_type>(40,926));
+                a.insert(ft::make_pair<key_type,mapped_type>(50,87));
+                a.insert(ft::make_pair<key_type,mapped_type>(60,12));
 
 
+                // a.insert(ft::make_pair<key_type,mapped_type>(20,800));
+                // a.insert(ft::make_pair<key_type,mapped_type>(30,14));
+                // a.insert(ft::make_pair<key_type,mapped_type>(19,20));
+                // a.insert(ft::make_pair<key_type,mapped_type>(40,926));
+                // a.insert(ft::make_pair<key_type,mapped_type>(22,926));
+                // a.insert(ft::make_pair<key_type,mapped_type>(50,87));
+                // a.insert(ft::make_pair<key_type,mapped_type>(60,12));
+                // a.insert(ft::make_pair<key_type,mapped_type>(70,84));
 
-
+                // a.inOrder(a.root);
+                
             }   
-            bool empty() const
-            {
-                if(the_size == 0)
-                    return true;
-                return false;
-            }
-
-            size_type size() const
-            {
-                the_size++;
-                return the_size;
-            }
-            pair<iterator,bool> insert (const value_type& val)
-            {
-                // first iteret to tree nd check if element is insted or not 
-                if(a.empty())
-                {
-                    iterator it;
-                    a.insert(val);
-                    it = begin();
-                    return ft::make_pair<iterator,bool>(it,true);
-                }
-                else
-                {
-                    iterator it = begin();
- 
-                    for(;it != end(); ++it)
-                    {
-                       
-                        if(it.node->data.first == val.first)
-                        {
-                            cout << (*it).first<< endl;
-                            return ft::make_pair<iterator,bool>(it,false);
-                        }
-                    }
-                    a.insert(val);
-                    
-                }
-                iterator it = begin();
-               return ft::make_pair<iterator,bool>(it.node,true);
-
-            }
+            
             iterator begin()
-            {
-                iterator i(a.minValue(a.root),&a);
-                return i;
+            {  
+                iterator it(a.minValue(a.root));
+                return it;
             }
-            iterator end()
-            {    
-                iterator i(nullptr);
-                return i;
-            }
+
             ~map()
             {
-                
+
             }
         private: 
             int the_size;
-            avl<value_type> a;
-
+            avl<value_type>  a;
     };
     
     

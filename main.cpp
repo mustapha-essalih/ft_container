@@ -26,26 +26,39 @@ std::map<int,int>m;
 
 
 // dont end() should print garbeg value
+
+// handle iterators
+
+// it => pointor
+
 int main()
 {
-    ft::map<char,int> mymap;
+    // std::map<char,int> mymap;
 
-    mymap.insert ( ft::pair<char,int>('a',100) );
-    mymap.insert ( ft::pair<char,int>('z',200) );
+    // mymap['b'] = 100;
+    // mymap['a'] = 200;
+    // mymap['c'] = 300;
 
-    // mymap.insert ( ft::pair<char,int>('z',500) );
-
-    ft::pair<ft::map<char,int>::iterator,bool> ret;
+    // std::map<char,int>::iterator it;
     
-    ret = mymap.insert ( ft::pair<char,int>('z',500) );
+    // it = mymap.begin();
     
-    if (ret.second==false) {
-         
-        std::cout <<  ret.first->second << '\n';
-    }
- 
+    // cout << it->first << endl;
+
+    // for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+    //     std::cout << it->first << " => " << it->second << '\n';
+    
+    // dont forget copy constructor for iterartor(it)
+
+    ft::map<int,int> m;
+    
+    ft::map<int,int>::iterator it;
+    
+    it = m.begin();
+
+    ++it;
+
+    
+
 }
-    // mymap.insert(ft::pair<char,int>('a',100));
-    
-    // mymap.insert ( ft::pair<char,int>('z',200) );
-    // mymap.insert ( ft::pair<char,int>('d',200) );
+

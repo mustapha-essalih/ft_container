@@ -32,116 +32,82 @@ namespace ft
         {
             
             public:
-                Node<T> * node;
-                Node<T> * max;
-                Node<T> * n;
-                
-
-                
                 typedef typename std::iterator<std::bidirectional_iterator_tag,T>::value_type value_type;
 
                 iterator()  
                 {
-                    i = 0;
-                }
-
-                // copy constructor
-                iterator(const iterator & obj)//:node(obj.node) 
-                {
-                    // this->a = alloc.allocate(sizeof(avl<T>));
-                    this->a = obj.a;
-                    
+                    // cout << a->node->data.first << endl;
+                    /*
+                        ft::map<int,int>::iterator it;                    
+                        it = m.begin();
+                        because when deallocate => free pointor not allcoate
+                    */
+                   
                     i = 0;
                 }
 
                 // copy constructor for begin()
-                iterator(Node<T> * obj,avl<T> * tmp)// initialization list for const value of first
+                iterator(Node<T> * begin)
                 {
-                    if(!obj)// if avl is empty
-                    {
-                        node = nullptr;
-                        return ;
-                    }
-                    a = alloc.allocate(sizeof(avl<T>));// because if not alloc when want access to member in avl hi segfault
-                    node = obj;
-                    
-                    alloc.construct(a,*tmp);
-                    max = a->findMX(a->root);
-                    i = 0;   
+                    node = begin;
                 }
 
-                // aginemnet oveloding
-                iterator & operator = (const iterator & obj)
+                // assignement overloading for begin()
+                iterator & operator = (Node<T> * begin)
                 {
-                    i = 0;
-
-                    if(!obj.node)// if avl is empty 
-                    {
-                        node = nullptr; // when print it->first will seqfault because assign nullptr
-                        return *this;
-                    }
-                    this->a = alloc.allocate(sizeof(avl<T>));
-                    if(this != &obj)
-                    {
-                        *this->a = *obj.a;
-                        node = obj.node;
-                        max = a->findMX(a->root);
-                    }   
                     return *this;
-                }
-                 
-                // copy constructor for end()
-                iterator(Node<T> * obj):node(obj)// we pass pointer for end()
-                {
                 }
                 
                 iterator& operator++() // handle this
-                {
-                    if(i == 0)
-                    {
-                        node = a->findSuccessor(a->root,node->data);// because ignor recal findSuccessor and print duplicate values
-                        if(node == this->max)
-                            i++;
-                    }
-                    else
-                        node = nullptr;
-                    
+                { 
+
                     return *this;                    
                 } 
-
-                T& operator*() const // (*it).first
-                {
-                    return node->data;
-                }
-                
+               
                 T * operator->() 
-                {
-                     
+                {    
                     return &node->data;
                 }
                 
-                bool operator == (const iterator& obj) const
-                {
-                    return node == obj.node;
-                }
-                
-                bool operator != (const iterator& obj) const//
-                {
-                    return  !(node == obj.node);
-                }
-                
                 ~iterator()
-                {
+                { 
                     // alloc.deallocate(a,sizeof(a));
                 }
         private:
 
             int i ;
-            avl<T> * a;
+            avl<T>  a;
             Allocator alloc;
+            Node<T> * node;
+            Node<T> * max;
+            
 
 };
 
 }
 #endif
  
+ 
+
+
+
+
+            // ft::map<int,int>::iterator it = m.begin();
+
+
+
+                // T& operator*() const // (*it).first
+                // {
+                //     return node->data;
+                // }
+                
+                
+                // bool operator == (const iterator& obj) const
+                // {
+                //     return node == obj.node;
+                // }
+                
+                // bool operator != (const iterator& obj) const//
+                // {
+                //     return  !(node == obj.node);
+                // }

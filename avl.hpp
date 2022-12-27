@@ -34,13 +34,14 @@ class Node{
         A data; 
         Node<A> * left;
         Node<A> * right;
+        Node<A> * parent;
         
         Node<A>()
         {
         }
         Node<A>(A d):data(d)
         {
-            left = right = nullptr;
+            left = right = parent = nullptr;
         }
         ~Node<A>()
         {
@@ -77,8 +78,9 @@ class avl
 
         Node<T> * root;
         Node<T> * succ;
-        Node<T> * tmp;
         Node<T> * parent;
+        Node<T> * node;
+ 
         int i;
     
         avl()
@@ -86,14 +88,26 @@ class avl
             i = 1;
             root = nullptr;        
             succ = nullptr;        
-            parent = nullptr;  
-            tmp = alloc.allocate(1);      
+            parent = nullptr;        
         }
         bool empty()
         {
             return root == nullptr;
         }
-         
+         void inOrder(Node<T>* node)
+        {
+            if (node == nullptr)
+                return;
+        
+            /* first recur on left child */
+            inOrder(node->left);
+        
+            /* then print the data of node */
+            cout << "node: " << node->data.first << endl;
+            /* now recur on right child */
+            inOrder(node->right);
+        }
+ 
         int height(Node<T> * r) 
         {
             if (r == nullptr)
@@ -140,12 +154,13 @@ class avl
             // Perform rotation  
             y -> left = x;
             x -> right = T2;
-
+        
             return y;
         }
         
         Node<T> * insert(Node<T> * root, T data)
         {
+            Node<T> * tmp;
             if(!root)
             {
                 Node<T>tmp(data);
@@ -198,12 +213,7 @@ class avl
                 tmp = tmp->left;
             return (tmp);
         }
-        Node<T>* findMinimum(Node<T>* r)
-        {
-            while (r->left)
-                r = r->left;    
-            return r;
-        }
+        
         Node<T>* findMX(Node<T>* r)
         {
             Node<T>* tmp = r;
@@ -212,6 +222,7 @@ class avl
                 tmp = tmp->right;
             return (tmp);
         }
+
         Node<T>* findSuccessor(Node<T>* root, T key)
         {
             if (root == nullptr)
@@ -220,7 +231,7 @@ class avl
             if (root->data == key )
             {
                 if (root->right != nullptr)
-                    return findMinimum(root->right);
+                    return minValue(root->right);
                
             }
             else if (key < root->data)
