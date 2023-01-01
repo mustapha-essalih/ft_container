@@ -33,45 +33,50 @@ std::map<int,int>m;
 
 int main()
 {
-    // std::map<char,int> mymap;
+    ft::map<int,int>m;
 
-    // mymap['b'] = 100;
-    // mymap['a'] = 200;
-    // mymap['c'] = 300;
+    ft::pair<ft::map<int,int>::iterator, bool> res;
+    
+    m.insert(ft::make_pair<int,int>(10,812));
+    m.insert(ft::make_pair<int,int>(101,812));
+    m.insert(ft::make_pair<int,int>(4,812));
+    // m.insert(ft::make_pair<int,int>(-1,812));
+    // m.insert(ft::make_pair<int,int>(0,812));
+    // m.insert(ft::make_pair<int,int>(120,812));
+    // m.insert(ft::make_pair<int,int>(210,812));
+    // m.insert(ft::make_pair<int,int>(4,812));
+    // m.insert(ft::make_pair<int,int>(-4,812));
+    // m.insert(ft::make_pair<int,int>(-1,812));
+    // m.insert(ft::make_pair<int,int>(555,812));
+    // m.insert(ft::make_pair<int,int>(-12,812));
+     
+    ft::map<int,int>::iterator it; 
+    // it=m.begin();
 
-    // std::map<char,int>::iterator it;
-    
-    // it = mymap.begin();
-    
-    // cout << it->first << endl;
+    // if(it!=m.end())
+    //     cout << "it!=m.end()\n";
+    // //     std::cout << it->first << " => " << it->second << '\n';
+    // ++it;
+    // if(it!=m.end())
+    //     cout << "it!=m.end()\n";
 
-    // for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-    //     std::cout << it->first << " => " << it->second << '\n';
-    
-    // dont forget copy constructor for iterartor(it)
-
-    ft::map<char,int> mymap;
-
-  // first insert function version (single parameter):
-  ft::pair<ft::map<char,int>::iterator,bool> ret;
-
-    ret =    mymap.insert ( ft::pair<char,int>('a',100) );
-    
-    cout << mymap.insert ( ft::pair<char,int>('a',100) ).second << endl;
-        // std::cout << " with a value of " << ret.first->second << '\n';
-    
-    // mymap.insert ( ft::pair<char,int>('z',200) );
- 
-    
-
-    // ret = mymap.insert ( ft::pair<char,int>('z',500) );
-    
-    // if (ret.second==false) {
+    // ++it;
+    // if(it!=m.end())
+    //     cout << "it!=m.end()\n";
+    // ++it;
+    // if(it!=m.end())
+    //     cout << "it!=m.end()\n";
+    // std::cout << it->first << " => " << it->second << '\n';
         
-         
-    // }
+    //     ++it;
+    // std::cout << it->first << " => " << it->second << '\n';
+    //     ++it;
+    // std::cout << it->first << " => " << it->second << '\n';
 
-    
-
+    for (it=m.begin(); it!=m.end(); ++it)
+        std::cout << it->first << " => " << it->second << '\n';
 }
 
+
+
+// how to compare value

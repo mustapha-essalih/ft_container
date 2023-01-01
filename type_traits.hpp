@@ -36,35 +36,37 @@ namespace ft
                 first_type  first;
                 second_type  second;
 
-                pair():first(T1()),second(T2())//to initialze template variable in c11
-                {
-                    // cout << "0\n";
-                }
+                pair() : first(), second() { }
 
                 template<class U, class V>
-                pair (const pair<U,V> & pr):first(pr.first),second(pr.second)
+                pair (const ft::pair<U,V> & pr):first(pr.first),second(pr.second)
                 {
                 }
                 pair( const T1& a, const T2& b ):first(a),second(b)
                 {
                 }
                  
-                pair& operator = ( const pair  & other )
-                {
-                    // cout << "3\n";
+                // pair& operator=(pair& __p) 
+                // { 
+                //     first = std::move(__p.first);
+                //     second = std::move(__p.second);
+                //     return *this;
+                // }
+ 
+                // template<class _U1, class _U2>
+                // pair&  operator=(pair<_U1, _U2>& __p)
+                // {
+                //     first = std::move(__p.first);
+                //     second = std::move(__p.second);
+                //     return *this;
+                // }
 
-                    if(this != &other)
-                    {
-                        // this->first = other.first;
-                        this->second = other.second;
-                    }
-                    return *this;
-                }
                 ~pair()
                 {
 
                 }
         };
+
         template <typename T1, typename T2> 
         pair<T1,T2> make_pair (T1 x, T2 y)
         {

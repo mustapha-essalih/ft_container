@@ -24,8 +24,7 @@ using std::pair;
 
 #include "type_traits.hpp"
 #include "avl.hpp"
-#include "iterator.hpp"
-
+ 
 
 namespace ft
 {
@@ -33,100 +32,102 @@ namespace ft
  
     class map
     {
- 
         public:
+        
+            typedef Key                                             key_type;
+            typedef T										        mapped_type;
+            typedef ft::pair<const Key, T>                          value_type;
+            typedef Compare                                         key_compare;
+            typedef Allocator                                       allocator_type;
+            typedef typename allocator_type::pointer                pointer;
+            typedef typename allocator_type::const_pointer          const_pointer;
+            typedef typename allocator_type::reference              reference;
+            typedef typename allocator_type::const_reference        const_reference;
+            typedef size_t                                          size_type;
+            typedef typename avl<value_type,size_type,pointer,allocator_type>::iterator iterator;// create typename
 
-                typedef  Key key_type; 
-                typedef  T mapped_type;
-                        //    because key will not duplicate or chande key value
-                typedef  ft::pair<const key_type,mapped_type> value_type;
-
-                typedef  std::less<key_type> key_compare;
-                typedef     Allocator  allocator_type;
-                typedef typename allocator_type::reference	reference;
-                typedef typename allocator_type::const_reference		const_reference;
-                typedef typename allocator_type::pointer	pointer;
-                typedef typename allocator_type::const_pointer	const_pointer;
-                typedef typename allocator_type::size_type       size_type;
-
-
-                typedef   ft::iterator<value_type>  iterator;
-             
-            map()
+            class value_compare : public std::binary_function<value_type, value_type, bool>
             {
-                the_size = 0;
-                // /// handle if have one element
-                // a.insert(ft::make_pair<key_type,mapped_type>(10,800));
-                // a.insert(ft::make_pair<key_type,mapped_type>(20,14));
-                // a.insert(ft::make_pair<key_type,mapped_type>(30,20));
-                // a.insert(ft::make_pair<key_type,mapped_type>(40,926));
-                // a.insert(ft::make_pair<key_type,mapped_type>(50,87));
-                // a.insert(ft::make_pair<key_type,mapped_type>(60,12));
+                protected:
+                    Compare comp;
+                    value_compare (Compare c) : comp(c) {}  // constructed with tree's comparison object
+                public:
+                    bool operator() (const value_type& x, const value_type& y) const
+                    {
+                        return comp(x.first, y.first);
+                    }
+            };
 
 
-                // a.insert(ft::make_pair<key_type,mapped_type>(20,800));
-                // a.insert(ft::make_pair<key_type,mapped_type>(30,14));
-                // a.insert(ft::make_pair<key_type,mapped_type>(19,20));
-                // a.insert(ft::make_pair<key_type,mapped_type>(40,926));
-                // a.insert(ft::make_pair<key_type,mapped_type>(22,926));
-                // a.insert(ft::make_pair<key_type,mapped_type>(50,87));
-                // a.insert(ft::make_pair<key_type,mapped_type>(60,12));
-                // a.insert(ft::make_pair<key_type,mapped_type>(70,84));
-
-                // a.inOrder(a.root);
-                
+            map():avl()
+            {
+                size_ = 0;  
             }   
-            pair<iterator,bool> insert (const value_type& val)
+
+            // iterator hav two value => first and second 
+            // acualy in res we have three value : first second true or false
+
+
+            size_type size()
             {
-                iterator it;
-
-                
-                if(a.empty())
-                {
-                    a.insert(val);
-
-                    it = begin();
-                    
-                    a.node = alloc.allocate(sizeof(a.node));
-                    return ft::make_pair<iterator,bool>(it.node,true);
-                }
-                // else
-                // {
-                //     for (it = begin(); it!=end(); ++it)
-                //     {
-                //         if(it.node->data == val)
-                //         {
-                //             cout << "HERE\n";
-                //             return ft::make_pair<iterator,bool>(it,false);
-                //         }
-                //     }
-                //     a.insert(val);
-
-                // }
-                return ft::make_pair<iterator,bool>(it.node,true);
+                return size_;
             }
+
+            // ft::pair<iterator, bool> insert(const value_type & val)
+            // {
+            //     typedef ft::pair<iterator, bool> pr;
+
+            //     iterator it;
+
+            //     pr l;
+                
+            //     if(size_ == 0)
+            //     {
+            //         avl.insert(val);        
+            //         size_++;
+
+            //         it = begin();                 
+            //         return pr(it,true);
+            //     }
+            //     else
+            //     {
+            //         // while (/* condition */)
+            //         // {
+            //         //     /* code */
+            //         // }
+
+            //         ++it;
+            //     }
+
+
+            //     return l;
+            // }
+            void insert(const value_type & val)
+            {
+                avl.insert(val);
+            }
+             
             iterator begin()
-            {  
-                iterator it(a.minValue(a.root),a.root);
-                return it;
+            {
+                return iterator(avl.minValue(avl.root));
             }
             iterator end()
             {
-                iterator it(nullptr);
-                return it;
+                return iterator(nullptr);
             }
             ~map()
             {
             }
-        private: 
-            int the_size;
-            avl<value_type>  a;
-            Allocator alloc;
+
+        private:
+            typedef avl<value_type,size_type,allocator_type>        avl_data_struct;
+            avl_data_struct  avl;
+            allocator_type alloc;
+            size_type size_;
+            key_compare key_compare_;
+
     };
-    
-    
- 
-    
+
 } 
 
 
@@ -139,4 +140,4 @@ namespace ft
 
 
 #endif
- 
+  
