@@ -65,15 +65,17 @@ namespace ft
                 size_ = 0;  
             }   
 
-            // iterator hav two value => first and second 
-            // acualy in res we have three value : first second true or false
-
-
             size_type size()
             {
                 return size_;
             }
 
+/*
+return a pair, with its member pair::first set to an iterator pointing to either the 
+newly inserted element or to the element with an equivalent key in the map. 
+The pair::second element in the pair is set to true if a new element was inserted or 
+false if an equivalent key already existed.
+*/
             ft::pair<iterator, bool> insert(const value_type & val)
             {
                 typedef ft::pair<iterator, bool> pr;
@@ -94,7 +96,7 @@ namespace ft
                      
                     for (it=begin(); it!=end(); ++it)
                     {
-                        if(it->first == val.first)
+                        if(it->first == val.first)// use here key compar
                             return pr(it,false);
                     }
                     avl.insert(val);
@@ -103,8 +105,25 @@ namespace ft
                 }
                 return pr(it,true);
             }
-
+            
+            iterator insert (iterator position, const value_type& val)
+            {
+                ft::pair<iterator, bool> res = insert(val);
+                
+                if (res.second) 
+                    return res.first;
+                else
+                    return end();
+            }
              
+
+            template <class InputIterator>  void insert (InputIterator first, InputIterator last)
+            {
+                for(; first != last; ++first)
+                {
+                    insert(*first);
+                }
+            }
             iterator begin()
             {
                 return iterator(avl.minValue(avl.root));
