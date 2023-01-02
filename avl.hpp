@@ -53,7 +53,7 @@ class Node{
 };
  
 
-template<class T,typename s, typename pointer,typename Allocator = std::allocator<Node<T,s> > >
+template<class T,typename s, typename pointer, typename value_type ,typename Allocator = std::allocator<Node<T,s> > >
 
 class avl
 {
@@ -70,44 +70,52 @@ class avl
 
             public:
                     
-                iterator():node(0){}
+                iterator():node(0){
+                    i = 0;
+                }
 
                 iterator(Node<T,s> * n):node(n)
-                {
+                {    
                 }
+                 
                 
                 iterator(const iterator& it)
                 {
                     node = it.node;
-
+                    i = 0;
                 }
         
                 iterator& operator=(const iterator& it)
                 {
                     node = it.node;
-                    
+                    i = 0;
                     return *this;
                 }
+ 
+               
 
                 iterator& operator++() // handle this
                 { 
-                    if(node->right != nullptr)
+                    Node<T,s> *p;
+  
+                    if (node->right != nullptr)
                     {
                         node = node->right;
-                        while(node->left != nullptr)
+                        
+                        while (node->left != nullptr) 
                             node = node->left;
                     }
                     else
                     {
-                        Node<T,s>* temp;
-                        do{
-                            temp = node;
-                            node = node->parent;
-                            if (node!=nullptr && node->left == temp) 
-                                break;
-                        }while(node->parent != nullptr);
+                        p = node->parent;
+                        while (p != nullptr && node == p->right)
+                        {
+                            node = p;
+                            p = p->parent;
+                        }
+                        node = p;
                     }
-
+                      
                     return *this;                    
                 } 
 
@@ -116,7 +124,9 @@ class avl
                     return node == obj.node;
                 }
                 
-                bool operator!=(const iterator& it) const{
+                bool operator!=(const iterator& it) const
+                {
+
                     return node != it.node;
                 }
 
@@ -126,6 +136,9 @@ class avl
                 }
             private:
                 Node<T,s> * node;
+                Node<T,s> * max;
+                value_type v;
+                int i;
         };
 
         avl()
@@ -300,7 +313,7 @@ class avl
         
             while (tmp->right != nullptr) 
                 tmp = tmp->right;
-            return (tmp->right);
+            return (tmp);
         }
          
         

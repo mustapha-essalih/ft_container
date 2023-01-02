@@ -33,7 +33,8 @@ namespace ft
     class map
     {
         public:
-        
+
+
             typedef Key                                             key_type;
             typedef T										        mapped_type;
             typedef ft::pair<const Key, T>                          value_type;
@@ -73,39 +74,36 @@ namespace ft
                 return size_;
             }
 
-            // ft::pair<iterator, bool> insert(const value_type & val)
-            // {
-            //     typedef ft::pair<iterator, bool> pr;
-
-            //     iterator it;
-
-            //     pr l;
-                
-            //     if(size_ == 0)
-            //     {
-            //         avl.insert(val);        
-            //         size_++;
-
-            //         it = begin();                 
-            //         return pr(it,true);
-            //     }
-            //     else
-            //     {
-            //         // while (/* condition */)
-            //         // {
-            //         //     /* code */
-            //         // }
-
-            //         ++it;
-            //     }
-
-
-            //     return l;
-            // }
-            void insert(const value_type & val)
+            ft::pair<iterator, bool> insert(const value_type & val)
             {
-                avl.insert(val);
+                typedef ft::pair<iterator, bool> pr;
+
+                iterator it;
+
+                if(size_ == 0)
+                {
+                    avl.insert(val);        
+                    size_++;
+
+                    it = begin();                 
+                    return pr(it,true);
+                }
+                else
+                {
+                    it = begin();
+                     
+                    for (it=begin(); it!=end(); ++it)
+                    {
+                        if(it->first == val.first)
+                            return pr(it,false);
+                    }
+                    avl.insert(val);
+                    it = avl.findMX(avl.root);
+                    size_++;
+                }
+                return pr(it,true);
             }
+
              
             iterator begin()
             {
@@ -118,14 +116,14 @@ namespace ft
             ~map()
             {
             }
-
+            
+            friend class avl;// A friend class in C++ can access the private and protected members of the class in which it is declared as a friend. 
         private:
-            typedef avl<value_type,size_type,allocator_type>        avl_data_struct;
+            typedef avl<value_type,size_type,value_type,allocator_type>        avl_data_struct;
             avl_data_struct  avl;
             allocator_type alloc;
             size_type size_;
-            key_compare key_compare_;
-
+ 
     };
 
 } 
