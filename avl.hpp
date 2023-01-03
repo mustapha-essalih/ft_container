@@ -59,26 +59,24 @@ class avl
 {
     private:
         Allocator alloc;
-         
     public:
-        
-     
+        bool b;
         Node<T,s> * root;
+        Node<T,s> * tmp;
+        Node<T,s> * end_node;
         
         class iterator : public std::iterator<std::bidirectional_iterator_tag, Node<T,s> >
         {   
 
             public:
                     
-                iterator():node(0){
-                    i = 0;
-                }
+                iterator():node(0){}
 
-                iterator(Node<T,s> * n):node(n)
-                {    
+                iterator(Node<T,s> * n):node(n){}
+                iterator(Node<T,s> * n,int falg):max(n)
+                {
                 }
                  
-                
                 iterator(const iterator& it)
                 {
                     node = it.node;
@@ -91,13 +89,11 @@ class avl
                     i = 0;
                     return *this;
                 }
- 
-               
 
                 iterator& operator++() // handle this
                 { 
                     Node<T,s> *p;
-  
+                
                     if (node->right != nullptr)
                     {
                         node = node->right;
@@ -113,6 +109,11 @@ class avl
                             node = p;
                             p = p->parent;
                         }
+                        if(!p)
+                        {  
+                            node = max;// if last node will p has null and we assign garbeg value to node
+                            return *this;
+                        }
                         node = p;
                     }
                       
@@ -126,7 +127,6 @@ class avl
                 
                 bool operator!=(const iterator& it) const
                 {
-
                     return node != it.node;
                 }
 
@@ -137,13 +137,18 @@ class avl
             private:
                 Node<T,s> * node;
                 Node<T,s> * max;
-                value_type v;
+                avl a;
                 int i;
         };
 
         avl()
         {
-           root  = nullptr;       
+            b = false;
+            root  = nullptr;
+            Node<T,s>tmp(T(),nullptr);
+                  
+            end_node  = alloc.allocate(sizeof(Node<T,s>));      // free?
+            alloc.construct(end_node,tmp);
         }   
          
         bool empty()
@@ -290,10 +295,8 @@ class avl
     
         void insert(T data)
         {
-            root = insert(nullptr, root, data);
+            root = insert(nullptr, root, data);    
         }
-
- 
 
         Node<T,s> * minValue(Node<T,s>* node)
         {
@@ -307,7 +310,7 @@ class avl
             return (tmp);
         }
         
-      Node<T,s>* findMX(Node<T,s>* r)
+        Node<T,s>* findMX(Node<T,s>* r)
         {
             Node<T,s>* tmp = r;
         
@@ -316,7 +319,32 @@ class avl
             return (tmp);
         }
          
+        Node<T,s> *find(Node<T,s>* node, T key) 
+        {
+            if (node == nullptr)
+                return nullptr;
         
+            if (node->data.first == key.first)// use here key compar
+                return node;
+        
+            /* then recur on left subtree */
+
+            Node<T,s> * res1 = find(node->left, key);
+            // node found, no need to look further
+            if(res1) return res1;
+        
+            /* node is not found in left,
+            so recur on right subtree */
+            Node<T,s> * res2 = find(node->right, key);
+        
+            return res2;
+        }
+        
+        Node<T,s> * get_garbeg()
+        {
+            return this->end_node;
+        }
+
         ~avl()
         {
 

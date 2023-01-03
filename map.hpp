@@ -80,29 +80,21 @@ false if an equivalent key already existed.
             {
                 typedef ft::pair<iterator, bool> pr;
 
-                iterator it;
-
                 if(size_ == 0)
                 {
                     avl.insert(val);        
                     size_++;
-
-                    it = begin();                 
-                    return pr(it,true);
+                    return pr(begin(),true);
                 }
                 else
-                {
-                    it = begin();
-                     
-                    for (it=begin(); it!=end(); ++it)
-                    {
-                        if(it->first == val.first)// use here key compar
-                            return pr(it,false);
-                    }
-                    avl.insert(val);
-                    it = avl.findMX(avl.root);
-                    size_++;
+                { 
+                    avl.tmp = avl.find(avl.root,val);
+                    if(avl.tmp)
+                        return pr(avl.tmp,false); 
                 }
+                size_++;
+                avl.insert(val);
+                iterator it(avl.find(avl.root,val));
                 return pr(it,true);
             }
             
@@ -130,7 +122,7 @@ false if an equivalent key already existed.
             }
             iterator end()
             {
-                return iterator(nullptr);
+                return iterator(avl.end_node,0);
             }
             ~map()
             {
