@@ -35,6 +35,7 @@ class Node{
         Node<A,size> * left;
         Node<A,size> * right;
         Node<A,size> * parent;
+        Node<A,size> * r;
         size height;
 
         Node<A,size>()
@@ -44,6 +45,7 @@ class Node{
         {
             left = nullptr;
             right = nullptr;
+            r = nullptr;
             parent = p;
             height = 1;
         }
@@ -70,13 +72,18 @@ class avl
 
             public:
                     
-                iterator():node(0){}
-
-                iterator(Node<T,s> * n):node(n){}
-                iterator(Node<T,s> * n,int falg):max(n)
+                iterator():node(0)
                 {
+                    i = 0;
+                }
+
+                iterator(Node<T,s> * n):node(n)
+                {
+                    i = 0;
                 }
                  
+ 
+                           
                 iterator(const iterator& it)
                 {
                     node = it.node;
@@ -93,7 +100,7 @@ class avl
                 iterator& operator++() // handle this
                 { 
                     Node<T,s> *p;
-                
+
                     if (node->right != nullptr)
                     {
                         node = node->right;
@@ -101,7 +108,7 @@ class avl
                         while (node->left != nullptr) 
                             node = node->left;
                     }
-                    else
+                    else// when iterator all elements will recall p = node->parent
                     {
                         p = node->parent;
                         while (p != nullptr && node == p->right)
@@ -109,14 +116,57 @@ class avl
                             node = p;
                             p = p->parent;
                         }
-                        if(!p)
-                        {  
-                            node = max;// if last node will p has null and we assign garbeg value to node
+                        
+                        if(!p)// if p == null assign garbeg value
+                        {
+                            i = 1;
+                            Node<T,s>tmp(T(),nullptr);
+                  
+                            end_nod  = alloc.allocate(sizeof(Node<T,s>));      // free?
+                            alloc.construct(end_nod,tmp);
+                            node = end_nod;
+                            
                             return *this;
                         }
                         node = p;
                     }
-                      
+                    return *this;                    
+                }
+                
+                iterator& operator--() // handle this
+                { 
+                    Node<T,s> *p;
+                     
+
+                    if (node->left != nullptr)
+                    {
+                        node = node->left;
+                        
+                        while (node->right != nullptr) 
+                            node = node->right;
+                    }
+                    else// when iterator all elements will recall p = node->parent
+                    {
+                        p = node->parent;
+                        while (p != nullptr && node == p->right)
+                        {
+                            node = p;
+                            p = p->parent;
+                        }
+                        
+                        if(!p)// if p == null assign garbeg value
+                        {
+                            i = 1;
+                            Node<T,s>tmp(T(),nullptr);
+                  
+                            end_nod  = alloc.allocate(sizeof(Node<T,s>));      // free?
+                            alloc.construct(end_nod,tmp);
+                            node = end_nod;
+                            
+                            return *this;
+                        }
+                        node = p;
+                    }
                     return *this;                    
                 } 
 
@@ -125,8 +175,13 @@ class avl
                     return node == obj.node;
                 }
                 
-                bool operator!=(const iterator& it) const
+                bool operator!=(const iterator& it) 
                 {
+                    if(i == 1)
+                    {
+                        node = end_nod;
+                        return false;
+                    }
                     return node != it.node;
                 }
 
@@ -135,9 +190,12 @@ class avl
                     return &node->data;
                 }
             private:
+            friend class avl;
+                avl a;
                 Node<T,s> * node;
                 Node<T,s> * max;
-                avl a;
+                Node<T,s> * end_nod;
+                Allocator alloc;
                 int i;
         };
 
@@ -149,6 +207,7 @@ class avl
                   
             end_node  = alloc.allocate(sizeof(Node<T,s>));      // free?
             alloc.construct(end_node,tmp);
+            
         }   
          
         bool empty()
@@ -340,10 +399,7 @@ class avl
             return res2;
         }
         
-        Node<T,s> * get_garbeg()
-        {
-            return this->end_node;
-        }
+       
 
         ~avl()
         {

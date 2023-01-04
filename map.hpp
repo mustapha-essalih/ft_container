@@ -122,7 +122,7 @@ false if an equivalent key already existed.
             }
             iterator end()
             {
-                return iterator(avl.end_node,0);
+                return iterator(avl.end_node);// pass after max value
             }
             ~map()
             {

@@ -31,22 +31,39 @@ std::map<int,int>m;
 
 // it => pointor
 
+// handle iterator --
+
+// should handle end() => last element print garbeg value
+// should handle iterator
+
 int main()
 {
-    std::map<char,int> mymap;
+    ft::map<int,int> mymap;
 
-  // first insert function version (single parameter):
-  mymap.insert ( std::pair<char,int>('a',100) );
-  mymap.insert ( std::pair<char,int>('z',200) );
+    mymap.insert(ft::make_pair<int,int>(10,10000));
+    mymap.insert(ft::make_pair<int,int>(20,20000));
+    mymap.insert(ft::make_pair<int,int>(30,30000));
+    mymap.insert(ft::make_pair<int,int>(40,40000));
 
-  std::pair<std::map<char,int>::iterator,bool> ret;
-  ret = mymap.insert ( std::pair<char,int>('c',500) );
-  if (ret.second==false) {
-    std::cout << "element 'z' already existed";
-    std::cout << " with a value of " << ret.first->second << '\n';
-  }
-    std::cout << " with a value of " << ret.first->second << '\n';
+
+    ft::map<int,int>::iterator b = mymap.begin();
+
+    ft::map<int,int>::iterator e = mymap.end();
+
+    while (e != b)
+    {
+        --e;
+        cout << e->first << endl;
+    }
     
+
+ 
+    // ft::map<int,int>::iterator it=mymap.begin();
+    // for (; it!=mymap.end(); ++it)
+    //     std::cout << it->first << " => " << it->second << '\n';
+    // std::cout << it->first << " => " << it->second << '\n';
+     
+    // std::cout << it->first << " => " << it->second << '\n';
 }
 
 
