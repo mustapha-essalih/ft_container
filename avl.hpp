@@ -35,7 +35,6 @@ class Node{
         Node<A,size> * left;
         Node<A,size> * right;
         Node<A,size> * parent;
-        Node<A,size> * r;
         size height;
 
         Node<A,size>()
@@ -45,7 +44,6 @@ class Node{
         {
             left = nullptr;
             right = nullptr;
-            r = nullptr;
             parent = p;
             height = 1;
         }
@@ -62,114 +60,42 @@ class avl
     private:
         Allocator alloc;
     public:
-        bool b;
         Node<T,s> * root;
         Node<T,s> * tmp;
         Node<T,s> * end_node;
         
         class iterator : public std::iterator<std::bidirectional_iterator_tag, Node<T,s> >
         {   
-
             public:
-                    
-                iterator():node(0)
-                {
-                    i = 0;
-                }
-
-                iterator(Node<T,s> * n):node(n)
-                {
-                    i = 0;
-                }
-                 
- 
-                           
+                iterator():node(0){}
+            
+                iterator(Node<T,s> * n):node(n){}
+                        
                 iterator(const iterator& it)
                 {
                     node = it.node;
-                    i = 0;
                 }
         
                 iterator& operator=(const iterator& it)
                 {
                     node = it.node;
-                    i = 0;
                     return *this;
                 }
 
-                iterator& operator++() // handle this
+                iterator& operator++() 
                 { 
-                    Node<T,s> *p;
-
-                    if (node->right != nullptr)
-                    {
-                        node = node->right;
-                        
-                        while (node->left != nullptr) 
-                            node = node->left;
-                    }
-                    else// when iterator all elements will recall p = node->parent
-                    {
-                        p = node->parent;
-                        while (p != nullptr && node == p->right)
-                        {
-                            node = p;
-                            p = p->parent;
-                        }
-                        
-                        if(!p)// if p == null assign garbeg value
-                        {
-                            i = 1;
-                            Node<T,s>tmp(T(),nullptr);
-                  
-                            end_nod  = alloc.allocate(sizeof(Node<T,s>));      // free?
-                            alloc.construct(end_nod,tmp);
-                            node = end_nod;
-                            
-                            return *this;
-                        }
-                        node = p;
-                    }
+                    node = a.getNext(node);
+                     
                     return *this;                    
                 }
                 
-                iterator& operator--() // handle this
+                iterator& operator--() 
                 { 
-                    Node<T,s> *p;
+                    node = a.getPrev(node);
                      
-
-                    if (node->left != nullptr)
-                    {
-                        node = node->left;
-                        
-                        while (node->right != nullptr) 
-                            node = node->right;
-                    }
-                    else// when iterator all elements will recall p = node->parent
-                    {
-                        p = node->parent;
-                        while (p != nullptr && node == p->right)
-                        {
-                            node = p;
-                            p = p->parent;
-                        }
-                        
-                        if(!p)// if p == null assign garbeg value
-                        {
-                            i = 1;
-                            Node<T,s>tmp(T(),nullptr);
-                  
-                            end_nod  = alloc.allocate(sizeof(Node<T,s>));      // free?
-                            alloc.construct(end_nod,tmp);
-                            node = end_nod;
-                            
-                            return *this;
-                        }
-                        node = p;
-                    }
                     return *this;                    
-                } 
-
+                }
+                
                 bool operator == (const iterator& obj) const
                 {
                     return node == obj.node;
@@ -177,11 +103,6 @@ class avl
                 
                 bool operator!=(const iterator& it) 
                 {
-                    if(i == 1)
-                    {
-                        node = end_nod;
-                        return false;
-                    }
                     return node != it.node;
                 }
 
@@ -190,24 +111,17 @@ class avl
                     return &node->data;
                 }
             private:
-            friend class avl;
+                friend class avl;
                 avl a;
                 Node<T,s> * node;
-                Node<T,s> * max;
-                Node<T,s> * end_nod;
-                Allocator alloc;
-                int i;
         };
 
         avl()
         {
-            b = false;
             root  = nullptr;
             Node<T,s>tmp(T(),nullptr);
-                  
             end_node  = alloc.allocate(sizeof(Node<T,s>));      // free?
             alloc.construct(end_node,tmp);
-            
         }   
          
         bool empty()
@@ -215,27 +129,33 @@ class avl
             return root == nullptr;
         }
 
-        int height(Node<T,s>  *N){
-    if (N == nullptr)
-        return 0;
-    return N->height;
-}
+        s height(Node<T,s>  *N)
+        {
+            if (N == nullptr)
+                return 0;
+            return N->height;
+        }
+        s max(s a, s b)
+        {
+            return (a > b) ? a : b;
+        }
+        void update_height(Node<T,s> * root)
+        {
 
- 
-        void update_height(Node<T,s> * root){
-
-            if (root != nullptr) {
+            if (root != nullptr) 
+            {
                 s val = 1;
                 if (root->left != nullptr)
                     val = root->left->height + 1;
                 if (root->right != nullptr)
-                    val = std::max( val, root->right->height + 1);
+                    val = max( val, root->right->height + 1);
                 root->height = val;
             }
         }
 
  
-        Node<T,s>  *rightRotate(Node<T,s>  *y){
+        Node<T,s>  *rightRotate(Node<T,s>  *y)
+        {
             Node<T,s>  *x = y->left;
             Node<T,s>  *T2 = x->right;
 
@@ -248,10 +168,10 @@ class avl
             x->parent = y->parent;
             y->parent = x;
 
-            if (x->parent != nullptr && y->data < x->parent->data) {
+            if (x->parent != nullptr && y->data < x->parent->data)
                 x->parent->left = x;
-            }
-            else{
+            else
+            {
                 if (x->parent != nullptr)
                     x->parent->right = x;
             }
@@ -267,8 +187,8 @@ class avl
         }
 
         
-        Node<T,s>  *leftRotate(Node<T,s>  *x){
-
+        Node<T,s>  *leftRotate(Node<T,s>  *x)
+        {
             Node<T,s>  *y = x->right;
             Node<T,s>  *T2 = y->left;
 
@@ -281,9 +201,8 @@ class avl
             y->parent = x->parent;
             x->parent = y;
 
-            if (y->parent != nullptr && x->data < y->parent->data) {
+            if (y->parent != nullptr && x->data < y->parent->data) 
                 y->parent->left = y;
-            }
             else{
                 if (y->parent != nullptr)
                     y->parent->right = y;
@@ -298,14 +217,16 @@ class avl
         }
 
 
-        int getBalance(Node<T,s>  *N){
+        s getBalance(Node<T,s>  *N)
+        {
 
             if (N == nullptr)
                 return 0;
             return height(N->left) - height(N->right);
         }
 
-        Node<T,s>* insert(Node<T,s> *par, Node<T,s>* root, T data){
+        Node<T,s>* insert(Node<T,s> *par, Node<T,s>* root, T data)
+        {
 
             if(!root)
             {
@@ -351,31 +272,35 @@ class avl
             return root;
         }
 
-    
         void insert(T data)
         {
-            root = insert(nullptr, root, data);    
+            root = insert(nullptr, root, data);  
+            end_node->left = root;
+            root->parent = end_node; 
+        }
+    
+        bool is_left_child(Node<T,s> * node)
+        {
+            return node == node->parent->left;
+        }
+        // after
+        Node<T,s>* getNext(Node<T,s>* node)
+        {
+            if(node->right != nullptr)
+                return minValue(node->right);
+            while (!is_left_child(node))
+                node = node->parent;
+            return node->parent;
         }
 
-        Node<T,s> * minValue(Node<T,s>* node)
+        // before
+        Node<T,s>* getPrev(Node<T,s>* node)
         {
-            if(node == nullptr)
-                return nullptr;
-            Node<T,s>* tmp = node;
-        
-            /* loop down to find the leftmost leaf */
-            while (tmp->left != nullptr) 
-                tmp = tmp->left;
-            return (tmp);
-        }
-        
-        Node<T,s>* findMX(Node<T,s>* r)
-        {
-            Node<T,s>* tmp = r;
-        
-            while (tmp->right != nullptr) 
-                tmp = tmp->right;
-            return (tmp);
+            if(node->left != nullptr)
+                return findMX(node->left);
+            while (is_left_child(node))
+                node = node->parent;
+            return node->parent;
         }
          
         Node<T,s> *find(Node<T,s>* node, T key) 
@@ -399,7 +324,26 @@ class avl
             return res2;
         }
         
-       
+       Node<T,s> * minValue(Node<T,s>* node)
+        {
+            if(node == nullptr)
+                return nullptr;
+            Node<T,s>* tmp = node;
+        
+            /* loop down to find the leftmost leaf */
+            while (tmp->left != nullptr) 
+                tmp = tmp->left;
+            return (tmp);
+        }
+        
+        Node<T,s>* findMX(Node<T,s>* r)
+        {
+            Node<T,s>* tmp = r;
+        
+            while (tmp->right != nullptr) 
+                tmp = tmp->right;
+            return (tmp);
+        }
 
         ~avl()
         {

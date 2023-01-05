@@ -8,11 +8,11 @@
 
 /*
     should handle this :
-std::map<int,int>m;
+ft::map<int,int>m;
 
     m[1] = 10;
     // m[2] = 10;
-    std::map<int,int>::iterator it = m.begin();
+    ft::map<int,int>::iterator it = m.begin();
 
     cout << it->first << " " << it->second << endl;
 
@@ -42,28 +42,22 @@ int main()
 
     mymap.insert(ft::make_pair<int,int>(10,10000));
     mymap.insert(ft::make_pair<int,int>(20,20000));
-    mymap.insert(ft::make_pair<int,int>(30,30000));
-    mymap.insert(ft::make_pair<int,int>(40,40000));
+    // mymap.insert(ft::make_pair<int,int>(30,30000));
+    // mymap.insert(ft::make_pair<int,int>(40,40000));
 
 
     ft::map<int,int>::iterator b = mymap.begin();
 
     ft::map<int,int>::iterator e = mymap.end();
-
+ 
     while (e != b)
     {
-        --e;
+        
         cout << e->first << endl;
+        --e;
     }
-    
-
- 
-    // ft::map<int,int>::iterator it=mymap.begin();
-    // for (; it!=mymap.end(); ++it)
-    //     std::cout << it->first << " => " << it->second << '\n';
-    // std::cout << it->first << " => " << it->second << '\n';
-     
-    // std::cout << it->first << " => " << it->second << '\n';
+    --e;
+    cout << e->first << endl;
 }
 
 
