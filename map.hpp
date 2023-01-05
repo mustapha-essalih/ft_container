@@ -45,7 +45,8 @@ namespace ft
             typedef typename allocator_type::reference              reference;
             typedef typename allocator_type::const_reference        const_reference;
             typedef size_t                                          size_type;
-            typedef typename avl<value_type,size_type,pointer,allocator_type>::iterator iterator;// create typename
+            typedef typename avl<value_type,size_type,pointer,const_pointer,allocator_type>::iterator iterator;// create typename
+            typedef typename avl<value_type,size_type,pointer,const_pointer,allocator_type>::const_iterator const_iterator;// create typename
 
             class value_compare : public std::binary_function<value_type, value_type, bool>
             {
@@ -120,6 +121,11 @@ false if an equivalent key already existed.
             {
                 return iterator(avl.minValue(avl.root));
             }
+            const_iterator begin() const
+            {
+                cout << "HHHH\n";
+                return const_iterator(avl.minValue(avl.root));
+            }
             iterator end()
             {
                 return iterator(avl.end_node);
@@ -130,7 +136,7 @@ false if an equivalent key already existed.
             
             friend class avl;// A friend class in C++ can access the private and protected members of the class in which it is declared as a friend. 
         private:
-            typedef avl<value_type,size_type,value_type,allocator_type>        avl_data_struct;
+            typedef avl<value_type,size_type,value_type,const_pointer,allocator_type>        avl_data_struct;
             avl_data_struct  avl;
             allocator_type alloc;
             size_type size_;

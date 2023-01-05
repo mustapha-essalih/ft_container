@@ -53,7 +53,7 @@ class Node{
 };
  
 
-template<class T,typename s, typename pointer, typename value_type ,typename Allocator = std::allocator<Node<T,s> > >
+template<class T,typename s, typename pointer, typename value_type ,typename const_pointer, typename Allocator = std::allocator<Node<T,s> > >
 
 class avl
 {
@@ -110,6 +110,28 @@ class avl
                 {
                     return &node->data;
                 }
+            private:
+                friend class avl;
+                avl a;
+                Node<T,s> * node;
+        };
+        
+        class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Node<T,s> >
+        {   
+            public:
+                const_iterator():node(0){}
+                const_iterator(Node<T,s> * n):node(n){}
+                const_iterator(const iterator& it)
+                {
+                    node = it.node;
+                }
+                const T * operator->() const
+                {
+                    return &node->data;
+                }
+                ~const_iterator(){}
+            
+                
             private:
                 friend class avl;
                 avl a;
@@ -324,7 +346,7 @@ class avl
             return res2;
         }
         
-       Node<T,s> * minValue(Node<T,s>* node)
+       Node<T,s> * minValue(Node<T,s>* node) 
         {
             if(node == nullptr)
                 return nullptr;
@@ -333,6 +355,17 @@ class avl
             /* loop down to find the leftmost leaf */
             while (tmp->left != nullptr) 
                 tmp = tmp->left;
+            return (tmp);
+        }
+        Node<T,s> * minValue(Node<T,s>* node) const
+        {
+            if(node == nullptr)
+                return nullptr;
+            Node<T,s>* tmp = node;
+            
+                while (tmp->left != nullptr) 
+                    tmp = tmp->left;
+            
             return (tmp);
         }
         
