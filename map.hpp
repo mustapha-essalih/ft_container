@@ -24,11 +24,12 @@ using std::pair;
 
 #include "type_traits.hpp"
 #include "avl.hpp"
+#include "iterator.hpp"
  
 
 namespace ft
 {
-    template< class Key, class T, class Compare = std::less<Key> , class Allocator = std::allocator<ft::pair<const Key, T> > >
+    template< typename Key, typename T, typename Compare = std::less<Key> , typename Allocator = std::allocator<ft::pair<const Key, T> > >
  
     class map
     {
@@ -45,14 +46,15 @@ namespace ft
             typedef typename allocator_type::reference              reference;
             typedef typename allocator_type::const_reference        const_reference;
             typedef size_t                                          size_type;
-            typedef typename avl<value_type,size_type,pointer,const_pointer,allocator_type>::iterator iterator;// create typename
-            typedef typename avl<value_type,size_type,pointer,const_pointer,allocator_type>::const_iterator const_iterator;// create typename
+
+            typedef typename ft::iterator<value_type,key_compare,size_type,allocator_type> iterator;
+            typedef typename ft::const_iterator<value_type,key_compare,size_type,allocator_type> const_iterator;
 
             class value_compare : public std::binary_function<value_type, value_type, bool>
             {
-                protected:
-                    Compare comp;
-                    value_compare (Compare c) : comp(c) {}  // constructed with tree's comparison object
+                private:
+                    key_compare  comp;
+                    value_compare (key_compare c) : comp(c) {}  // constructed with tree's comparison object
                 public:
                     bool operator() (const value_type& x, const value_type& y) const
                     {
@@ -60,23 +62,40 @@ namespace ft
                     }
             };
 
-
-            map():avl()
+            // default constructor 
+            map (const key_compare& comp = key_compare(),const allocator_type& alloc = allocator_type()):avl()
             {
-                size_ = 0;  
-            }   
+                // Constructs an empty container, with no elements. 
+                size_ = 0;
+                 
+            }
+            template <class InputIterator>  
+            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),const allocator_type& alloc = allocator_type())
+            {
+                insert(first, last);
+            }
+ 	 
 
+            map (const map& x)
+            {
+                *this = x;
+            }
+
+            map& operator= (const map& x) // ?
+            {
+                if(this != &x)
+                {
+                    this->avl = x.avl;
+                    this->size_ = x.size_;
+                }
+                return *this;
+            }
+            
             size_type size()
             {
                 return size_;
             }
 
-/*
-return a pair, with its member pair::first set to an iterator pointing to either the 
-newly inserted element or to the element with an equivalent key in the map. 
-The pair::second element in the pair is set to true if a new element was inserted or 
-false if an equivalent key already existed.
-*/
             ft::pair<iterator, bool> insert(const value_type & val)
             {
                 typedef ft::pair<iterator, bool> pr;
@@ -98,49 +117,47 @@ false if an equivalent key already existed.
                 iterator it(avl.find(avl.root,val));
                 return pr(it,true);
             }
-            
-            iterator insert (iterator position, const value_type& val)
-            {
-                ft::pair<iterator, bool> res = insert(val);
-                
-                if (res.second) 
-                    return res.first;
-                else
-                    return end();
-            }
              
-
-            template <class InputIterator>  void insert (InputIterator first, InputIterator last)
+            template <class InputIterator>
+            void insert(InputIterator first, InputIterator last)
             {
                 for(; first != last; ++first)
                 {
                     insert(*first);
                 }
             }
+	
+            iterator insert(iterator _where, const value_type& val)
+            {
+                std::pair<iterator, bool> res = insert(val);
+                if (res.second) 
+                    return res.first;
+                else 
+                    return end();
+            }
             iterator begin()
             {
                 return iterator(avl.minValue(avl.root));
             }
+            
             const_iterator begin() const
             {
-                cout << "HHHH\n";
                 return const_iterator(avl.minValue(avl.root));
             }
             iterator end()
             {
                 return iterator(avl.end_node);
             }
-            ~map()
+            const_iterator end() const
             {
+                return const_iterator(avl.end_node);
             }
-            
-            friend class avl;// A friend class in C++ can access the private and protected members of the class in which it is declared as a friend. 
-        private:
-            typedef avl<value_type,size_type,value_type,const_pointer,allocator_type>        avl_data_struct;
-            avl_data_struct  avl;
-            allocator_type alloc;
-            size_type size_;
- 
+
+            private:
+                typedef avl<value_type,key_compare,size_type,allocator_type> avl_data_strcut;
+                avl_data_strcut avl;
+                size_type size_;
+                key_compare key_compare_;
     };
 
 } 
@@ -155,4 +172,5 @@ false if an equivalent key already existed.
 
 
 #endif
-  
+       
+ 

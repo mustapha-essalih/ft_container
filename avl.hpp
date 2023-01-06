@@ -25,7 +25,7 @@ using std::vector;
 using std::stack;
 using std::map;
 
-template <typename A, typename size>
+template <typename A,typename size>
 
 class Node{
 
@@ -53,96 +53,31 @@ class Node{
 };
  
 
-template<class T,typename s, typename pointer, typename value_type ,typename const_pointer, typename Allocator = std::allocator<Node<T,s> > >
+template<class T,typename key_compare,typename size_type,typename Allocator >
 
 class avl
 {
-    private:
-        Allocator alloc;
     public:
-        Node<T,s> * root;
-        Node<T,s> * tmp;
-        Node<T,s> * end_node;
         
-        class iterator : public std::iterator<std::bidirectional_iterator_tag, Node<T,s> >
-        {   
-            public:
-                iterator():node(0){}
-            
-                iterator(Node<T,s> * n):node(n){}
-                        
-                iterator(const iterator& it)
-                {
-                    node = it.node;
-                }
+        typedef Allocator allocator_type;
+        typedef T value_type;
+         
+        key_compare key_compare_; // key_compare_(); lambda object convet to function will call operator() (const value_type& x, const value_type& y) const
         
-                iterator& operator=(const iterator& it)
-                {
-                    node = it.node;
-                    return *this;
-                }
-
-                iterator& operator++() 
-                { 
-                    node = a.getNext(node);
-                     
-                    return *this;                    
-                }
-                
-                iterator& operator--() 
-                { 
-                    node = a.getPrev(node);
-                     
-                    return *this;                    
-                }
-                
-                bool operator == (const iterator& obj) const
-                {
-                    return node == obj.node;
-                }
-                
-                bool operator!=(const iterator& it) 
-                {
-                    return node != it.node;
-                }
-
-                pointer operator->() const
-                {
-                    return &node->data;
-                }
-            private:
-                friend class avl;
-                avl a;
-                Node<T,s> * node;
-        };
+        typedef typename allocator_type::template rebind<Node<value_type,size_type> >::other node_allocator;
         
-        class const_iterator : public std::iterator<std::bidirectional_iterator_tag, Node<T,s> >
-        {   
-            public:
-                const_iterator():node(0){}
-                const_iterator(Node<T,s> * n):node(n){}
-                const_iterator(const iterator& it)
-                {
-                    node = it.node;
-                }
-                const T * operator->() const
-                {
-                    return &node->data;
-                }
-                ~const_iterator(){}
-            
-                
-            private:
-                friend class avl;
-                avl a;
-                Node<T,s> * node;
-        };
+        
 
+        node_allocator alloc;
+
+        Node<value_type,size_type> * root;
+        Node<value_type,size_type> * tmp;
+        Node<value_type,size_type> * end_node;
+ 
         avl()
         {
-            root  = nullptr;
-            Node<T,s>tmp(T(),nullptr);
-            end_node  = alloc.allocate(sizeof(Node<T,s>));      // free?
+            Node<value_type,size_type> tmp(T(),nullptr);
+            end_node  = alloc.allocate(sizeof(Node<value_type,size_type>));      // free?
             alloc.construct(end_node,tmp);
         }   
          
@@ -151,22 +86,22 @@ class avl
             return root == nullptr;
         }
 
-        s height(Node<T,s>  *N)
+        size_type height(Node<value_type,size_type>  *N)
         {
             if (N == nullptr)
                 return 0;
             return N->height;
         }
-        s max(s a, s b)
+        size_type max(size_type a, size_type b)
         {
             return (a > b) ? a : b;
         }
-        void update_height(Node<T,s> * root)
+        void update_height(Node<value_type,size_type> * root)
         {
 
             if (root != nullptr) 
             {
-                s val = 1;
+                size_type val = 1;
                 if (root->left != nullptr)
                     val = root->left->height + 1;
                 if (root->right != nullptr)
@@ -176,10 +111,10 @@ class avl
         }
 
  
-        Node<T,s>  *rightRotate(Node<T,s>  *y)
+        Node<value_type,size_type>  *rightRotate(Node<value_type,size_type>  *y)
         {
-            Node<T,s>  *x = y->left;
-            Node<T,s>  *T2 = x->right;
+            Node<value_type,size_type>  *x = y->left;
+            Node<value_type,size_type>  *T2 = x->right;
 
             if (x->right != nullptr)
                 x->right->parent = y;
@@ -209,10 +144,10 @@ class avl
         }
 
         
-        Node<T,s>  *leftRotate(Node<T,s>  *x)
+        Node<value_type,size_type>  *leftRotate(Node<value_type,size_type>  *x)
         {
-            Node<T,s>  *y = x->right;
-            Node<T,s>  *T2 = y->left;
+            Node<value_type,size_type>  *y = x->right;
+            Node<value_type,size_type>  *T2 = y->left;
 
             x->right = T2;
 
@@ -238,8 +173,7 @@ class avl
             return y;
         }
 
-
-        s getBalance(Node<T,s>  *N)
+        size_type getBalance(Node<value_type,size_type>  *N)
         {
 
             if (N == nullptr)
@@ -247,14 +181,14 @@ class avl
             return height(N->left) - height(N->right);
         }
 
-        Node<T,s>* insert(Node<T,s> *par, Node<T,s>* root, T data)
+        Node<value_type,size_type>* insert(Node<value_type,size_type> *par, Node<value_type,size_type>* root, T data)
         {
 
             if(!root)
             {
-                Node<T,s>tmp(data,par);
+                Node<value_type,size_type>tmp(data,par);
                 
-                Node<T,s> * newNode = alloc.allocate(sizeof(Node<T,s>));
+                Node<value_type,size_type> * newNode = alloc.allocate(sizeof(Node<value_type,size_type>));
                 alloc.construct(newNode,tmp);
                 return newNode;  
             }
@@ -283,12 +217,10 @@ class avl
                 return rightRotate(root);
             }
 
-       
             if (balance < -1 && data < root->right->data){
                 root->right = rightRotate(root->right);
                 return leftRotate(root);
             }
-
 
             update_height(root);
             return root;
@@ -301,12 +233,12 @@ class avl
             root->parent = end_node; 
         }
     
-        bool is_left_child(Node<T,s> * node)
+        bool is_left_child(Node<value_type,size_type> * node)
         {
             return node == node->parent->left;
         }
         // after
-        Node<T,s>* getNext(Node<T,s>* node)
+        Node<value_type,size_type>* getNext(Node<value_type,size_type>* node)
         {
             if(node->right != nullptr)
                 return minValue(node->right);
@@ -316,7 +248,7 @@ class avl
         }
 
         // before
-        Node<T,s>* getPrev(Node<T,s>* node)
+        Node<value_type,size_type>* getPrev(Node<value_type,size_type>* node)
         {
             if(node->left != nullptr)
                 return findMX(node->left);
@@ -324,54 +256,46 @@ class avl
                 node = node->parent;
             return node->parent;
         }
-         
-        Node<T,s> *find(Node<T,s>* node, T key) 
+        
+
+
+        Node<value_type,size_type> *find(Node<value_type,size_type>* node, T key) 
         {
             if (node == nullptr)
                 return nullptr;
-        
-            if (node->data.first == key.first)// use here key compar
+
+        // if (node->data.first == key.first)
+            
+            if (!key_compare_(node->data.first, key.first) && !key_compare_(key.first,node->data.first))// because key_compare_ return < and convert it to ==
                 return node;
         
-            /* then recur on left subtree */
-
-            Node<T,s> * res1 = find(node->left, key);
+            
+            Node<value_type,size_type> * res1 = find(node->left, key);
             // node found, no need to look further
             if(res1) return res1;
         
             /* node is not found in left,
             so recur on right subtree */
-            Node<T,s> * res2 = find(node->right, key);
+            Node<value_type,size_type> * res2 = find(node->right, key);
         
             return res2;
         }
         
-       Node<T,s> * minValue(Node<T,s>* node) 
+       Node<value_type,size_type> * minValue(Node<value_type,size_type>* node)
         {
             if(node == nullptr)
                 return nullptr;
-            Node<T,s>* tmp = node;
+            Node<value_type,size_type>* tmp = node;
         
             /* loop down to find the leftmost leaf */
             while (tmp->left != nullptr) 
                 tmp = tmp->left;
             return (tmp);
         }
-        Node<T,s> * minValue(Node<T,s>* node) const
-        {
-            if(node == nullptr)
-                return nullptr;
-            Node<T,s>* tmp = node;
-            
-                while (tmp->left != nullptr) 
-                    tmp = tmp->left;
-            
-            return (tmp);
-        }
         
-        Node<T,s>* findMX(Node<T,s>* r)
+        Node<value_type,size_type>* findMX(Node<value_type,size_type>* r)
         {
-            Node<T,s>* tmp = r;
+            Node<value_type,size_type>* tmp = r;
         
             while (tmp->right != nullptr) 
                 tmp = tmp->right;
@@ -382,6 +306,8 @@ class avl
         {
 
         }
+        private:
+            
 };
  
 
