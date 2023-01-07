@@ -53,7 +53,7 @@ class Node{
 };
  
 
-template<class T,typename key_compare,typename size_type,typename Allocator >
+template<typename key_type,class T,typename key_compare,typename size_type,typename Allocator >
 
 class avl
 {
@@ -280,7 +280,30 @@ class avl
         
             return res2;
         }
+ 
+
+        Node<value_type,size_type> *find(Node<value_type,size_type>* node, key_type key) 
+        {
+            if (node == nullptr)
+                return nullptr;
+
+        // if (node->data.first == key.first)
+            
+            if (!key_compare_(node->data.first, key) && !key_compare_(key,node->data.first))// because key_compare_ return < and convert it to ==
+                return node;
         
+            
+            Node<value_type,size_type> * res1 = find(node->left, key);
+            // node found, no need to look further
+            if(res1) return res1;
+        
+            /* node is not found in left,
+            so recur on right subtree */
+            Node<value_type,size_type> * res2 = find(node->right, key);
+        
+            return res2;
+        }
+ 
        Node<value_type,size_type> * minValue(Node<value_type,size_type>* node)
         {
             if(node == nullptr)

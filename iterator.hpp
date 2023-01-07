@@ -26,9 +26,9 @@ using std::map;
 
 namespace ft
 {
-    template < class T,typename key_compare,typename size_type,typename Allocator  >
+    template <typename key_type, class T,typename key_compare,typename size_type,typename Allocator  >
 
-        class iterator  : public std::iterator<std::bidirectional_iterator_tag,T>
+        class iterator  : public std::iterator<std::bidirectional_iterator_tag,T>// ?
         {
             
             public:
@@ -57,7 +57,7 @@ namespace ft
                 iterator& operator++() 
                 { 
                     node = a.getNext(node);
-                     
+                      
                     return *this;                    
                 }
 
@@ -106,11 +106,11 @@ namespace ft
                 }
             private:
                 friend class avl;
-                avl<value_type,key_compare,size_type,Allocator> a;
+                avl<key_type,value_type,key_compare,size_type,Allocator> a;
                 Node<value_type,size_type> * node;             
     };
     
-        template < class T,typename key_compare,typename size_type,typename Allocator  >
+        template <typename key_type, class T,typename key_compare,typename size_type,typename Allocator  >
 
         class const_iterator  : public std::iterator<std::bidirectional_iterator_tag,T>
         {
@@ -189,7 +189,7 @@ namespace ft
                 }
             private:
                 friend class avl;
-                avl<value_type,key_compare,size_type,Allocator> a;
+                avl<key_type,value_type,key_compare,size_type,Allocator> a;
                 Node<value_type,size_type> * node;             
     };
 

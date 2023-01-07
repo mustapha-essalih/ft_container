@@ -4,7 +4,7 @@ CC = c++
 
 C_FILES = main.cpp 
 
-H_FILES =  avl.hpp map.hpp iterator.hpp type_traits.hpp reverse_iterator.hpp
+H_FILES =  avl.hpp map.hpp iterator.hpp type_traits.hpp reverse_iterator.hpp iterator_traits.hpp
 
 
 
