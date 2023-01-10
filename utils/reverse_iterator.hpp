@@ -13,18 +13,8 @@
 #include <algorithm>     
 #include<iterator>
  
-// #include "type_traits.hpp"
-// #include "map.hpp"
-// #include "avl.hpp"
-#include "iterator_traits.hpp"
-// #include "iterator.hpp"
-
-using std::string;
-using std::cout;
-using std::endl;
-using std::vector;
-using std::stack;
-using std::map;
+#include "../utils/iterator_traits.hpp"
+ 
 
 namespace ft
 {
@@ -263,5 +253,3 @@ namespace ft
 
  
 #endif
- 
-   

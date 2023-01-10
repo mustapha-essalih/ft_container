@@ -21,11 +21,11 @@ using std::vector;
 using std::stack;
 using std::map;
 using std::pair;
-
-#include "reverse_iterator.hpp"
-// #include "type_traits.hpp"
-#include "avl.hpp"
+ 
+#include "../map/avl.hpp"
 #include "iterator.hpp"
+#include "../utils/iterator_traits.hpp"
+#include "../utils/reverse_iterator.hpp"
  
 
 namespace ft
@@ -40,20 +40,22 @@ namespace ft
             // map member types //   
             ///////////////////
 
-            typedef Key                                                                                         key_type;
-            typedef T										                                                    mapped_type;
-            typedef ft::pair<const Key, T>                                                                      value_type;
-            typedef Compare                                                                                     key_compare;
-            typedef Allocator                                                                                   allocator_type;
-            typedef typename allocator_type::pointer                                                            pointer;
-            typedef typename allocator_type::const_pointer                                                      const_pointer;
-            typedef typename allocator_type::reference                                                          reference;
-            typedef typename allocator_type::const_reference                                                    const_reference;
-            typedef size_t                                                                                      size_type;
-            typedef typename ft::iterator<key_type,value_type,key_compare,size_type,allocator_type>             iterator;
-            typedef typename  ft::const_iterator<key_type,value_type,key_compare,size_type,allocator_type>       const_iterator;
-            typedef typename ft::reverse_iterator<iterator>                                                     reverse_iterator;
+            typedef Key                                                                                                 key_type;
+            typedef T										                                                            mapped_type;
+            typedef ft::pair<const Key, T>                                                                              value_type;
+            typedef Compare                                                                                             key_compare;
+            typedef Allocator                                                                                           allocator_type;
+            typedef typename allocator_type::pointer                                                                    pointer;
+            typedef typename allocator_type::const_pointer                                                              const_pointer;
+            typedef typename allocator_type::reference                                                                  reference;
+            typedef typename allocator_type::const_reference                                                            const_reference;
+            typedef size_t                                                                                              size_type;
+        
+            typedef typename ft::map_iterator<key_type,value_type,key_compare,size_type,allocator_type>                 iterator;
+            typedef typename ft::const_map_iterator<key_type,value_type,key_compare,size_type,allocator_type>           const_iterator;
+            typedef typename ft::reverse_iterator<iterator>                                                             reverse_iterator;
 
+            
             class value_compare : public std::binary_function<value_type, value_type, bool>
             {
                 private:
@@ -300,6 +302,7 @@ namespace ft
                 key_compare key_compare_;
                 mapped_type aa;
     };
+    
 
 } 
 
@@ -313,5 +316,3 @@ namespace ft
 
 
 #endif
-       
- 

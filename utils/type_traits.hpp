@@ -12,18 +12,8 @@
 #include <exception>
 #include <algorithm>     
 #include<iterator>
-
-
-#include <utility>
-
-using std::string;
-using std::cout;
-using std::endl;
-using std::vector;
-using std::stack;
-using std::map;
-using std::pair;
-
+#include <utility> 
+ 
 namespace ft
 {
     template< typename T1, typename T2 >
@@ -42,25 +32,17 @@ namespace ft
                 pair (const ft::pair<U,V> & pr):first(pr.first),second(pr.second)
                 {
                 }
-                pair( const T1& a, const T2& b ):first(a),second(b)
+                pair( const first_type & a, const second_type & b ):first(a),second(b)
                 {
                 }
-                 
-                // pair& operator=(pair& __p) 
-                // { 
-                //     first = std::move(__p.first);
-                //     second = std::move(__p.second);
-                //     return *this;
-                // }
- 
-                // template<class _U1, class _U2>
-                // pair&  operator=(pair<_U1, _U2>& __p)
-                // {
-                //     first = std::move(__p.first);
-                //     second = std::move(__p.second);
-                //     return *this;
-                // }
-
+                
+                pair& operator= (const pair& pr)
+                { 
+                    first = std::move(pr.first);
+                    second = std::move(pr.second);
+                    return *this;
+                }
+  
                 ~pair()
                 {
 
@@ -70,7 +52,6 @@ namespace ft
         template <typename T1, typename T2> 
         pair<T1,T2> make_pair (T1 x, T2 y)
         {
-            // call paramitraze constructor
             return pair<T1,T2>(x,y);
         }
 
@@ -98,22 +79,8 @@ namespace ft
         bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
         { return !(lhs<rhs); }
 
-    // test pair handle pair
 
 };
-
-
-
-
-
-
-
-
-
-
-// 
-
-
 
 
 

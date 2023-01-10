@@ -2,10 +2,6 @@
 #define AVL_HPP
 
 
-
-
-
- 
 #include <iomanip>
 #include <cstddef>
 #include <map>
@@ -14,8 +10,9 @@
 #include <iostream>
 #include <string>
 #include <exception>
-#include <algorithm>     
-#include "type_traits.hpp"
+#include <algorithm> 
+
+#include "../utils/type_traits.hpp"
  
 
 using std::string;
@@ -315,4 +312,3 @@ class avl
 
 
 #endif
- 

@@ -3,7 +3,18 @@
 
 
 // is an interface 
- 
+ #include <iomanip>
+#include <cstddef>
+#include <map>
+#include <stack>
+#include <vector>
+#include <iostream>
+#include <string>
+#include <exception>
+#include <algorithm>     
+#include<iterator>
+
+#include <utility>
 
 
 namespace ft
@@ -15,6 +26,18 @@ namespace ft
     struct bidirectional_iterator_tag : forward_iterator_tag {};
     struct random_access_iterator_tag : bidirectional_iterator_tag {};
 
+    template <typename Category, typename T, typename Distance = ptrdiff_t, typename Pointer = T*, typename Reference = T&>
+    class iterator 
+    {
+        public:
+
+            typedef T         value_type;
+            typedef Distance  difference_type;
+            typedef Pointer   pointer;
+            typedef Reference reference;
+            typedef Category  iterator_category;
+    
+    };
 
     template <class Iterator>
     struct iterator_traits // to call this you will pass T
