@@ -16,6 +16,7 @@
 #include "type_traits.hpp"
 #include "map.hpp"
 #include "avl.hpp"
+#include "iterator_.hpp"
 
 using std::string;
 using std::cout;
@@ -24,21 +25,22 @@ using std::vector;
 using std::stack;
 using std::map;
 
+// crete class iterator and inhert from it here
+
 namespace ft
 {
     template <typename key_type, class T,typename key_compare,typename size_type,typename Allocator  >
 
-        class iterator  : public std::iterator<std::bidirectional_iterator_tag,T>// ?
+        class iterator  : public std::iterator<std::bidirectional_iterator_tag,T>// use here ft::iterator
         {
             
             public:
-                 
-                typedef T                                   value_type;
-                typedef ptrdiff_t                           difference_type;
-                typedef T*                                  pointer;
-                typedef T&                                  reference;
-                typedef std::bidirectional_iterator_tag     iterator_category;
-                 
+            class const_iterator;
+                typedef T                                          value_type;
+                typedef ptrdiff_t                                   difference_type;
+                typedef  T*                                         pointer;
+                typedef  T&                                         reference;
+                typedef std::bidirectional_iterator_tag             iterator_category;
                 iterator():node(0){}
             
                 iterator(Node<T,size_type> * n):node(n){}
@@ -112,16 +114,16 @@ namespace ft
     
         template <typename key_type, class T,typename key_compare,typename size_type,typename Allocator  >
 
-        class const_iterator  : public std::iterator<std::bidirectional_iterator_tag,T>
+        class const_iterator  //: public std::iterator<std::bidirectional_iterator_tag,T>
         {
             
             public:
-                 
-                typedef T                                         value_type;
+                class iterator;
+                typedef  T                                         value_type;
                 typedef ptrdiff_t                                 difference_type;
                 typedef const T*                                  const_pointer;
                 typedef const T&                                  const_reference;
-                typedef std::bidirectional_iterator_tag     iterator_category;
+                typedef std::bidirectional_iterator_tag         iterator_category;
                  
                 const_iterator():node(0){}
             
@@ -130,9 +132,19 @@ namespace ft
                 const_iterator(const const_iterator& it)
                 {
                     node = it.node;
+                } 
+
+                const_iterator(const iterator& it) // for begin() and end() non const
+                {
+                    node = it.node;
                 }
         
                 const_iterator& operator=(const const_iterator& it)
+                {
+                    node = it.node;
+                    return *this;
+                }
+                const_iterator& operator=(const iterator& it)
                 {
                     node = it.node;
                     return *this;
@@ -173,13 +185,22 @@ namespace ft
                 {
                     return node == obj.node;
                 }
+                bool operator == (const iterator& obj) const
+                {
+                    return node == obj.node;
+                }
                 
                 bool operator!=(const const_iterator& it) const
                 {
                     return node != it.node;
                 }
 
-                const_pointer * operator->() const
+                bool operator!=(const iterator& it) const
+                {
+                    return node != it.node;
+                }
+
+                const_pointer operator->() const
                 {
                     return &node->data;
                 }

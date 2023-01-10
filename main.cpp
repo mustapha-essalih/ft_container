@@ -10,36 +10,50 @@
 #include <exception>
 #include <algorithm>     
 #include<iterator>
-  
+
 
 #include "avl.hpp"
 #include "reverse_iterator.hpp"
 #include "type_traits.hpp"
 #include "map.hpp"
 
+
+// suhould handle const iterator
+
 int main()
-{
-	ft::map<int,int> mymap;
-  ft::map<int,int>::const_iterator it;
+{ 
+ 
+	std:: map<int, int> mp;
+  
+    // insert elements in random order
+    mp.insert(std::make_pair<int,int>(12,120));
+    mp.insert(std::make_pair<int,int>(11,11));
+    mp.insert(std::make_pair<int,int>(15,50));
+    mp.insert(std::make_pair<int,int>(14,40));
+   
+    // when 11 is present
+	std::map<int,int>::iterator it = mp.upper_bound(11);
+    cout << "The upper bound of key 11 is ";
+    cout << (*it).first << " " << (*it).second << endl;
+  
+    // when 13 is not present
+    it = mp.upper_bound(13);
+    cout << "The upper bound of key 13 is ";
+    cout << (*it).first << " " << (*it).second << endl;
+  
+    // when 17 is exceeds the maximum key, so size
+        // of mp is returned as key and value as 0.
+    it = mp.upper_bound(17);
+    cout << "The upper bound of key 17 is ";
+    cout << (*it).first << " " << (*it).second;
 
-  	mymap.insert(ft::make_pair<int,int>(10,1000));
-	mymap.insert(ft::make_pair<int,int>(20,2000));
-	mymap.insert(ft::make_pair<int,int>(30,3000));
-	mymap.insert(ft::make_pair<int,int>(5,3000));
-
-	  std::cout << "a => " << mymap.find(10)->second << '\n';
-
-	
 	return 0;	
 }
 
-	
-  	// ft::map<int,int> m;
+	// std::map<int,int> mymap;
+  	
 
-	// m.insert(ft::make_pair<int,int>(10,1000));
-	// m.insert(ft::make_pair<int,int>(20,2000));
-	// m.insert(ft::make_pair<int,int>(30,3000));
-	// m.insert(ft::make_pair<int,int>(5,3000));
+
 
 
 	// std::map<int,int> m;

@@ -73,6 +73,7 @@
         "mutex": "cpp",
         "ratio": "cpp",
         "stack": "cpp",
-        "__memory": "cpp"
+        "__memory": "cpp",
+        "__cxx_version": "cpp"
     }
 }

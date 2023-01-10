@@ -13,7 +13,7 @@
 #include<iterator>
 
 #include <utility>
-
+ 
 using std::string;
 using std::cout;
 using std::endl;
@@ -51,7 +51,7 @@ namespace ft
             typedef typename allocator_type::const_reference                                                    const_reference;
             typedef size_t                                                                                      size_type;
             typedef typename ft::iterator<key_type,value_type,key_compare,size_type,allocator_type>             iterator;
-            typedef typename ft::const_iterator<key_type,value_type,key_compare,size_type,allocator_type>       const_iterator;
+            typedef typename  ft::const_iterator<key_type,value_type,key_compare,size_type,allocator_type>       const_iterator;
             typedef typename ft::reverse_iterator<iterator>                                                     reverse_iterator;
 
             class value_compare : public std::binary_function<value_type, value_type, bool>
@@ -127,13 +127,13 @@ namespace ft
                 }
                 else
                 { 
-                    avl.tmp = avl.find(avl.root,val);
+                    avl.tmp = avl.search(avl.root,val.first);
                     if(avl.tmp)
                         return pr(avl.tmp,false); 
                 }
                 size_++;
                 avl.insert(val);
-                iterator it(avl.find(avl.root,val));
+                iterator it(avl.search(avl.root,val.first));
                 return pr(it,true);
             }
 
@@ -159,7 +159,7 @@ namespace ft
             {
                 return iterator(avl.minValue(avl.root));
             }
-            const_iterator begin() const
+            const_iterator begin() const 
             {
                 return const_iterator(avl.minValue(avl.root));
             }
@@ -194,7 +194,7 @@ namespace ft
             {
                 if(size() == 0)
                     return iterator(avl.end_node);
-                avl.tmp = avl.find(avl.root,k);
+                avl.tmp = avl.search(avl.root,k);
                 if(avl.tmp)
                     return iterator(avl.tmp);
                 return iterator(avl.end_node);
@@ -204,12 +204,89 @@ namespace ft
             {
                 if(size() == 0)
                     return const_iterator(avl.end_node);
-                avl.tmp = avl.find(avl.root,k);
+                avl.tmp = avl.search(avl.root,k);
                 if(avl.tmp)
                     return const_iterator(avl.tmp);
                 return const_iterator(avl.end_node);
             }
 
+            size_type count (const key_type& k) const
+            {
+                if(size() == 0)
+                    return 0;
+                if(avl.search(avl.root,k))
+                    return 1;
+                return 0;
+            }
+
+            // if found the element returns it, if not found returns next greter then k,
+            // if k is greter then the max element in map will returns garbage value
+            iterator lower_bound (const key_type& k)
+            {
+                if(size() == 0)
+                    return iterator(avl.end_node);
+                avl.tmp = avl.search(avl.root,k);
+                if(avl.tmp)
+                    return iterator(avl.tmp);
+                if(key_compare_(k,avl.findMX(avl.root)->data.first))
+                    return iterator(avl.findNodeByK(avl.root,k));
+                else
+                    return iterator(avl.end_node);
+            }
+
+            const_iterator lower_bound (const key_type& k) const
+            {
+                if(size() == 0)
+                    return const_iterator(avl.end_node);
+                avl.tmp = avl.search(avl.root,k);
+                if(avl.tmp)
+                    return const_iterator(avl.tmp);
+                if(key_compare_(k,avl.findMX(avl.root)->data.first))
+                    return const_iterator(avl.findNodeByK(avl.root,k));
+                else
+                    return const_iterator(avl.end_node);
+            }
+
+            iterator upper_bound (const key_type& k)
+            {
+                if(size() == 0)
+                    return iterator(avl.end_node);
+                avl.tmp = avl.search(avl.root,k);
+                if(avl.tmp)
+                    return iterator(avl.getNext(avl.tmp));// if element is exist returns next
+                if(key_compare_(k,avl.findMX(avl.root)->data.first))// if smaller then max element return next of this k
+                    return iterator(avl.findNodeByK(avl.root,k));
+                else
+                    return iterator(avl.end_node);
+            }
+            const_iterator upper_bound (const key_type& k) const
+            {
+                if(size() == 0)
+                    return const_iterator(avl.end_node);
+                avl.tmp = avl.search(avl.root,k);
+                if(avl.tmp)
+                    return const_iterator(avl.getNext(avl.tmp));// if element is exist returns next
+                if(key_compare_(k,avl.findMX(avl.root)->data.first))// if smaller then max element return next of this k
+                    return const_iterator(avl.findNodeByK(avl.root,k));
+                else
+                    return const_iterator(avl.end_node);
+            }
+            /////////////////////////
+            // map: Element access:
+            /////////////////////////
+
+            // mapped_type& operator[] (const key_type& k)
+            // {
+                 
+            //     // cout <<  (*((this->insert(ft::make_pair(k,mapped_type()))).first));
+                 
+            //     return aa;
+            // }
+
+            mapped_type& at (const key_type& k)
+            {
+                
+            }
 
             ~map()
             {
@@ -220,6 +297,8 @@ namespace ft
                 avl_data_strcut avl;
                 size_type size_;
                 allocator_type alloc;
+                key_compare key_compare_;
+                mapped_type aa;
     };
 
 } 

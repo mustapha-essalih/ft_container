@@ -183,7 +183,6 @@ class avl
 
         Node<value_type,size_type>* insert(Node<value_type,size_type> *par, Node<value_type,size_type>* root, T data)
         {
-
             if(!root)
             {
                 Node<value_type,size_type>tmp(data,par);
@@ -256,55 +255,18 @@ class avl
                 node = node->parent;
             return node->parent;
         }
-        
-
-
-        Node<value_type,size_type> *find(Node<value_type,size_type>* node, T key) 
+         
+        Node<value_type,size_type> *search(Node<value_type,size_type>* root, const key_type & key) const // search() const because key_type is const
         {
-            if (node == nullptr)
-                return nullptr;
-
-        // if (node->data.first == key.first)
-            
-            if (!key_compare_(node->data.first, key.first) && !key_compare_(key.first,node->data.first))// because key_compare_ return < and convert it to ==
-                return node;
-        
-            
-            Node<value_type,size_type> * res1 = find(node->left, key);
-            // node found, no need to look further
-            if(res1) return res1;
-        
-            /* node is not found in left,
-            so recur on right subtree */
-            Node<value_type,size_type> * res2 = find(node->right, key);
-        
-            return res2;
+            if (root == nullptr || (!key_compare_(root->data.first, key) && !key_compare_(key,root->data.first)))// because key_compare_ return < and convert it to ==
+                return root;
+             
+            if (key_compare_(root->data.first, key))
+                return search(root->right, key);        
+            return search(root->left, key);
         }
  
-
-        Node<value_type,size_type> *find(Node<value_type,size_type>* node, key_type key) 
-        {
-            if (node == nullptr)
-                return nullptr;
-
-        // if (node->data.first == key.first)
-            
-            if (!key_compare_(node->data.first, key) && !key_compare_(key,node->data.first))// because key_compare_ return < and convert it to ==
-                return node;
-        
-            
-            Node<value_type,size_type> * res1 = find(node->left, key);
-            // node found, no need to look further
-            if(res1) return res1;
-        
-            /* node is not found in left,
-            so recur on right subtree */
-            Node<value_type,size_type> * res2 = find(node->right, key);
-        
-            return res2;
-        }
- 
-       Node<value_type,size_type> * minValue(Node<value_type,size_type>* node)
+       Node<value_type,size_type> * minValue(Node<value_type,size_type>* node) const
         {
             if(node == nullptr)
                 return nullptr;
@@ -325,6 +287,22 @@ class avl
             return (tmp);
         }
 
+          
+        Node<value_type,size_type> * findNodeByK(Node<value_type,size_type> *root, key_type k) 
+        {
+            Node<value_type,size_type>* x = root;
+            Node<value_type,size_type>* y = end_node;
+        
+            while (x != 0 && x->left != x && x != x->right)
+            {
+                if (key_compare_(x->data.first, k))
+                    x = x->right;
+                else
+                    y = x, x = x->left;
+            }
+            return y;
+        }
+
         ~avl()
         {
 
@@ -337,6 +315,4 @@ class avl
 
 
 #endif
-
-
-
+ 
