@@ -36,12 +36,14 @@ namespace ft
                 {
                 }
                 
-                pair& operator= (const pair& pr)
-                { 
-                    first = std::move(pr.first);
-                    second = std::move(pr.second);
-                    return *this;
-                }
+    //             template<class _U1, class _U2>
+    //      pair&
+    //      operator=(pair<_U1, _U2>& __p)
+    //  {
+    //    first = std::move(__p.first);
+    //    second = std::move(__p.second);
+    //    return *this;
+    //  }
   
                 ~pair()
                 {

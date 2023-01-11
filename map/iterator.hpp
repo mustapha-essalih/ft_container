@@ -130,8 +130,15 @@ namespace ft
                 const_map_iterator():node(0){}
             
                 const_map_iterator(Node<value_type,size_type> * n):node(n){}
-                          
+                /*
+                    if decalare const_iterator and assign it begin() will enter in this copy constructor;
+                    if decalre const map will cal begin() const and enter to const iterator.
+                */          
                 const_map_iterator(const map_iterator<key_type,value_type,key_compare,size_type,Allocator> & it)
+                {
+                    node = it.node;
+                }    
+                const_map_iterator(const const_map_iterator & it)
                 {
                     node = it.node;
                 }

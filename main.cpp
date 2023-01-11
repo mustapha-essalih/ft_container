@@ -23,24 +23,28 @@ using std::map;
  
 #include "map/map.hpp"
  
- 
+ // handle const_reverse_iterator operators
 
+
+void func()
+{
+	system("leaks ft_container");
+}
 
 
 int main()
 {
-    ft::map<int,int>  m;
+	ft::map<int,int>  m;
+	// ft::map<int,int>  m1;
 
-    m.insert(ft::make_pair<int,int>(10,1000));
-    m.insert(ft::make_pair<int,int>(20,2000));
-    m.insert(ft::make_pair<int,int>(30,3000));
-    m.insert(ft::make_pair<int,int>(40,4000));
-    
+	 
+	m.insert(ft::make_pair<int,int>(10,1000));
+	 
+	m.insert(ft::make_pair<int,int>(20,2000));
 
-  // show content:
-  ft::map<int,int>::reverse_iterator rit;
-  for (rit=m.rbegin(); rit!=m.rend(); ++rit)
-    std::cout << rit->first << " => " << rit->second << '\n';
-    
 
+	m.remove(ft::make_pair<int,int>(10,1000));
+	m.remove(ft::make_pair<int,int>(20,2000));// sigfault in this case
+	// ft::map<int,int>::const_reverse_iterator rit;
+	atexit(func);
 } 

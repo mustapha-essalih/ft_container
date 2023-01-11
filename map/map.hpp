@@ -40,20 +40,21 @@ namespace ft
             // map member types //   
             ///////////////////
 
-            typedef Key                                                                                                 key_type;
-            typedef T										                                                            mapped_type;
-            typedef ft::pair<const Key, T>                                                                              value_type;
-            typedef Compare                                                                                             key_compare;
-            typedef Allocator                                                                                           allocator_type;
-            typedef typename allocator_type::pointer                                                                    pointer;
-            typedef typename allocator_type::const_pointer                                                              const_pointer;
-            typedef typename allocator_type::reference                                                                  reference;
-            typedef typename allocator_type::const_reference                                                            const_reference;
-            typedef size_t                                                                                              size_type;
+            typedef Key                                                                                                         key_type;
+            typedef T										                                                                    mapped_type;
+            typedef ft::pair<const Key, T>                                                                                      value_type;
+            typedef Compare                                                                                                     key_compare;
+            typedef Allocator                                                                                                   allocator_type;
+            typedef typename allocator_type::pointer                                                                            pointer;
+            typedef typename allocator_type::const_pointer                                                                      const_pointer;
+            typedef typename allocator_type::reference                                                                          reference;
+            typedef typename allocator_type::const_reference                                                                    const_reference;
+            typedef size_t                                                                                                      size_type;
         
-            typedef typename ft::map_iterator<key_type,value_type,key_compare,size_type,allocator_type>                 iterator;
-            typedef typename ft::const_map_iterator<key_type,value_type,key_compare,size_type,allocator_type>           const_iterator;
-            typedef typename ft::reverse_iterator<iterator>                                                             reverse_iterator;
+            typedef typename ft::map_iterator<key_type,value_type,key_compare,size_type,allocator_type>                         iterator;
+            typedef typename ft::const_map_iterator<key_type,value_type,key_compare,size_type,allocator_type>                   const_iterator;
+            typedef typename ft::reverse_iterator<iterator>                                                                     reverse_iterator;
+            typedef typename ft::reverse_iterator<const_iterator>                                                               const_reverse_iterator;
 
             
             class value_compare : public std::binary_function<value_type, value_type, bool>
@@ -177,15 +178,20 @@ namespace ft
             {
                 return reverse_iterator(avl.getNext(avl.findMX(avl.root)));// this is the last element in avl
             }
+            
+            const_reverse_iterator rbegin() const
+            {
+                return const_reverse_iterator(avl.getNext(avl.findMX(avl.root))); // this is the last element in avl
+            }
             reverse_iterator rend()// before firt element
             {
                 return reverse_iterator(avl.minValue(avl.root));// ? 
             }
 
-            // const_reverse_iterator rend()// before firt element
-            // {
-            //     return const_reverse_iterator(avl.minValue(avl.root));// ? 
-            // }
+            const_reverse_iterator rend() const // before firt element
+            {
+                return const_reverse_iterator(avl.minValue(avl.root));// ? 
+            }
 
 
             ////////////////////
@@ -285,9 +291,19 @@ namespace ft
             //     return aa;
             // }
 
-            mapped_type& at (const key_type& k)
-            {
+            // mapped_type& at (const key_type& k)
+            // {
                 
+            // }
+
+            void clear()
+            {
+                avl.inOrder(avl.root);
+            }
+
+            void remove(value_type k)
+            {
+                avl.deleteNode(avl.root,k);
             }
 
             ~map()
