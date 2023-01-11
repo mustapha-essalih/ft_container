@@ -74,7 +74,7 @@ namespace ft
             /////////////////////
 
             // default constructor 
-            map (const key_compare& comp = key_compare(),const allocator_type& alloc = allocator_type()):avl()
+            map (const key_compare& comp = key_compare(),const allocator_type& alloc = allocator_type())
             {
                 size_ = 0;
             }
@@ -85,15 +85,41 @@ namespace ft
             }
             map (const map& x)// copy constructor
             {
-                *this = x;
+                 
+                if(x.avl.root)
+                {
+                        *this->avl.root = *x.avl.root;
+                }
+                if(x.avl.tmp)
+                    *this->avl.tmp = *x.avl.tmp;
+                if(x.avl.end_node)
+                    *this->avl.end_node = *x.avl.end_node;
+                if(x.alloc)
+                    this->alloc = x.alloc;
+                if(x.key_compare_)
+                    this->key_compare_ = x.key_compare_;
+                this->size_ = x.size_;
             }
             // operator=
             map& operator= (const map& x) // ?
             {
                 if(this != &x)
                 {
-                    this->avl = x.avl;
+                    // clear and reassign
                     this->size_ = x.size_;
+                    // if(x.avl.root)
+                    // {
+                    //     this->avl.root = x.avl.root;
+                    // }
+                    // if(x.avl.tmp)
+                    //     this->avl.tmp = x.avl.tmp;
+                    // if(x.avl.end_node)
+                    //     this->avl.end_node = x.avl.end_node;
+                 
+                    // this->alloc = x.alloc;
+                
+                    // this->key_compare_ = x.key_compare_;
+                    // this->size_ = x.size_;
                 }
                 return *this;
             }
@@ -122,7 +148,7 @@ namespace ft
             {
                 typedef ft::pair<iterator, bool> pr;
 
-                if(size_ == 0)
+                if(size_ == 0) 
                 {
                     avl.insert(val);        
                     size_++;
@@ -139,10 +165,7 @@ namespace ft
                 iterator it(avl.search(avl.root,val.first));
                 return pr(it,true);
             }
-
-            //////////////////
-            // map: Iterators
-            /////////////////
+            
 
             template <class InputIterator>
             void insert(InputIterator first, InputIterator last)
@@ -150,6 +173,7 @@ namespace ft
                 for(; first != last; ++first)
                     insert(*first);
             }
+
             iterator insert(iterator _where, const value_type& val)
             {
                 std::pair<iterator, bool> res = insert(val);
@@ -158,6 +182,23 @@ namespace ft
                 else 
                     return end();
             }
+            
+            
+            void erase (iterator position)
+            {
+
+            }
+            
+            
+            // void erase (iterator first, iterator last)
+            // {
+
+            // }
+            
+            //////////////////
+            // map: Iterators
+            /////////////////
+
             iterator begin()
             {
                 return iterator(avl.minValue(avl.root));
@@ -283,32 +324,34 @@ namespace ft
             // map: Element access:
             /////////////////////////
 
-            // mapped_type& operator[] (const key_type& k)
-            // {
-                 
-            //     // cout <<  (*((this->insert(ft::make_pair(k,mapped_type()))).first));
-                 
-            //     return aa;
-            // }
+            mapped_type& operator[] (const key_type& k)
+            {
+                iterator i = lower_bound(k);
+        // i->first is greater than or equivalent to k.
+                if (i == end() || key_compare()(k, i->first))
+                    i = (insert(value_type(k, mapped_type()))).first;
+                return i->second;
+            }
 
             // mapped_type& at (const key_type& k)
             // {
                 
             // }
 
+            void remove(key_type k)
+            {
+                 
+                avl.deleteNode(k);
+
+            }
             void clear()
             {
                 avl.inOrder(avl.root);
             }
-
-            void remove(value_type k)
-            {
-                avl.deleteNode(avl.root,k);
-            }
-
+ 
             ~map()
             {
-
+                // clear();
             }
             private:
                 typedef avl<key_type,value_type,key_compare,size_type,allocator_type> avl_data_strcut;
@@ -316,7 +359,6 @@ namespace ft
                 size_type size_;
                 allocator_type alloc;
                 key_compare key_compare_;
-                mapped_type aa;
     };
     
 

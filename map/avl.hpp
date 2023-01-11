@@ -70,12 +70,17 @@ class avl
         Node<value_type,size_type> * root;
         Node<value_type,size_type> * tmp;
         Node<value_type,size_type> * end_node;
+        // Node<value_type,size_type> * newNode;
  
         avl()
         {
-            Node<value_type,size_type> tmp(T(),nullptr);
+            
+            // newNode = nullptr;
+            root = nullptr;
+            tmp = nullptr;
+            Node<value_type,size_type> temp(T(),nullptr);
             end_node  = alloc.allocate(sizeof(Node<value_type,size_type>));      // free?
-            alloc.construct(end_node,tmp);
+            alloc.construct(end_node,temp);
         }   
          
         bool empty()
@@ -183,7 +188,6 @@ class avl
             if(!root)
             {
                 Node<value_type,size_type>tmp(data,par);
-                
                 Node<value_type,size_type> * newNode = alloc.allocate(sizeof(Node<value_type,size_type>));
                 alloc.construct(newNode,tmp);
                 return newNode;  
@@ -224,7 +228,8 @@ class avl
 
         void insert(T data)
         {
-            root = insert(nullptr, root, data);  
+            root = insert(nullptr, root, data);
+              
             end_node->left = root;
             root->parent = end_node; 
         }
@@ -300,75 +305,79 @@ class avl
             return y;
         }
 
-        Node<value_type,size_type> *  deleteNode(Node<value_type,size_type> *  root, value_type v) 
+        
+        Node<value_type,size_type> * deleteNodeHelper(Node<value_type,size_type> * root, key_type key) 
         {
-            // base case 
-            if (root == nullptr) 
-                return nullptr;
-
-            // If the key to be deleted is smaller than the root's key, 
-            // then it lies in left subtree 
+            // search the key
+            if (root == nullptr)
+                return root;
             
-            else if (v < root-> data) 
-                root-> left = deleteNode(root-> left, v);
-            
-            // If the data to be deleted is greater than the root's data, 
-            // then it lies in right subtree 
-            
-            else if (v > root-> data) 
-                root-> right = deleteNode(root-> right, v);
-            
-            // if data is same as root's data, then This is the node to be deleted 
-            
-            else 
+            else if (key < root->data.first) 
+                root->left = deleteNodeHelper(root->left, key);
+            else if (key > root->data.first) 
             {
-            // node with only one child or no child 
-                if (root-> left == nullptr) 
+                 
+                root->right = deleteNodeHelper(root->right, key);
+            }
+            else {
+                // the key has been found, now delete it
+                // case 1: node is a leaf node
+                if (root->left == nullptr && root->right == nullptr) 
                 {
-                    Node<value_type,size_type> *  temp = root-> right;
                     alloc.deallocate(root,sizeof(root));
-                    return temp;
-                } 
-                else if (root-> right == nullptr) 
+                    // alloc.deallocate(end_node,sizeof(end_node));
+                    root = nullptr;
+                }
+
+                // case 2: node has only one child
+                else if (root->left == nullptr) 
                 {
-                    Node<value_type,size_type> *  temp = root-> left;
-                    alloc.deallocate(root,sizeof(root));
-                    return temp;
-                } 
+                    Node<value_type,size_type> * temp = root;
+                    root = root->right;
+                    alloc.deallocate(temp,sizeof(temp));
+                }
+
+                else if (root->right == nullptr) 
+                {
+                    Node<value_type,size_type> * temp = root;
+                    root = root->left;
+                    alloc.deallocate(temp,sizeof(temp));
+                }
+
+                // case 3: has both children
                 else 
                 {
-                    // node with two children: Get the inorder successor (smallest 
-                    // in the right subtree) 
-                    Node<value_type,size_type> *  temp = minValue(root-> right);
-                    // Copy the inorder successor's content to this node 
-                    root  = temp ;
-                    // Delete the inorder successor 
-                    root-> right = deleteNode(root-> right, temp -> data);
-                    //deleteNode(r->right, temp->value); 
+                    Node<value_type,size_type> * temp = minValue(root->right);
+                    root->data= temp->data;
+                    root->right = deleteNodeHelper(root->right, temp->data.first);
                 }
-            }
-
+            } 
+            
             int bf = getBalance(root);
-            // Left Left Imbalance/Case or Right rotation 
-            if (bf == 2 && getBalance(root-> left) >= 0)
+    // Left Left Imbalance/Case or Right rotation 
+            if (bf == 2 && getBalance(root -> left) >= 0)
                 return rightRotate(root);
             // Left Right Imbalance/Case or LR rotation 
-            else if (bf == 2 && getBalance(root-> left) == -1) 
-            {
-                root-> left = leftRotate(root-> left);
-                return rightRotate(root);
+            else if (bf == 2 && getBalance(root -> left) == -1) {
+                root -> left = leftRotate(root -> left);
+            return rightRotate(root);
             }
             // Right Right Imbalance/Case or Left rotation	
-            else if (bf == -2 && getBalance(root-> right) <= -0)
+            else if (bf == -2 && getBalance(root -> right) <= -0)
                 return leftRotate(root);
             // Right Left Imbalance/Case or RL rotation 
-            else if (bf == -2 && getBalance(root-> right) == 1) 
-            {
-                root-> right = rightRotate(root-> right);
-                return leftRotate(root);
+            else if (bf == -2 && getBalance(root -> right) == 1) {
+                root -> right = rightRotate(root -> right);
+            return leftRotate(root);
             }
 
+ 
             return root;
+        }
+
+        void deleteNode(key_type data) 
+        {
+            root = deleteNodeHelper(root, data);
         }
 
         void inOrder(Node<value_type,size_type>* node)
@@ -376,19 +385,17 @@ class avl
             if (node == nullptr)
                 return;
         
-            /* first recur on left child */
             inOrder(node->left);
         
-            /* then print the data of node */
-            deleteNode(root,node->data);
+            deleteNode(node->data.first);
         
-            /* now recur on right child */
             inOrder(node->right);
         }
-
+        
         ~avl()
-        {
+        { 
             alloc.deallocate(end_node,sizeof(end_node));
+            inOrder(root);// if clear in main root will be null 
         }
         private:
             

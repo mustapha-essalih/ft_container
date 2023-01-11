@@ -60,7 +60,7 @@ namespace ft
 
                 map_iterator& operator++() 
                 { 
-                    node = a.getNext(node);
+                    node = getNext(node);
                       
                     return *this;                    
                 }
@@ -69,14 +69,14 @@ namespace ft
                 { 
                     map_iterator temp = *this;
 
-                    node = a.getNext(node);
+                    node = getNext(node);
                      
                     return temp;                    
                 }
                 
                 map_iterator& operator--() 
                 { 
-                    node = a.getPrev(node);
+                    node = getPrev(node);
                      
                     return *this;                    
                 }
@@ -84,7 +84,7 @@ namespace ft
                 {
                     map_iterator temp = *this;
                     
-                    node = a.getPrev(node);
+                    node =  getPrev(node);
                      
                     return temp;
                 }
@@ -109,8 +109,23 @@ namespace ft
                     return node->data;
                 }
             private:
-                friend class avl;
-                avl<key_type,value_type,key_compare,size_type,Allocator> a;
+                Node<value_type,size_type>* getNext(Node<value_type,size_type>* node)
+                {
+                    if(node->right != nullptr)
+                        return minValue(node->right);
+                    while (!is_left_child(node))
+                        node = node->parent;
+                    return node->parent;
+                }
+                Node<value_type,size_type>* getPrev(Node<value_type,size_type>* node)
+                {
+                    if(node->left != nullptr)
+                        return findMX(node->left);
+                    while (is_left_child(node))
+                        node = node->parent;
+                    return node->parent;
+                }
+                // avl<key_type,value_type,key_compare,size_type,Allocator> a;
 
     }; 
     
@@ -156,7 +171,7 @@ namespace ft
 
                 const_map_iterator& operator++() 
                 { 
-                    node = a.getNext(node);
+                    node = getNext(node);
                       
                     return *this;                    
                 }
@@ -165,14 +180,14 @@ namespace ft
                 { 
                     const_map_iterator temp = *this;
 
-                    node = a.getNext(node);
+                    node = getNext(node);
                      
                     return temp;                    
                 }
                 
                 const_map_iterator& operator--() 
                 { 
-                    node = a.getPrev(node);
+                    node = getPrev(node);
                      
                     return *this;                    
                 }
@@ -180,7 +195,7 @@ namespace ft
                 {
                     const_map_iterator temp = *this;
                     
-                    node = a.getPrev(node);
+                    node = getPrev(node);
                      
                     return temp;
                 }
@@ -214,9 +229,24 @@ namespace ft
                     return node->data;
                 }
             private:
-                friend class avl;
-                avl<key_type,value_type,key_compare,size_type,Allocator> a;
-                Node<value_type,size_type> * node;             
+                Node<value_type,size_type> * node;         
+
+                Node<value_type,size_type>* getNext(Node<value_type,size_type>* node)
+                {
+                    if(node->right != nullptr)
+                        return minValue(node->right);
+                    while (!is_left_child(node))
+                        node = node->parent;
+                    return node->parent;
+                }
+                Node<value_type,size_type>* getPrev(Node<value_type,size_type>* node)
+                {
+                    if(node->left != nullptr)
+                        return findMX(node->left);
+                    while (is_left_child(node))
+                        node = node->parent;
+                    return node->parent;
+                }
     }; 
 };
 
