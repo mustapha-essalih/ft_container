@@ -50,6 +50,7 @@ namespace ft
             typedef typename allocator_type::reference                                                                          reference;
             typedef typename allocator_type::const_reference                                                                    const_reference;
             typedef size_t                                                                                                      size_type;
+            typedef ptrdiff_t                                   difference_type;
         
             typedef typename ft::map_iterator<key_type,value_type,key_compare,size_type,allocator_type>                         iterator;
             typedef typename ft::const_map_iterator<key_type,value_type,key_compare,size_type,allocator_type>                   const_iterator;
@@ -103,6 +104,11 @@ namespace ft
             // operator=
             map& operator= (const map& x) // ?
             {
+                //         clear();
+                // const_iterator it;
+                // for (it = n.begin(); it != n.end(); it++){
+                //     insert(*it);
+                // }
                 if(this != &x)
                 {
                     // clear and reassign
@@ -137,7 +143,7 @@ namespace ft
             }
             size_type max_size() const
             {
-                std::allocator<map<key_compare,T> > A; // ?
+                std::allocator<map<key_compare,T> > A; // max size ig less the std::map because i work with avl
                 return A.max_size();
             }
 
@@ -186,14 +192,21 @@ namespace ft
             
             void erase (iterator position)
             {
+                avl.deleteNode(position.node->data.first);
+            }
 
+            size_type erase (const key_type& k)
+            {
+                if(!avl.search(avl.root,k))
+                    return 0;
+                avl.deleteNode(k);
+                return 1;
             }
             
-            
-            // void erase (iterator first, iterator last)
-            // {
-
-            // }
+            void clear()
+            {
+                avl.inOrder(avl.root);
+            }
             
             //////////////////
             // map: Iterators
@@ -201,11 +214,17 @@ namespace ft
 
             iterator begin()
             {
-                return iterator(avl.minValue(avl.root));
+                avl.tmp = avl.minValue(avl.root);
+                if(!avl.tmp)
+                    return iterator(avl.end_node);
+                return iterator(avl.tmp);
             }
             const_iterator begin() const 
             {
-                return const_iterator(avl.minValue(avl.root));
+                avl.tmp = avl.minValue(avl.root);
+                if(!avl.tmp)
+                    return const_iterator(avl.end_node);
+                return const_iterator(avl.tmp);
             }
             iterator end()
             {
@@ -233,7 +252,6 @@ namespace ft
             {
                 return const_reverse_iterator(avl.minValue(avl.root));// ? 
             }
-
 
             ////////////////////
             // map: Operations:
@@ -338,15 +356,36 @@ namespace ft
                 
             // }
 
-            void remove(key_type k)
+             
+            iterator PostIncrement(iterator & it)
             {
-                 
-                avl.deleteNode(k);
-
+                iterator copy = it;
+                ++it;
+                return copy;
             }
-            void clear()
+
+            Node<value_type,size_type> * returnNext(Node<value_type,size_type> * ptr)
             {
-                avl.inOrder(avl.root);
+                Node<value_type,size_type> * next = avl.getNext(ptr);
+                
+                return next;
+            }
+
+            void erase (iterator first, iterator last)
+            {
+
+                if(first == begin() && last == end())
+                {
+                    avl.inOrder(avl.root);
+                    return;
+                }
+                
+                Node<value_type,size_type> * ptr = first.node;
+                Node<value_type,size_type> * ptr1 = first.node;
+
+                
+ 
+                
             }
  
             ~map()

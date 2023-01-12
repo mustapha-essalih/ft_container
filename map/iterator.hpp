@@ -109,6 +109,31 @@ namespace ft
                     return node->data;
                 }
             private:
+
+                Node<value_type,size_type> * minValue(Node<value_type,size_type>* node) const
+                {
+                    if(node == nullptr)
+                        return nullptr;
+                    Node<value_type,size_type>* tmp = node;
+                
+                    /* loop down to find the leftmost leaf */
+                    while (tmp->left != nullptr) 
+                        tmp = tmp->left;
+                    return (tmp);
+                }
+        
+                Node<value_type,size_type>* findMX(Node<value_type,size_type>* r)
+                {
+                    Node<value_type,size_type>* tmp = r;
+                
+                    while (tmp->right != nullptr) 
+                        tmp = tmp->right;
+                    return (tmp);
+                }
+                bool is_left_child(Node<value_type,size_type> * node)
+                {
+                    return node == node->parent->left;
+                }
                 Node<value_type,size_type>* getNext(Node<value_type,size_type>* node)
                 {
                     if(node->right != nullptr)
@@ -125,7 +150,6 @@ namespace ft
                         node = node->parent;
                     return node->parent;
                 }
-                // avl<key_type,value_type,key_compare,size_type,Allocator> a;
 
     }; 
     
@@ -230,6 +254,32 @@ namespace ft
                 }
             private:
                 Node<value_type,size_type> * node;         
+
+                Node<value_type,size_type> * minValue(Node<value_type,size_type>* node) const
+                {
+                    if(node == nullptr)
+                        return nullptr;
+                    Node<value_type,size_type>* tmp = node;
+                
+                    /* loop down to find the leftmost leaf */
+                    while (tmp->left != nullptr) 
+                        tmp = tmp->left;
+                    return (tmp);
+                }
+        
+                Node<value_type,size_type>* findMX(Node<value_type,size_type>* r)
+                {
+                    Node<value_type,size_type>* tmp = r;
+                
+                    while (tmp->right != nullptr) 
+                        tmp = tmp->right;
+                    return (tmp);
+                }
+                 
+                bool is_left_child(Node<value_type,size_type> * node)
+                {
+                    return node == node->parent->left;
+                }
 
                 Node<value_type,size_type>* getNext(Node<value_type,size_type>* node)
                 {

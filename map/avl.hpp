@@ -63,7 +63,7 @@ class avl
         
         typedef typename allocator_type::template rebind<Node<value_type,size_type> >::other node_allocator;
         
-        
+        size_type i;
 
         node_allocator alloc;
 
@@ -74,7 +74,7 @@ class avl
  
         avl()
         {
-            
+            i = 0;
             // newNode = nullptr;
             root = nullptr;
             tmp = nullptr;
@@ -193,7 +193,7 @@ class avl
                 return newNode;  
             }
  
-            if (data < root->data)
+            if (data < root->data)// use key comap
                 root->left = insert(root, root->left, data);
 
             else if (data > root->data)
@@ -306,20 +306,19 @@ class avl
         }
 
         
-        Node<value_type,size_type> * deleteNodeHelper(Node<value_type,size_type> * root, key_type key) 
+        Node<value_type,size_type> * deleteNodeHelper(Node<value_type,size_type> * root,  key_type  key) 
         {
-            // search the key
+            
+             // search the key
             if (root == nullptr)
                 return root;
             
-            else if (key < root->data.first) 
+            else if(key_compare_(key, root->data.first))
                 root->left = deleteNodeHelper(root->left, key);
-            else if (key > root->data.first) 
-            {
-                 
+            else if(key_compare_(root->data.first, key))
                 root->right = deleteNodeHelper(root->right, key);
-            }
-            else {
+            else 
+            { 
                 // the key has been found, now delete it
                 // case 1: node is a leaf node
                 if (root->left == nullptr && root->right == nullptr) 
@@ -371,11 +370,10 @@ class avl
             return leftRotate(root);
             }
 
- 
             return root;
         }
 
-        void deleteNode(key_type data) 
+        void deleteNode( key_type  data) 
         {
             root = deleteNodeHelper(root, data);
         }
@@ -386,7 +384,7 @@ class avl
                 return;
         
             inOrder(node->left);
-        
+            
             deleteNode(node->data.first);
         
             inOrder(node->right);

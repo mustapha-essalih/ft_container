@@ -7,10 +7,10 @@
 #include <iostream>
 #include <string>
 #include <exception>
-#include <algorithm>     
+#include <algorithm>
 #include<iterator>
- 
- 
+
+
 
 using std::string;
 using std::cout;
@@ -19,10 +19,10 @@ using std::vector;
 using std::stack;
 using std::map;
 
- 
- 
+
+
 #include "map/map.hpp"
- 
+
  // handle const_reverse_iterator operators
 
 
@@ -34,42 +34,39 @@ void func()
 
 int main()
 {
-	ft::map<int,int>  m;
-	 
- 
-	m.insert(ft::make_pair<int,int>(10,1000));
+	ft::map<char,int> mymap;
+	ft::map<char,int>::iterator it;
+
+	// insert some values:
+	mymap['a']=10;
+	mymap['b']=20;
+	mymap['c']=30;
+	mymap['d']=40;
+	mymap['e']=50;
+	mymap['f']=60;
+
+	// it=mymap.find('b');
+	// mymap.erase (it);                   // erasing by iterator
+
+	// mymap.erase ('c');                  // erasing by key
+
+	it=mymap.find ('b');
+	mymap.erase ( it, mymap.end() );    // erasing by range
+
+	// show content:
+	// for (it=mymap.begin(); it!=mymap.end(); ++it)
+	// 	std::cout << it->first << " => " << it->second << '\n';
+
 	
-	// m.insert(ft::make_pair<int,int>(19,2000));
 
-	 
-	// m.insert(ft::make_pair<int,int>(109,2000));
-	// m.insert(ft::make_pair<int,int>(-4,2000));
-	// m.insert(ft::make_pair<int,int>(-9,2000));
-	// m.insert(ft::make_pair<int,int>(155,2000));
-	// m.insert(ft::make_pair<int,int>(15,2000));
 
-	  
- 	// m.remove(10);
 
-	// m.remove(19);
-	// m.remove(109);
-	// m.remove(-4);
-	// m.remove(-9);
-	// m.remove(15);
-	// m.remove(155);
-	// m.remove(ft::make_pair<int,int>(-9,2000));
-	// m.remove(ft::make_pair<int,int>(155,2000));
-	// m.remove(ft::make_pair<int,int>(15,2000));
-	 
 
- 
-	// m.remove(std::make_pair<int,int>(-4,2000));
-	// m.remove(std::make_pair<int,int>(-4,2000));
-	// m.clear();
-	// m1 = m;
 
-	// cout << m.size() << endl;
-	// m1.clear();
-	 
-	atexit(func);
-} 
+
+
+
+
+
+	// atexit(func);
+}
