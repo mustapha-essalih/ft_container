@@ -26,7 +26,7 @@ namespace ft
                 first_type  first;
                 second_type  second;
 
-                pair() : first(), second() { }
+                pair(): first(), second() { }
 
                 template<class U, class V>
                 pair (const ft::pair<U,V> & pr):first(pr.first),second(pr.second)
@@ -36,11 +36,11 @@ namespace ft
                 {
                 }
                 
-                pair& operator=(pair& __p)
+         	
+                pair& operator= (const pair& pr)
                 { 
-                    // this->first = __p.first;
-                    // first = std::move(__p.first);
-                    second = std::move(__p.second);
+                    first = std::move(pr.first);
+                    second = std::move(pr.second);
                     return *this;
                 }
   

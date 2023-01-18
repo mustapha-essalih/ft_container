@@ -12,10 +12,7 @@
 #include <exception>
 #include <algorithm>     
 #include<iterator>
- 
-#include "../utils/iterator_traits.hpp"
-#include "../map/avl.hpp"
-#include "../utils/type_traits.hpp"
+  
  
 using std::string;
 using std::cout;
@@ -23,9 +20,8 @@ using std::endl;
 using std::vector;
 using std::stack;
 using std::map;
-
-// crete class iterator and inhert from it here
-
+#include "red_black_tree.hpp"
+ 
 namespace ft 
 {
     template <typename key_type, class T,typename key_compare,typename size_type,typename Allocator  >
@@ -38,14 +34,26 @@ namespace ft
                 typedef ptrdiff_t                                   difference_type;
                 typedef  T*                                         pointer;
                 typedef  T&                                         reference;
-                typedef ft::bidirectional_iterator_tag              iterator_category;
+                typedef std::bidirectional_iterator_tag              iterator_category;
                 
-                Node<value_type,size_type> * node;             
+                Node_struct<value_type,size_type> * node;             
             
-                
                 map_iterator():node(0){}
             
-                map_iterator(Node<value_type,size_type> * n):node(n){}
+                map_iterator(Node_struct<value_type,size_type> * n):node(n)
+                {
+                }
+                map_iterator(Node_struct<value_type,size_type> * n,Node_struct<value_type,size_type> * r):node(n)
+                {
+                    root = r;
+                }
+                map_iterator(Node_struct<value_type,size_type> * n,Node_struct<value_type,size_type> * end,Node_struct<value_type,size_type> * begin):node(n)
+                {
+                    max = end;
+                    min = begin;
+                    // cout << min->data.first << endl;
+                    // cout << max->data.first << endl;
+                }
                         
                 map_iterator(const map_iterator& it)
                 {
@@ -54,38 +62,38 @@ namespace ft
         
                 map_iterator& operator=(const map_iterator& it)
                 {
-                    node = it.node;
+                    if(this != &it)
+                        node = it.node;
                     return *this;
                 }
 
                 map_iterator& operator++() 
                 { 
+                    if(node == maxValue(root))
+                    {
+                        node = node->right;
+                        return *this;                    
+                    }
                     node = getNext(node);
-                      
                     return *this;                    
                 }
 
+                map_iterator& operator--() 
+                { 
+                     node = getPrev(node);
+                    return *this;                    
+                }
                 map_iterator operator++(int) 
                 { 
                     map_iterator temp = *this;
-
                     node = getNext(node);
-                     
                     return temp;                    
                 }
                 
-                map_iterator& operator--() 
-                { 
-                    node = getPrev(node);
-                     
-                    return *this;                    
-                }
                 map_iterator operator--(int) 
                 {
                     map_iterator temp = *this;
-                    
                     node =  getPrev(node);
-                     
                     return temp;
                 }
                 
@@ -95,6 +103,10 @@ namespace ft
                 }
                 
                 bool operator!=(const map_iterator& it) const
+                {
+                    return node != it.node;
+                }
+                bool operator!=(const map_iterator& it)  
                 {
                     return node != it.node;
                 }
@@ -109,50 +121,76 @@ namespace ft
                     return node->data;
                 }
             private:
+                Node_struct<T,size_type>  * root;
+                Node_struct<T,size_type>  * max;
+                Node_struct<value_type,size_type> * min;
+                Node_struct<value_type,size_type> * garbage;
+                typedef typename Allocator::template rebind< Node_struct<T,size_type> >::other node_allocator; 
+                node_allocator alloc;
+                
+                Node_struct<value_type,size_type> * getGarbage()
+                {
+                    Node_struct<value_type,size_type> tmp((T()));
+                    garbage = alloc.allocate(sizeof(Node_struct<value_type,size_type>));
+            		alloc.construct(garbage,tmp);
+                    return garbage;
+                }
 
-                Node<value_type,size_type> * minValue(Node<value_type,size_type>* node) const
+
+                Node_struct<T,size_type> * minValue(Node_struct<T,size_type> * node)
                 {
-                    if(node == nullptr)
-                        return nullptr;
-                    Node<value_type,size_type>* tmp = node;
-                
-                    /* loop down to find the leftmost leaf */
-                    while (tmp->left != nullptr) 
-                        tmp = tmp->left;
-                    return (tmp);
+                    Node_struct<T,size_type> * current = node;
+                    while (current->left->left != nullptr) 
+                            current = current->left;
+                    
+                    return current;
                 }
-        
-                Node<value_type,size_type>* findMX(Node<value_type,size_type>* r)
+
+                Node_struct<T,size_type> * maxValue(Node_struct<T,size_type> * node)
                 {
-                    Node<value_type,size_type>* tmp = r;
-                
-                    while (tmp->right != nullptr) 
-                        tmp = tmp->right;
-                    return (tmp);
+                    Node_struct<T,size_type> * current = node;
+                    while (current->right->right != nullptr) 
+                            current = current->right;
+                    
+                    return current;
                 }
-                bool is_left_child(Node<value_type,size_type> * node)
+
+
+                bool is_left_child(Node_struct<T,size_type> * node)
                 {
                     return node == node->parent->left;
                 }
-                Node<value_type,size_type>* getNext(Node<value_type,size_type>* node)
+
+                Node_struct<value_type,size_type>* getPrev(Node_struct<value_type,size_type>* node)
                 {
-                    if(node->right != nullptr)
+                    if(node == max)// if node == NIL
+                    {
+                        node = node->parent;
+                        return node;
+                    }
+                    if(node == min)
+                    {
+                        node = getGarbage();
+                        return node;
+                    }
+                    if(node->left->left != nullptr)
+                        return maxValue(node->left);
+                     
+                    while (is_left_child(node))
+                        node = node->parent;
+                    return node->parent;
+
+                }
+
+                Node_struct<T,size_type>* getNext(Node_struct<T,size_type>* node)
+                {
+                    if(node->right->right != nullptr)
                         return minValue(node->right);
                     while (!is_left_child(node))
                         node = node->parent;
                     return node->parent;
-                }
-                Node<value_type,size_type>* getPrev(Node<value_type,size_type>* node)
-                {
-                    if(node->left != nullptr)
-                        return findMX(node->left);
-                    while (is_left_child(node))
-                        node = node->parent;
-                    return node->parent;
-                }
-
+                } 
     }; 
-    
     template <typename key_type, class T,typename key_compare,typename size_type,typename Allocator  >
 
         class const_map_iterator 
@@ -163,12 +201,12 @@ namespace ft
                 typedef ptrdiff_t                                   difference_type;
                 typedef  const T*                                   pointer;
                 typedef  const T&                                   reference;
-                typedef ft::bidirectional_iterator_tag              iterator_category;
+                typedef std::bidirectional_iterator_tag              iterator_category;
 
                 
                 const_map_iterator():node(0){}
             
-                const_map_iterator(Node<value_type,size_type> * n):node(n){}
+                const_map_iterator(Node_struct<T,size_type> * n):node(n){}
                 /*
                     if decalare const_iterator and assign it begin() will enter in this copy constructor;
                     if decalre const map will cal begin() const and enter to const iterator.
@@ -211,7 +249,7 @@ namespace ft
                 
                 const_map_iterator& operator--() 
                 { 
-                    node = getPrev(node);
+                    // node = getPrev(node);
                      
                     return *this;                    
                 }
@@ -253,43 +291,36 @@ namespace ft
                     return node->data;
                 }
             private:
-                Node<value_type,size_type> * node;         
+                Node_struct<value_type,size_type> * node;             
 
-                Node<value_type,size_type> * minValue(Node<value_type,size_type>* node) const
+                Node_struct<T,size_type> * minValue(Node_struct<T,size_type> * node) const
                 {
-                    if(node == nullptr)
-                        return nullptr;
-                    Node<value_type,size_type>* tmp = node;
-                
-                    /* loop down to find the leftmost leaf */
-                    while (tmp->left != nullptr) 
-                        tmp = tmp->left;
-                    return (tmp);
+                    Node_struct<T,size_type> * current = node;
+                    if(!current)
+                        return nullptr;// garbage
+                    while (current->left != nullptr) 
+                        current = current->left;
+                    
+                    return current;
                 }
-        
-                Node<value_type,size_type>* findMX(Node<value_type,size_type>* r)
+
+                Node_struct<T,size_type> * findMX(Node_struct<T,size_type> * node) const
                 {
-                    Node<value_type,size_type>* tmp = r;
-                
-                    while (tmp->right != nullptr) 
-                        tmp = tmp->right;
-                    return (tmp);
+                    Node_struct<T,size_type> * current = node;
+                    if(!current)
+                        return nullptr;// garbage
+                    while (current->right != nullptr) 
+                        current = current->right;
+                    
+                    return current;
                 }
-                 
-                bool is_left_child(Node<value_type,size_type> * node)
+
+                bool is_left_child(Node_struct<T,size_type> * node)
                 {
                     return node == node->parent->left;
                 }
 
-                Node<value_type,size_type>* getNext(Node<value_type,size_type>* node)
-                {
-                    if(node->right != nullptr)
-                        return minValue(node->right);
-                    while (!is_left_child(node))
-                        node = node->parent;
-                    return node->parent;
-                }
-                Node<value_type,size_type>* getPrev(Node<value_type,size_type>* node)
+                Node_struct<T,size_type>* getPrev(Node_struct<T,size_type>* node)
                 {
                     if(node->left != nullptr)
                         return findMX(node->left);
@@ -297,9 +328,17 @@ namespace ft
                         node = node->parent;
                     return node->parent;
                 }
-    }; 
+
+                Node_struct<T,size_type>* getNext(Node_struct<T,size_type>* node)
+                {
+                    if(node->right != nullptr)
+                        return minValue(node->right);
+                    while (!is_left_child(node))
+                        node = node->parent;
+                    return node->parent;
+                } 
+        };
 };
 
  
 #endif
- 
