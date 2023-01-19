@@ -7,10 +7,10 @@
 #include <iostream>
 #include <string>
 #include <exception>
-#include <algorithm>
+#include <algorithm>     
 #include<iterator>
-
-
+ 
+ 
 
 using std::string;
 using std::cout;
@@ -19,51 +19,38 @@ using std::vector;
 using std::stack;
 using std::map;
 
-#include "map.hpp"
-
+ 
+ 
+#include "map/map.hpp"
+ 
  
 
+void func()
+{
+  system("leaks ft_container");
+}
 
 int main()
-{ 
-   ft::map<char,int> mymap;
+{
+    ft::map<int,int>  m;
 
-  // first insert function version (single parameter):
-  mymap.insert ( ft::pair<char,int>('a',100) );
-  mymap.insert ( ft::pair<char,int>('z',200) );
-  
-  // ft::pair<ft::map<char,int>::iterator,bool> ret;
-  // ret = mymap.insert ( ft::pair<char,int>('z',500) );
-  // if (ret.second==false) {
-  //   std::cout << "element 'z' already existed";
-  //   std::cout << " with a value of " << ret.first->second << '\n';
-  // }
+    m.insert(ft::make_pair<int,int>(10,1000));
+    m.insert(ft::make_pair<int,int>(20,2000));
+    m.insert(ft::make_pair<int,int>(30,3000));
+    m.insert(ft::make_pair<int,int>(40,4000));
+    // m.remove(40);
+    // m.remove(30);
+    m.remove(30);
+    // m.remove(20);
+    // m.remove(30);
+    m.remove(40);
+    // m.remove(10);
 
-  // second insert function version (with hint position):
-  ft::map<char,int>::iterator it = mymap.begin();
-  mymap.insert (it, ft::pair<char,int>('b',300));  // max efficiency inserting
-  mymap.insert (it, ft::pair<char,int>('c',400));  // no max efficiency inserting
+    atexit(func); 
+  // show content:
+  // ft::map<int,int>::reverse_iterator rit;
+  // for (rit=m.rbegin(); rit!=m.rend(); ++rit)
+  //   std::cout << rit->first << " => " << rit->second << '\n';
+    
 
-  
-  // ft::map<char,int>::iterator i = mymap.end();
-    // --i;
-    // --i;
-    // --i;
-    // --i;
-    // std::cout << i->first << " => " << i->second << '\n';
-
-  // third insert function version (range insertion):
-  // ft::map<char,int> anothermap;
-  // anothermap.insert(mymap.begin(),mymap.find('c'));
-
-  // showing contents:
-  // std::cout << "mymap contains:\n";
-  // for (it=mymap.begin(); it!=mymap.end(); ++it)
-    // std::cout << it->first << " => " << it->second << '\n';
-
-  // std::cout << "anothermap contains:\n";
-  // for (it=anothermap.begin(); it!=anothermap.end(); ++it)
-  //   std::cout << it->first << " => " << it->second << '\n';
-
- 
-}
+} 

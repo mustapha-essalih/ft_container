@@ -16,38 +16,32 @@
  
 namespace ft
 {
-    template< typename T1, typename T2 >
-        class pair
+        template <class _T1, class _T2>
+        struct pair
         {
-            typedef T1 first_type;
-            typedef T2 second_type;
+            typedef _T1 first_type;
+            typedef _T2 second_type;
+            
+            first_type first;
+            second_type second;
 
-            public:
-                first_type  first;
-                second_type  second;
+            pair() : first(), second() {}
+            pair(first_type const &_t1, second_type const &_t2) : first(_t1), second(_t2) {}
 
-                pair(): first(), second() { }
-
-                template<class U, class V>
-                pair (const ft::pair<U,V> & pr):first(pr.first),second(pr.second)
-                {
-                }
-                pair( const first_type & a, const second_type & b ):first(a),second(b)
-                {
-                }
-                
-         	
-                pair& operator= (const pair& pr)
-                { 
-                    first = std::move(pr.first);
-                    second = std::move(pr.second);
-                    return *this;
-                }
-  
-                ~pair()
-                {
-
-                }
+            template <class _U1, class _U2>
+            pair(const pair<_U1, _U2>& _rhs) : first(_rhs.first), second(_rhs.second) {}
+            
+            pair& operator=(const pair& _rhs)
+            {
+                first = _rhs.first;
+                second = _rhs.second;
+                return (*this);
+            }
+            void swap(pair& _rhs)
+            {
+                std::swap(first,  _rhs.first);
+                std::swap(second, _rhs.second);
+            }
         };
 
         template <typename T1, typename T2> 
