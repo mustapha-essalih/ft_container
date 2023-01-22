@@ -3,6 +3,7 @@
 #include <utility>
 #include <memory>
 #include <stack>
+#include <vector>
  
 
 
@@ -18,16 +19,18 @@ using std::map;
 
 int main()
 {
-
     ft::map<int,int> m;
 
-    m.insert(std::make_pair<int,int>(10,20));
-    m.insert(std::make_pair<int,int>(20,20));
-    m.insert(std::make_pair<int,int>(30,20));
-    
-    ft::map<int,int>::iterator it = m.begin();
-    it->second = 100;
-    cout << it->first << endl;
+    m.insert(std::make_pair<int,int>(10,1000));
+    m.insert(std::make_pair<int,int>(20,2000));
+    // m.insert(std::make_pair<int,int>(30,3000));
+
+    m.get();
+    // ft::map<int,int>::iterator it = m.begin();
+    // ++it;
+    // cout << it->first << endl;
+
+
     // m.insert(std::make_pair<int,int>(-10,20));
     // m.insert(std::make_pair<int,int>(100,20));
     // m.insert(std::make_pair<int,int>(130,20));

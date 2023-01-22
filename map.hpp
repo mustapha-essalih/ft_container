@@ -65,10 +65,16 @@ namespace ft
                 avl.deleteNode(k);
             }
             
+            void get()
+            { 
+                // cout << avl.findMin(avl.root)->parent->data.first << endl;
+                // cout << avl.findMin(avl.root)->data.first << endl;
+            }
+
             iterator begin()
             {
-                constNode<key_type,mapped_type> non_const = avl.returnConst();
-                return iterator(&non_const);
+                // constNode<key_type,mapped_type> non_const = avl.returnConst();
+                return iterator(avl.findMin(avl.root));
             }
             ~map()
             {
@@ -85,13 +91,8 @@ namespace ft
 
 } 
 
+  
 
-
-
-
-
-
-
-
+ 
 
 #endif

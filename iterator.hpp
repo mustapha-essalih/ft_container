@@ -38,16 +38,12 @@ namespace ft
                 typedef  T&                                                                         reference;
                 typedef std::bidirectional_iterator_tag                                             iterator_category;
                 
-                // crete private const Node struct and assign to it non const struct
-
-                constNode<key_type,mapped_type> * node;             
+                Node<key_type,mapped_type> * node;             
             
-                
                 map_iterator():node(0){}
             
-                map_iterator(constNode<key_type,mapped_type>* n):node(n)
+                map_iterator(Node<key_type,mapped_type>* n):node(n)
                 {
-                    
                 }
                         
                 map_iterator(const map_iterator& it)
@@ -63,8 +59,7 @@ namespace ft
 
                 map_iterator& operator++() 
                 { 
-                    // node = a.getNext(node);
-                      
+                    node = getNext(node);
                     return *this;                    
                 }
  
@@ -88,15 +83,49 @@ namespace ft
 
                 pointer operator->() const
                 {
-                    return &node->data;
+                    constNode<key_type,mapped_type> non_const = returnConst();
+                    return &non_const->data;// return const node in this case else use normal non const node 
                 }
                 
                 reference operator*() const
                 {
-                    return node->data;
+                    constNode<key_type,mapped_type> non_const = returnConst();
+
+                    return non_const->data;
                 }
             private:
-                 
+
+                Node<key_type,mapped_type>* minNode(Node<key_type,mapped_type> *n) 
+                {
+                    while (n->left) 
+                        n = n->left;
+                    
+                    return n;
+                }
+                bool is_left_child(Node<key_type,mapped_type> * node)
+                {
+                    return node == node->parent->left;
+                }
+                Node<key_type,mapped_type>* getNext(Node<key_type,mapped_type>* node)
+                {
+                    if(node->right != NULL)
+                        return minNode(node->right);
+                    
+                    cout << node->parent->data.first << endl;
+                    if(node == node->parent->left)
+                        cout << "equals\n";
+                    // while (!is_left_child(node))
+                    //     node = node->parent;
+                    return node->parent;
+                } 
+
+                constNode<key_type,mapped_type>  returnConst()
+                {
+                    Node<key_type,mapped_type> n = *node;
+                    constNode<key_type,mapped_type>  r(n.data.first,n.data.second);
+                     
+                    return r;
+                }
 
     }; 
      
