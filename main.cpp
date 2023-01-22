@@ -1,16 +1,12 @@
-#include <cstddef>
-#include <iomanip>
-#include <cstddef>
-#include <map>
-#include <stack>
-#include <vector>
 #include <iostream>
-#include <string>
-#include <exception>
-#include <algorithm>     
-#include<iterator>
+#include <algorithm>
+#include <utility>
+#include <memory>
+#include <stack>
  
- 
+
+
+#include "map.hpp"
 
 using std::string;
 using std::cout;
@@ -19,38 +15,27 @@ using std::vector;
 using std::stack;
 using std::map;
 
- 
- 
-#include "map/map.hpp"
- 
- 
-
-void func()
-{
-  system("leaks ft_container");
-}
 
 int main()
 {
-    ft::map<int,int>  m;
 
-    m.insert(ft::make_pair<int,int>(10,1000));
-    m.insert(ft::make_pair<int,int>(20,2000));
-    m.insert(ft::make_pair<int,int>(30,3000));
-    m.insert(ft::make_pair<int,int>(40,4000));
-    // m.remove(40);
-    // m.remove(30);
-    m.remove(30);
-    // m.remove(20);
-    // m.remove(30);
-    m.remove(40);
-    // m.remove(10);
+    ft::map<int,int> m;
 
-    atexit(func); 
-  // show content:
-  // ft::map<int,int>::reverse_iterator rit;
-  // for (rit=m.rbegin(); rit!=m.rend(); ++rit)
-  //   std::cout << rit->first << " => " << rit->second << '\n';
+    m.insert(std::make_pair<int,int>(10,20));
+    m.insert(std::make_pair<int,int>(20,20));
+    m.insert(std::make_pair<int,int>(30,20));
     
-
-} 
+    ft::map<int,int>::iterator it = m.begin();
+    it->second = 100;
+    cout << it->first << endl;
+    // m.insert(std::make_pair<int,int>(-10,20));
+    // m.insert(std::make_pair<int,int>(100,20));
+    // m.insert(std::make_pair<int,int>(130,20));
+    // m.insert(std::make_pair<int,int>(-1,20));
+    // m.insert(std::make_pair<int,int>(-2,20));
+    // m.insert(std::make_pair<int,int>(-3,20));
+    // m.insert(std::make_pair<int,int>(232,20));
+    // m.insert(std::make_pair<int,int>(-23,20));
+ 
+    
+}
