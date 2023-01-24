@@ -22,8 +22,8 @@ using std::stack;
 using std::map;
 using std::pair;
  
-#include "avl.hpp"
 #include "iterator.hpp"
+ 
 
 namespace ft
 {
@@ -49,40 +49,37 @@ namespace ft
             typedef size_t                                                                                              size_type;
         
             typedef typename ft::map_iterator<key_type,value_type,key_compare,size_type,mapped_type,allocator_type>                 iterator;
-            // typedef typename ft::const_map_iterator<key_type,value_type,key_compare,size_type,allocator_type>           const_iterator;
-            // typedef typename ft::reverse_iterator<iterator>                                                             reverse_iterator;
 
             
             map(){}
 
             void insert(const value_type& val)
             {
-                avl.insert(val);
+                tree.insert(val);
             }
-            
-            void erase(key_type k)
-            {
-                avl.deleteNode(k);
-            }
-            
-            void get()
-            { 
-                // cout << avl.findMin(avl.root)->parent->data.first << endl;
-                // cout << avl.findMin(avl.root)->data.first << endl;
-            }
-
+             
             iterator begin()
             {
-                // constNode<key_type,mapped_type> non_const = avl.returnConst();
-                return iterator(avl.findMin(avl.root));
+                tree.root->parent = tree.end_node;
+                tree.end_node->left = tree.root;
+                 
+                return iterator (tree.minValue(tree.root));
+            
+                 
             }
+            iterator end()
+            {
+                return iterator (tree.end_node,tree.end_node,tree.root);
+            }
+ 
+
             ~map()
             {
 
             }
             private:
-                typedef avl<key_type,value_type,key_compare,size_type,mapped_type,allocator_type> avl_data_strcut;
-                avl_data_strcut avl;
+                typedef RBTree<key_type,value_type,key_compare,size_type,mapped_type,allocator_type> red_black_tree_;
+                red_black_tree_ tree;
                 size_type size_;
                 allocator_type alloc;
                 
@@ -90,9 +87,6 @@ namespace ft
     
 
 } 
-
-  
-
  
 
 #endif

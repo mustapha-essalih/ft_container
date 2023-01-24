@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <cstddef>
 #include <map>
+#include <__tree>
 #include <stack>
 #include <vector>
 #include <iostream>
@@ -13,8 +14,8 @@
 #include <algorithm>     
 #include<iterator>
  
-#include "avl.hpp"
-  
+#include "red_black_tre.hpp"
+   
 using std::string;
 using std::cout;
 using std::endl;
@@ -26,25 +27,30 @@ using std::map;
 
 namespace ft 
 {
-    template <typename key_type, class T,typename key_compare,typename size_type,typename mapped_type,typename Allocator  >
+    template <typename key_type, typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator  >
 
         class map_iterator 
         {   
             public:
                 
-                typedef constNode<key_type,mapped_type>                                             value_type;
+                typedef T                                                                           value_type;
                 typedef ptrdiff_t                                                                   difference_type;
-                typedef  T*                                                                         pointer;
-                typedef  T&                                                                         reference;
+                typedef  T *                                                                         pointer;
+                typedef  T &                                                                         reference;
                 typedef std::bidirectional_iterator_tag                                             iterator_category;
                 
-                Node<key_type,mapped_type> * node;             
+                typedef Node_struct<T> Node;
+                
             
                 map_iterator():node(0){}
             
-                map_iterator(Node<key_type,mapped_type>* n):node(n)
+                map_iterator(  Node *  n):node(n){}
+                map_iterator(Node * n,Node * e,Node * r):node(n)
                 {
+                    end = e;
+                    root = r;
                 }
+                
                         
                 map_iterator(const map_iterator& it)
                 {
@@ -58,7 +64,7 @@ namespace ft
                 }
 
                 map_iterator& operator++() 
-                { 
+                {
                     node = getNext(node);
                     return *this;                    
                 }
@@ -66,66 +72,86 @@ namespace ft
                 
                 map_iterator& operator--() 
                 { 
-                    // node = a.getPrev(node);
-                     
+                    if(node == end)
+                    {
+                        node = maxNode(root);
+                        return *this;
+                    }
+                    node = getPrev(node);
                     return *this;                    
                 }
                 
-                bool operator == (const map_iterator& obj) const
-                {
-                    return node == obj.node;
-                }
+                // bool operator == (const map_iterator& obj) const
+                // {
+                //     return this->node == obj.node; // 
+                // }
                 
-                bool operator!=(const map_iterator& it) const
-                {
-                    return node != it.node;
-                }
+                // bool operator!=(const map_iterator& it) const
+                // {
+                //     return node->data != it.node->data;
+                // }
 
-                pointer operator->() const
+                // simetime compar const iteartor with non const iterator
+                friend bool operator==(const map_iterator& __x, const map_iterator& __y)
+                {return __x.node == __y.node;}
+                friend bool operator!=(const map_iterator& __x, const map_iterator& __y)
+                {return !(__x == __y);}
+
+                pointer  operator->() const
                 {
-                    constNode<key_type,mapped_type> non_const = returnConst();
-                    return &non_const->data;// return const node in this case else use normal non const node 
+                    return &node->data;
                 }
                 
                 reference operator*() const
                 {
-                    constNode<key_type,mapped_type> non_const = returnConst();
-
-                    return non_const->data;
+                    return node->data;
                 }
             private:
+                Node * node;             
 
-                Node<key_type,mapped_type>* minNode(Node<key_type,mapped_type> *n) 
+                Node * root;
+                Node * end;
+                Node * minNode(Node * node)
                 {
-                    while (n->left) 
-                        n = n->left;
-                    
-                    return n;
+                    Node * current = node;
+                
+                    /* loop down to find the leftmost leaf */
+                    while (current->left != NULL) {
+                        current = current->left;
+                    }
+                    return (current);
                 }
-                bool is_left_child(Node<key_type,mapped_type> * node)
+                Node * maxNode(Node * node)
+                {
+                    Node * current = node;
+                 
+                    while (current->right != NULL) {
+                        current = current->right;
+                    }
+                    return (current);
+                }
+                bool is_left_child(Node * node)
                 {
                     return node == node->parent->left;
                 }
-                Node<key_type,mapped_type>* getNext(Node<key_type,mapped_type>* node)
+                Node* getNext(Node* node)
                 {
                     if(node->right != NULL)
                         return minNode(node->right);
                     
-                    cout << node->parent->data.first << endl;
-                    if(node == node->parent->left)
-                        cout << "equals\n";
-                    // while (!is_left_child(node))
-                    //     node = node->parent;
+                    while (!is_left_child(node))
+                        node = node->parent;
                     return node->parent;
                 } 
-
-                constNode<key_type,mapped_type>  returnConst()
+                Node* getPrev(Node* node)
                 {
-                    Node<key_type,mapped_type> n = *node;
-                    constNode<key_type,mapped_type>  r(n.data.first,n.data.second);
-                     
-                    return r;
+                    if(node->left != nullptr)
+                        return maxNode(node->left);
+                    while (is_left_child(node))
+                        node = node->parent;
+                    return node->parent;
                 }
+                
 
     }; 
      
