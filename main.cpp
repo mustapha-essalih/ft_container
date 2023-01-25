@@ -19,27 +19,18 @@ using std::stack;
 int main()
 {
     ft::map<int,int> m;
-
-    // m.insert(std::make_pair<int,int>(10,1000));
-    // m.insert(std::make_pair<int,int>(20,1000));
-    // m.insert(std::make_pair<int,int>(30,1000));
-    
-
-        m.insert(std::make_pair<int,int>(10,100));
-        m.insert(std::make_pair<int,int>(20,100));
-        m.insert(std::make_pair<int,int>(30,100));
-        // m.insert(std::make_pair<int,int>(60,100));
-        // m.insert(std::make_pair<int,int>(75,100));
-        // m.insert(std::make_pair<int,int>(57,100));
  
+    m.insert(ft::make_pair<int,int>(10,100));
+    m.insert(ft::make_pair<int,int>(20,100));
+    m.insert(ft::make_pair<int,int>(30,100));
 
-        ft::map<int,int>::iterator it = m.end();
-             
-             
-        while (it != m.begin())
+    ft::map<int,int>::const_iterator it = m.begin();
+            
+     
+        while (it != m.end())
         {
             cout << it->first << endl;
-            --it;
+            it++;
         }
         //     cout << it->first << endl;
         //     cout << it->first << endl;

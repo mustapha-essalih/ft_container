@@ -17,6 +17,53 @@ struct Node_struct  {
     }
 };
 
+template <typename K> // for calling in map_iterator 
+
+Node_struct<K> * minNode(Node_struct<K> * node)
+{
+    Node_struct<K> * current = node;
+    while (current->left != NULL) 
+        current = current->left;
+    return (current);
+}
+
+template <typename K>
+Node_struct<K> * maxNode(Node_struct<K> * node)
+{
+    Node_struct<K> * current = node;
+    while (current->right != NULL) 
+        current = current->right;
+    return (current);
+}
+template <typename K>
+
+bool is_left_child(Node_struct<K> * node)
+{
+    return node == node->parent->left;
+}
+
+template <typename K>
+Node_struct<K>* getNext(Node_struct<K>* node)
+{
+    if(node->right != NULL)
+        return minNode(node->right);
+    while (!is_left_child(node))
+        node = node->parent;
+    return node->parent;
+} 
+
+template <typename K>
+
+Node_struct<K>* getPrev(Node_struct<K>* node)
+{
+    if(node->left != nullptr)
+        return maxNode(node->left);
+    while (is_left_child(node))
+        node = node->parent;
+    return node->parent;
+}
+
+
 template<typename key_type,typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator >
 
 class RBTree {

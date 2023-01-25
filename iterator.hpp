@@ -15,6 +15,7 @@
 #include<iterator>
  
 #include "red_black_tre.hpp"
+#include "type_traits.hpp"
    
 using std::string;
 using std::cout;
@@ -37,29 +38,28 @@ namespace ft
                 typedef ptrdiff_t                                                                   difference_type;
                 typedef  T *                                                                         pointer;
                 typedef  T &                                                                         reference;
-                typedef std::bidirectional_iterator_tag                                             iterator_category;
+                typedef std::bidirectional_iterator_tag                                             iterator_category;// ft::
                 
                 typedef Node_struct<T> Node;
-                
             
                 map_iterator():node(0){}
             
-                map_iterator(  Node *  n):node(n){}
-                map_iterator(Node * n,Node * e,Node * r):node(n)
+                map_iterator(const Node *  n):node(n){}
+                map_iterator(const Node * n,const Node * e,const Node * r):node(n)
                 {
                     end = e;
                     root = r;
                 }
                 
-                        
-                map_iterator(const map_iterator& it)
+                map_iterator(const map_iterator & it)
                 {
                     node = it.node;
                 }
         
                 map_iterator& operator=(const map_iterator& it)
                 {
-                    node = it.node;
+                    if(this != &it)// if not is the same obj
+                        node = it.node;
                     return *this;
                 }
 
@@ -68,7 +68,13 @@ namespace ft
                     node = getNext(node);
                     return *this;                    
                 }
- 
+
+                map_iterator operator++(int) 
+                { 
+                    map_iterator it(*this);
+                    ++(*this);
+                    return it;                   
+                }
                 
                 map_iterator& operator--() 
                 { 
@@ -81,19 +87,19 @@ namespace ft
                     return *this;                    
                 }
                 
-                // bool operator == (const map_iterator& obj) const
-                // {
-                //     return this->node == obj.node; // 
-                // }
-                
-                // bool operator!=(const map_iterator& it) const
-                // {
-                //     return node->data != it.node->data;
-                // }
+                map_iterator operator--(int) 
+                {
+                    //  this is a pointer point to this class, and *this is a dereferenced pointer * on this the result is the object to which the pointer this was pointing.
+                    map_iterator it(*this);// will call copy constructor
+                    --(*this);
+                    return it;
+                }
 
-                // simetime compar const iteartor with non const iterator
+                // sometime compar const iteartor with non const iterator
+                // search for friend bool // because in the stantard
                 friend bool operator==(const map_iterator& __x, const map_iterator& __y)
-                {return __x.node == __y.node;}
+                {return __x.node == __y.node;}// compar nodes if have sime addrsess or not
+
                 friend bool operator!=(const map_iterator& __x, const map_iterator& __y)
                 {return !(__x == __y);}
 
@@ -108,54 +114,13 @@ namespace ft
                 }
             private:
                 Node * node;             
-
                 Node * root;
                 Node * end;
-                Node * minNode(Node * node)
-                {
-                    Node * current = node;
                 
-                    /* loop down to find the leftmost leaf */
-                    while (current->left != NULL) {
-                        current = current->left;
-                    }
-                    return (current);
-                }
-                Node * maxNode(Node * node)
-                {
-                    Node * current = node;
-                 
-                    while (current->right != NULL) {
-                        current = current->right;
-                    }
-                    return (current);
-                }
-                bool is_left_child(Node * node)
-                {
-                    return node == node->parent->left;
-                }
-                Node* getNext(Node* node)
-                {
-                    if(node->right != NULL)
-                        return minNode(node->right);
-                    
-                    while (!is_left_child(node))
-                        node = node->parent;
-                    return node->parent;
-                } 
-                Node* getPrev(Node* node)
-                {
-                    if(node->left != nullptr)
-                        return maxNode(node->left);
-                    while (is_left_child(node))
-                        node = node->parent;
-                    return node->parent;
-                }
-                
-
     }; 
-     
+ 
 };
 
  
 #endif
+ 
