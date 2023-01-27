@@ -1,3 +1,4 @@
+  bst.insert(57);
 // Implementing Red-Black Tree in C++
 
 #include <iostream>
@@ -11,15 +12,49 @@ struct Node {
   int color;
 };
 
-typedef Node *NodePtr;
+typedef Node *Node *;
 
 class RedBlackTree {
    private:
-  NodePtr root;
-  NodePtr TNULL;
- 
+  Node * root;
+  Node * TNULL;
 
-  NodePtr searchTreeHelper(NodePtr node, int key) {
+  void initializeNULLNode(Node * node, Node * parent) {
+    node->data = 0;
+    node->parent = parent;
+    node->left = nullptr;
+    node->right = nullptr;
+    node->color = 0;
+  }
+
+  // Preorder
+  void preOrderHelper(Node * node) {
+    if (node != TNULL) {
+      cout << node->data << " ";
+      preOrderHelper(node->left);
+      preOrderHelper(node->right);
+    }
+  }
+
+  // Inorder
+  void inOrderHelper(Node * node) {
+    if (node != TNULL) {
+      inOrderHelper(node->left);
+      cout << node->data << " ";
+      inOrderHelper(node->right);
+    }
+  }
+
+  // Post order
+  void postOrderHelper(Node * node) {
+    if (node != TNULL) {
+      postOrderHelper(node->left);
+      postOrderHelper(node->right);
+      cout << node->data << " ";
+    }
+  }
+
+  Node * searchTreeHelper(Node * node, int key) {
     if (node == TNULL || key == node->data) {
       return node;
     }
@@ -31,8 +66,8 @@ class RedBlackTree {
   }
 
   // For balancing the tree after deletion
-  void deleteFix(NodePtr x) {
-    NodePtr s;
+  void deleteFix(Node * x) {
+    Node * s;
     while (x != root && x->color == 0) {
       if (x == x->parent->left) {
         s = x->parent->right;
@@ -91,7 +126,7 @@ class RedBlackTree {
     x->color = 0;
   }
 
-  void rbTransplant(NodePtr u, NodePtr v) {
+  void rbTransplant(Node * u, Node * v) {
     if (u->parent == nullptr) {
       root = v;
     } else if (u == u->parent->left) {
@@ -102,9 +137,9 @@ class RedBlackTree {
     v->parent = u->parent;
   }
 
-  void deleteNodeHelper(NodePtr node, int key) {
-    NodePtr z = TNULL;
-    NodePtr x, y;
+  void deleteNodeHelper(Node * node, int key) {
+    Node * z = TNULL;
+    Node * x, y;
     while (node != TNULL) {
       if (node->data == key) {
         z = node;
@@ -154,8 +189,8 @@ class RedBlackTree {
   }
 
   // For balancing the tree after insertion
-  void insertFix(NodePtr k) {
-    NodePtr u;
+  void insertFix(Node * k) {
+    Node * u;
     while (k->parent->color == 1) {
       if (k->parent == k->parent->parent->right) {
         u = k->parent->parent->left;
@@ -198,7 +233,7 @@ class RedBlackTree {
     root->color = 0;
   }
 
-  void printHelper(NodePtr root, string indent, bool last) {
+  void printHelper(Node * root, string indent, bool last) {
     if (root != TNULL) {
       cout << indent;
       if (last) {
@@ -237,30 +272,30 @@ class RedBlackTree {
     postOrderHelper(this->root);
   }
 
-  NodePtr searchTree(int k) {
+  Node * searchTree(int k) {
     return searchTreeHelper(this->root, k);
   }
 
-  NodePtr minimum(NodePtr node) {
+  Node * minimum(Node * node) {
     while (node->left != TNULL) {
       node = node->left;
     }
     return node;
   }
 
-  NodePtr maximum(NodePtr node) {
+  Node * maximum(Node * node) {
     while (node->right != TNULL) {
       node = node->right;
     }
     return node;
   }
 
-  NodePtr successor(NodePtr x) {
+  Node * successor(Node * x) {
     if (x->right != TNULL) {
       return minimum(x->right);
     }
 
-    NodePtr y = x->parent;
+    Node * y = x->parent;
     while (y != TNULL && x == y->right) {
       x = y;
       y = y->parent;
@@ -268,12 +303,12 @@ class RedBlackTree {
     return y;
   }
 
-  NodePtr predecessor(NodePtr x) {
+  Node * predecessor(Node * x) {
     if (x->left != TNULL) {
       return maximum(x->left);
     }
 
-    NodePtr y = x->parent;
+    Node * y = x->parent;
     while (y != TNULL && x == y->left) {
       x = y;
       y = y->parent;
@@ -282,8 +317,8 @@ class RedBlackTree {
     return y;
   }
 
-  void leftRotate(NodePtr x) {
-    NodePtr y = x->right;
+  void leftRotate(Node * x) {
+    Node * y = x->right;
     x->right = y->left;
     if (y->left != TNULL) {
       y->left->parent = x;
@@ -300,8 +335,8 @@ class RedBlackTree {
     x->parent = y;
   }
 
-  void rightRotate(NodePtr x) {
-    NodePtr y = x->left;
+  void rightRotate(Node * x) {
+    Node * y = x->left;
     x->left = y->right;
     if (y->right != TNULL) {
       y->right->parent = x;
@@ -320,15 +355,15 @@ class RedBlackTree {
 
   // Inserting a node
   void insert(int key) {
-    NodePtr node = new Node;
+    Node * node = new Node;
     node->parent = nullptr;
     node->data = key;
     node->left = TNULL;
     node->right = TNULL;
     node->color = 1;
 
-    NodePtr y = nullptr;
-    NodePtr x = this->root;
+    Node * y = nullptr;
+    Node * x = this->root;
 
     while (x != TNULL) {
       y = x;
@@ -360,7 +395,7 @@ class RedBlackTree {
     insertFix(node);
   }
 
-  NodePtr getRoot() {
+  Node * getRoot() {
     return this->root;
   }
 

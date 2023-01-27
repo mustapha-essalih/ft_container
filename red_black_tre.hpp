@@ -10,10 +10,16 @@ struct Node_struct  {
     Node_struct<K>* right;
     Node_struct<K>* parent;
 
-    Node_struct<K>(const K & d,bool c )   : data(d)  
+    Node_struct<K>(const K & d,Node_struct<K> * tNULL)   : data(d)  
     {
-        left = right = parent = NULL;
-        color = c;
+        parent = NULL;
+        left = right = tNULL;
+        color = RED;
+    }
+    Node_struct<K>(const K & d)   : data(d)  
+    {
+        left = right = NULL;
+        color = BLACK;
     }
 };
 
@@ -22,7 +28,7 @@ template <typename K> // for calling in map_iterator
 Node_struct<K> * minNode(Node_struct<K> * node)
 {
     Node_struct<K> * current = node;
-    while (current->left != NULL) 
+    while (current->left->left != NULL) 
         current = current->left;
     return (current);
 }
@@ -31,7 +37,7 @@ template <typename K>
 Node_struct<K> * maxNode(Node_struct<K> * node)
 {
     Node_struct<K> * current = node;
-    while (current->right != NULL) 
+    while (current->right->right != NULL) 
         current = current->right;
     return (current);
 }
@@ -46,7 +52,7 @@ bool is_left_child(Node_struct<K> * node )
 template <typename K>
 Node_struct<K>* getNext(Node_struct<K>* node)
 {
-    if(node->right != NULL)
+    if(node->right->right != NULL)
         return minNode(node->right);
     
     while (!is_left_child(node))
@@ -58,7 +64,7 @@ template <typename K>
 
 Node_struct<K>* getPrev(Node_struct<K>* node)
 {
-    if(node->left != nullptr)
+    if(node->left != NULL)
         return maxNode(node->left);
     while (is_left_child(node))
         node = node->parent;
@@ -79,304 +85,269 @@ class RBTree {
             typedef Node_struct<value_type> Node;
             node_allocator alloc;
             Node * root;
+            Node * TNULL;
             Node * tmp;
             Node * end_node;
         
         RBTree() 
         { 
-            root = NULL; 
             end_node = alloc.allocate(1);
-            Node tmp(value_type(),RED);
+            TNULL = alloc.allocate(1);
+            Node tmp((value_type()));
+            alloc.construct(TNULL,tmp);
             alloc.construct(end_node,tmp);
-             
+            root = TNULL; 
         }
-        void fixDoubleBlack(Node *x) {
-        if (x == root)
-        // Reached root
-        return;
-
-        Node *sibling = x->sibling(), *parent = x->parent;
-        if (sibling == NULL) {
-        // No sibiling, double black pushed up
-        fixDoubleBlack(parent);
-        } else {
-        if (sibling->color == RED) {
-            // Sibling red
-            parent->color = RED;
-            sibling->color = BLACK;
-            if (sibling->isOnLeft()) {
-            // left case
-            rightRotate(parent);
-            } else {
-            // right case
-            leftRotate(parent);
+        void leftRotate(Node * x) 
+        {
+            Node * y = x->right;
+            x->right = y->left;
+            if (y->left != TNULL) {
+            y->left->parent = x;
             }
-            fixDoubleBlack(x);
-        } else {
-            // Sibling black
-            if (sibling->hasRedChild()) {
-            // at least 1 red children
-            if (sibling->left != NULL and sibling->left->color == RED) {
-                if (sibling->isOnLeft()) {
-                // left left
-                sibling->left->color = sibling->color;
-                sibling->color = parent->color;
-                rightRotate(parent);
-                } else {
-                // right left
-                sibling->left->color = parent->color;
-                rightRotate(sibling);
-                leftRotate(parent);
-                }
+            y->parent = x->parent;
+            if (x->parent == nullptr) {
+            this->root = y;
+            } else if (x == x->parent->left) {
+            x->parent->left = y;
             } else {
-                if (sibling->isOnLeft()) {
-                // left right
-                sibling->right->color = parent->color;
-                leftRotate(sibling);
-                rightRotate(parent);
-                } else {
-                // right right
-                sibling->right->color = sibling->color;
-                sibling->color = parent->color;
-                leftRotate(parent);
-                }
+            x->parent->right = y;
             }
-            parent->color = BLACK;
-            } else {
-            // 2 black children
-            sibling->color = RED;
-            if (parent->color == BLACK)
-                fixDoubleBlack(parent);
-            else
-                parent->color = BLACK;
-            }
-        }
-        }
+            y->left = x;
+            x->parent = y;
     }
-        void deleteByVal(key_type n) {
-            if (root == NULL)
-                return;
 
-            Node *v = search(n), *u;
-
-            if (v->data.first != n) 
-                return;
-            deleteNode(v);
-        }
-        
-        Node* BSTInsert(Node* root, Node *pt)
-        {
-            if(!root)
-                return pt;    
-            if (pt->data < root->data)
-            {
-                root->left = BSTInsert(root->left, pt);
-                root->left->parent = root;
+        void rightRotate(Node * x) {
+            Node * y = x->left;
+            x->left = y->right;
+            if (y->right != TNULL) {
+            y->right->parent = x;
             }
-            else if (pt->data > root->data)
-            {
-                root->right = BSTInsert(root->right, pt);
-                root->right->parent = root;
-            } 
-            return root;
+            y->parent = x->parent;
+            if (x->parent == nullptr) {
+            this->root = y;
+            } else if (x == x->parent->right) {
+            x->parent->right = y;
+            } else {
+            x->parent->left = y;
+            }
+            y->right = x;
+            x->parent = y;
         }
-         
-        
-        void rotateLeft(Node *&root, Node *&pt)
-        {
-            Node *pt_right = pt->right;
-
-            pt->right = pt_right->left;
-
-            if (pt->right != NULL)
-                pt->right->parent = pt;
-
-            pt_right->parent = pt->parent;
-
-            if (pt->parent == NULL)
-                root = pt_right;
-
-            else if (pt == pt->parent->left)
-                pt->parent->left = pt_right;
-
-            else
-                pt->parent->right = pt_right;
-
-            pt_right->left = pt;
-            pt->parent = pt_right;
+void rbTransplant(Node * u, Node * v) {
+    if (u->parent == NULL) {
+      root = v;
+    } else if (u == u->parent->left) {
+      u->parent->left = v;
+    } else {
+      u->parent->right = v;
+    }
+    v->parent = u->parent;
+  }
+  void deleteFix(Node * x) {
+    Node * s;
+    while (x != root && x->color == 0) {
+      if (x == x->parent->left) {
+        s = x->parent->right;
+        if (s->color == 1) {
+          s->color = 0;
+          x->parent->color = 1;
+          leftRotate(x->parent);
+          s = x->parent->right;
         }
 
-        void rotateRight(Node *&root, Node *&pt)
-        {
-            Node *pt_left = pt->left;
+        if (s->left->color == 0 && s->right->color == 0) {
+          s->color = 1;
+          x = x->parent;
+        } else {
+          if (s->right->color == 0) {
+            s->left->color = 0;
+            s->color = 1;
+            rightRotate(s);
+            s = x->parent->right;
+          }
 
-            pt->left = pt_left->right;
-
-            if (pt->left != NULL)
-                pt->left->parent = pt;
-
-            pt_left->parent = pt->parent;
-
-            if (pt->parent == NULL)
-                root = pt_left;
-
-            else if (pt == pt->parent->left)
-                pt->parent->left = pt_left;
-
-            else
-                pt->parent->right = pt_left;
-
-            pt_left->right = pt;
-            pt->parent = pt_left;
+          s->color = x->parent->color;
+          x->parent->color = 0;
+          s->right->color = 0;
+          leftRotate(x->parent);
+          x = root;
         }
-        
-        void fixViolation(Node *&root, Node *&pt)
-        {
-            Node *parent_pt = NULL;
-            Node *grand_parent_pt = NULL;
+      } else {
+        s = x->parent->left;
+        if (s->color == 1) {
+          s->color = 0;
+          x->parent->color = 1;
+          rightRotate(x->parent);
+          s = x->parent->left;
+        }
 
-            while ((pt != root) && (pt->color != BLACK) && (pt->parent->color == RED))
-            {
-                parent_pt = pt->parent;
-                grand_parent_pt = pt->parent->parent;
-                if (parent_pt == grand_parent_pt->left)
-                {
-                     
-                    Node *uncle_pt = grand_parent_pt->right;
-                    if (uncle_pt != NULL && uncle_pt->color == RED)
-                    {
-                        grand_parent_pt->color = RED;
-                        parent_pt->color = BLACK;
-                        uncle_pt->color = BLACK;
-                        pt = grand_parent_pt;
-                    }
+        if (s->right->color == 0 && s->right->color == 0) {
+          s->color = 1;
+          x = x->parent;
+        } else {
+          if (s->left->color == 0) {
+            s->right->color = 0;
+            s->color = 1;
+            leftRotate(s);
+            s = x->parent->left;
+          }
 
-                    else
-                    { 
-                        if (pt == parent_pt->right)
-                        {
-                            rotateLeft(root, parent_pt);
-                            pt = parent_pt;
-                            parent_pt = pt->parent;
-                        }
-                        rotateRight(root, grand_parent_pt);
-                        std::swap(parent_pt->color,
-                                grand_parent_pt->color);
-                        pt = parent_pt;
-                    }
+          s->color = x->parent->color;
+          x->parent->color = 0;
+          s->left->color = 0;
+          rightRotate(x->parent);
+          x = root;
+        }
+      }
+    }
+    x->color = 0;
+  }
+
+        size_type deleteNodeHelper(Node * node,const key_type & key) {
+            Node * z = TNULL;
+            Node * x;
+            Node * y;
+            while (node != TNULL) {
+            if (node->data.first == key) {
+                z = node;
+            }
+
+            if (node->data.first <= key) {
+                node = node->right;
+            } else {
+                node = node->left;
+            }
+            }
+
+            if (z == TNULL) {
+             return 0;
+            }
+
+            y = z;
+            int y_original_color = y->color;
+            if (z->left == TNULL) {
+            x = z->right;
+            rbTransplant(z, z->right);
+            } else if (z->right == TNULL) {
+            x = z->left;
+            rbTransplant(z, z->left);
+            } else {
+            y = minNode(z->right);
+            y_original_color = y->color;
+            x = y->right;
+            if (y->parent == z) {
+                x->parent = y;
+            } else {
+                rbTransplant(y, y->right);
+                y->right = z->right;
+                y->right->parent = y;
+            }
+
+            rbTransplant(z, y);
+            y->left = z->left;
+            y->left->parent = y;
+            y->color = z->color;
+            }
+            alloc.deallocate(z,sizeof(z));
+            if (y_original_color == 0) {
+            deleteFix(x);
+            }
+            return 1;
+        }
+
+
+        void insertFix(Node * k) {
+            Node * u;
+            while (k->parent->color == 1) {
+            if (k->parent == k->parent->parent->right) {
+                u = k->parent->parent->left;
+                if (u->color == 1) {
+                u->color = 0;
+                k->parent->color = 0;
+                k->parent->parent->color = 1;
+                k = k->parent->parent;
+                } else {
+                if (k == k->parent->left) {
+                    k = k->parent;
+                    rightRotate(k);
                 }
-                else
-                {
-                    Node *uncle_pt = grand_parent_pt->left;
-                    
-                    if ((uncle_pt != NULL) && (uncle_pt->color == RED))
-                    {
-                        
-                        grand_parent_pt->color = RED;
-                        parent_pt->color = BLACK;
-                        uncle_pt->color = BLACK;
-                        pt = grand_parent_pt;
-                    }
-                    else
-                    {
-                        if (pt == parent_pt->left)
-                        {
-                            rotateRight(root, parent_pt);
-                            pt = parent_pt;
-                            parent_pt = pt->parent;
-                        }
+                k->parent->color = 0;
+                k->parent->parent->color = 1;
+                leftRotate(k->parent->parent);
+                }
+            } else {
+                u = k->parent->parent->right;
 
-                        rotateLeft(root, grand_parent_pt);
-                        std::swap(parent_pt->color,
-                                grand_parent_pt->color);
-                        pt = parent_pt;
-                    }
+                if (u->color == 1) {
+                u->color = 0;
+                k->parent->color = 0;
+                k->parent->parent->color = 1;
+                k = k->parent->parent;
+                } else {
+                if (k == k->parent->right) {
+                    k = k->parent;
+                    leftRotate(k);
+                }
+                k->parent->color = 0;
+                k->parent->parent->color = 1;
+                rightRotate(k->parent->parent);
                 }
             }
-
-            root->color = BLACK;
-        }
-        
-
-        void insert(const value_type &data)
-        {
-            Node *pt = alloc.allocate(1);
-            if(!root)
-            {
-                Node tmp(data,BLACK);
-                 
-                alloc.construct(pt,tmp);
-                root = pt;
-                return ;
+            if (k == root) {
+                break;
             }
-    
-            Node tmp(data,RED);
-            alloc.construct(pt,tmp);
-            root = BSTInsert(root, pt);
-            fixViolation(root, pt);
-        }
-        
-        void printInorder( Node* node)
-        {
-            if (node == NULL)
-                return;
-        
-            /* first recur on left child */
-            printInorder(node->left);
-        
-            /* then print the data of node */
-            cout << node->data.first << " ";
-        
-            /* now recur on right child */
-            printInorder(node->right);
-        }
-        Node * minValue(Node * node) const
-        {
-            Node * current = node;
-        
-            while (current->left != NULL) {
-                current = current->left;
             }
-            return (current);
-        }
-        Node * maxValue(Node * node) const
-        {
-            Node * current = node;
-    
-            while (current->right != NULL) {
-                current = current->right;
-            }
-            return (current);
-        }
+            root->color = 0;
+  }
 
-        Node * search(Node * root,const key_type & key)
+        void insert(const value_type & key) 
         {
-            if (root == NULL || root->data.first == key)// use key compar
-                return root;
+            Node * node = alloc.allocate(1);
+            Node tmp(key,TNULL);
+            alloc.construct(node,tmp);
             
-            if (root->data.first < key)
-                return search(root->right, key);
-        
-            return search(root->left, key);
-        }
 
-        bool is_left_child(Node  * node)
-        {
-            return node == node->parent->left;
-        }
-        Node* getNext(Node* node)
-        {
-            if(node->right != NULL)
-                return minValue(node->right);
-            while (!is_left_child(node))
-                node = node->parent;
-            return node->parent;
-        } 
+            Node * y = NULL;
+            Node * x = this->root;
 
-        Node* findNode(const key_type & key) const 
+            while (x != TNULL) 
+            {
+                y = x;
+                if (node->data < x->data) {
+                    x = x->left;
+                } else {
+                    x = x->right;
+                }
+            }
+
+            node->parent = y;
+            if (y == NULL) {
+            root = node;
+            } else if (node->data < y->data) {
+            y->left = node;
+            } else {
+            y->right = node;
+            }
+
+            if (node->parent == NULL) {
+            node->color = 0;
+            return;
+            }
+
+            if (node->parent->parent == NULL) {
+            return;
+            }
+
+            insertFix(node);
+        }
+size_type deleteNode(const key_type & data) {
+    return deleteNodeHelper(this->root, data);
+  }
+         Node* findNode(const key_type & key) const 
         {
             Node* current = root;
-            while (current != NULL) 
+            while (current != TNULL) 
             {
                 if (key == current->data.first) 
                     return current;
@@ -386,9 +357,38 @@ class RBTree {
                     current = current->right;
             }
             return NULL;
+        }  
+        Node * minValue(Node * node) const
+        {
+            Node * current = node;
+            if(!root->left)// if one node in tree
+                return NULL;
+            while (current->left->left != NULL) {
+                current = current->left;
+            }
+            return (current);
         }
-        
+        Node * maxValue(Node * node) const
+        {
+            Node * current = node;
+            if(!root->right)
+                return NULL;
+            while (current->right->right != NULL) {
+                current = current->right;
+            }
+            return (current);
+        }
+        // Node* findNode(Node * node, const key_type & key)const
+        // {
+        //     if (node == TNULL || key == node->data.first) {
+        //     return node;
+        //     }
 
+        //     if (key < node->data.first) {
+        //     return findNode(node->left, key);
+        //     }
+        //     return findNode(node->right, key);
+        // }
 };
 
 
@@ -398,3 +398,18 @@ class RBTree {
 
 
  
+        // bool is_left_child(Node  * node)
+        // {
+        //     return node == node->parent->left;
+        // }
+
+        // Node* getNext(Node* node)
+        // {
+        //     if(node->right != NULL)
+        //         return minValue(node->right);
+        //     while (!is_left_child(node))
+        //         node = node->parent;
+        //     return node->parent;
+        // } 
+
+        

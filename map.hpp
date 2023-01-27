@@ -97,28 +97,50 @@ namespace ft
                 {
                     tree.insert(val);        
                     size_++;
+                     
                     return pr(tree.findNode(val.first),true);
                 }
                 node = tree.findNode(val.first);// if not found return null if not du[licate]
                 if(node)
                     return pr(node,false); 
+                
                 tree.insert(val);
                 size_++;
                 iterator it(tree.findNode(val.first));
                 return pr(it,true);
             }
  
-            template <class InputIterator>  
-            void insert (InputIterator first, InputIterator last)
-            {
-                while (first != last)
-                {
-                    insert(*first);
-                    first++;
-                }
-                insert(*first);
-            }
+            // template <class InputIterator>  
+            // void insert (InputIterator first, InputIterator last)
+            // {
+            //     while (first != last)
+            //     {
+            //         insert(*first);
+            //         first++;
+            //     }
+            //     insert(*first);
+            // }
              
+
+            size_type erase (const key_type& k)
+            {
+                return  tree.deleteNode(k);
+            }
+            void erase (iterator position)
+            {
+                tree.deleteNode(position.node);
+            }
+            void erase (iterator first, iterator last)
+            {
+                iterator it = first;
+
+                while (it != last)
+                {
+                    erase(it++);
+                    first = it;
+                }
+                
+            }
             ///////////////////////////////
             // map: Iterators
             ////////////////////////////////
@@ -127,13 +149,19 @@ namespace ft
             {
                 tree.root->parent = tree.end_node;
                 tree.end_node->left = tree.root;
-                return iterator (tree.minValue(tree.root));
+                tree.tmp = tree.minValue(tree.root);
+                if(tree.tmp)
+                    return iterator (tree.tmp);
+                return iterator(tree.end_node);
             }
             const_iterator begin() const
             {
                 tree.root->parent = tree.end_node;
                 tree.end_node->left = tree.root;
-                return const_iterator (tree.minValue(tree.root));
+                tree.tmp = tree.minValue(tree.root);
+                if(tree.tmp)
+                    return const_iterator (tree.tmp);
+                return const_iterator(tree.end_node);
             }
             iterator end()
             {
@@ -166,28 +194,28 @@ namespace ft
                 return const_reverse_iterator(tree.minValue(tree.root));// ? 
             }
 
-            ///////////////////////
+            // /////////////////////
             // map: Element access
-            /////////////////////////
+            // ///////////////////////
             mapped_type& operator[] (const key_type& k)
             {
                 return (this->insert(value_type(k, mapped_type())).first->second);
             }
-            // mapped_type& at(const key_type& k) 
-            // {
-            //     iterator it = find(k);
-            //     if (it == end()) 
-            //         throw std::out_of_range("key not found in map");
-            //     return it->second;
-            // }
-            // const mapped_type& at(const key_type& k) const 
-            // {
-            //     const_iterator it = find(k);
-            //     if (it == end()) 
-            //         throw std::out_of_range("key not found in map");
+            mapped_type& at(const key_type& k) 
+            {
+                iterator it = find(k);
+                if (it == end()) 
+                    throw std::out_of_range("key not found in map");
+                return it->second;
+            }
+            const mapped_type& at(const key_type& k) const 
+            {
+                const_iterator it = find(k);
+                if (it == end()) 
+                    throw std::out_of_range("key not found in map");
                 
-            //     return it->second;
-            // }
+                return it->second;
+            }
 
             ///////////////////
             // map: Operations
