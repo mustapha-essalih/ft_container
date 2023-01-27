@@ -35,11 +35,12 @@ Node_struct<K> * maxNode(Node_struct<K> * node)
         current = current->right;
     return (current);
 }
+ 
 template <typename K>
 
-bool is_left_child(Node_struct<K> * node)
+bool is_left_child(Node_struct<K> * node )
 {
-    return node == node->parent->left;
+    return node ==  node->parent->left;
 }
 
 template <typename K>
@@ -47,10 +48,11 @@ Node_struct<K>* getNext(Node_struct<K>* node)
 {
     if(node->right != NULL)
         return minNode(node->right);
+    
     while (!is_left_child(node))
         node = node->parent;
     return node->parent;
-} 
+}
 
 template <typename K>
 
@@ -83,9 +85,83 @@ class RBTree {
         RBTree() 
         { 
             root = NULL; 
-             end_node = alloc.allocate(1);
+            end_node = alloc.allocate(1);
             Node tmp(value_type(),RED);
             alloc.construct(end_node,tmp);
+             
+        }
+        void fixDoubleBlack(Node *x) {
+        if (x == root)
+        // Reached root
+        return;
+
+        Node *sibling = x->sibling(), *parent = x->parent;
+        if (sibling == NULL) {
+        // No sibiling, double black pushed up
+        fixDoubleBlack(parent);
+        } else {
+        if (sibling->color == RED) {
+            // Sibling red
+            parent->color = RED;
+            sibling->color = BLACK;
+            if (sibling->isOnLeft()) {
+            // left case
+            rightRotate(parent);
+            } else {
+            // right case
+            leftRotate(parent);
+            }
+            fixDoubleBlack(x);
+        } else {
+            // Sibling black
+            if (sibling->hasRedChild()) {
+            // at least 1 red children
+            if (sibling->left != NULL and sibling->left->color == RED) {
+                if (sibling->isOnLeft()) {
+                // left left
+                sibling->left->color = sibling->color;
+                sibling->color = parent->color;
+                rightRotate(parent);
+                } else {
+                // right left
+                sibling->left->color = parent->color;
+                rightRotate(sibling);
+                leftRotate(parent);
+                }
+            } else {
+                if (sibling->isOnLeft()) {
+                // left right
+                sibling->right->color = parent->color;
+                leftRotate(sibling);
+                rightRotate(parent);
+                } else {
+                // right right
+                sibling->right->color = sibling->color;
+                sibling->color = parent->color;
+                leftRotate(parent);
+                }
+            }
+            parent->color = BLACK;
+            } else {
+            // 2 black children
+            sibling->color = RED;
+            if (parent->color == BLACK)
+                fixDoubleBlack(parent);
+            else
+                parent->color = BLACK;
+            }
+        }
+        }
+    }
+        void deleteByVal(key_type n) {
+            if (root == NULL)
+                return;
+
+            Node *v = search(n), *u;
+
+            if (v->data.first != n) 
+                return;
+            deleteNode(v);
         }
         
         Node* BSTInsert(Node* root, Node *pt)
@@ -104,8 +180,8 @@ class RBTree {
             } 
             return root;
         }
+         
         
-
         void rotateLeft(Node *&root, Node *&pt)
         {
             Node *pt_right = pt->right;
@@ -161,12 +237,11 @@ class RBTree {
 
             while ((pt != root) && (pt->color != BLACK) && (pt->parent->color == RED))
             {
-
                 parent_pt = pt->parent;
                 grand_parent_pt = pt->parent->parent;
-        
                 if (parent_pt == grand_parent_pt->left)
                 {
+                     
                     Node *uncle_pt = grand_parent_pt->right;
                     if (uncle_pt != NULL && uncle_pt->color == RED)
                     {
@@ -193,9 +268,10 @@ class RBTree {
                 else
                 {
                     Node *uncle_pt = grand_parent_pt->left;
-
+                    
                     if ((uncle_pt != NULL) && (uncle_pt->color == RED))
                     {
+                        
                         grand_parent_pt->color = RED;
                         parent_pt->color = BLACK;
                         uncle_pt->color = BLACK;
@@ -220,7 +296,8 @@ class RBTree {
 
             root->color = BLACK;
         }
-  
+        
+
         void insert(const value_type &data)
         {
             Node *pt = alloc.allocate(1);
@@ -239,27 +316,78 @@ class RBTree {
             fixViolation(root, pt);
         }
         
-        Node * minValue(Node * node)
+        void printInorder( Node* node)
+        {
+            if (node == NULL)
+                return;
+        
+            /* first recur on left child */
+            printInorder(node->left);
+        
+            /* then print the data of node */
+            cout << node->data.first << " ";
+        
+            /* now recur on right child */
+            printInorder(node->right);
+        }
+        Node * minValue(Node * node) const
         {
             Node * current = node;
         
-            /* loop down to find the leftmost leaf */
             while (current->left != NULL) {
                 current = current->left;
             }
             return (current);
         }
-        Node * maxValue(Node * node)
+        Node * maxValue(Node * node) const
         {
             Node * current = node;
-        
-            /* loop down to find the leftmost leaf */
+    
             while (current->right != NULL) {
                 current = current->right;
             }
             return (current);
         }
- 
+
+        Node * search(Node * root,const key_type & key)
+        {
+            if (root == NULL || root->data.first == key)// use key compar
+                return root;
+            
+            if (root->data.first < key)
+                return search(root->right, key);
+        
+            return search(root->left, key);
+        }
+
+        bool is_left_child(Node  * node)
+        {
+            return node == node->parent->left;
+        }
+        Node* getNext(Node* node)
+        {
+            if(node->right != NULL)
+                return minValue(node->right);
+            while (!is_left_child(node))
+                node = node->parent;
+            return node->parent;
+        } 
+
+        Node* findNode(const key_type & key) const 
+        {
+            Node* current = root;
+            while (current != NULL) 
+            {
+                if (key == current->data.first) 
+                    return current;
+                else if (key < current->data.first) 
+                    current = current->left;
+                else 
+                    current = current->right;
+            }
+            return NULL;
+        }
+        
 
 };
 
@@ -269,20 +397,4 @@ class RBTree {
 #endif
 
 
-
-
-
-
-
-
-
-//  Node * searchTreeHelper(Node * node, int key) {
-//     if (node == TNULL || key == node->data) {
-//       return node;
-//     }
-
-//     if (key < node->data) {
-//       return searchTreeHelper(node->left, key);
-//     }
-//     return searchTreeHelper(node->right, key);
-//   }
+ 
