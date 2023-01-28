@@ -23,6 +23,7 @@ using std::stack;
 using std::map;
 using std::pair;
  
+#include "red_black_tre.hpp"
 #include "iterator.hpp"
 #include "type_traits.hpp"
 #include "reverse_iterator.hpp"
@@ -110,25 +111,42 @@ namespace ft
                 return pr(it,true);
             }
  
-            // template <class InputIterator>  
-            // void insert (InputIterator first, InputIterator last)
-            // {
-            //     while (first != last)
-            //     {
-            //         insert(*first);
-            //         first++;
-            //     }
-            //     insert(*first);
-            // }
+            template <class InputIterator>  
+            void insert (InputIterator first, InputIterator last)
+            {
+                while (first != last)
+                {
+                    insert(*first);
+                    first++;
+                }
+                insert(*first);
+            }
              
-
+            void insert (iterator hint, const value_type& val)
+            {
+                if(hint.node->data.first < val.first && getNext(hint.node)->data.first > val.first)
+                {
+                    if(hint.node->right == tree.TNULL)// if has leaks free hint.node->right and reaclloc
+                    {
+                        hint.node->right = tree.returnNewNode(val);
+                        hint.node->right->parent = hint.node;
+                        // cout << hint.node->right->parent->data.first << endl;
+                        tree.insertFix(hint.node->right);
+                    }
+                }
+                // tree.printHelper(tree.root,"",true);
+                // cout << "\n\n";
+                // iterator it;
+                // return it;
+            }
+ 
             size_type erase (const key_type& k)
             {
                 return  tree.deleteNode(k);
             }
             void erase (iterator position)
             {
-                tree.deleteNode(position.node);
+                tree.deleteNode(position.node->data.first);
             }
             void erase (iterator first, iterator last)
             {
@@ -165,11 +183,15 @@ namespace ft
             }
             iterator end()
             {
+                tree.root->parent = tree.end_node;
+                tree.end_node->left = tree.root;
                 return iterator (tree.end_node,tree.end_node,tree.root);
             }
             
             const_iterator end() const
             {
+                tree.root->parent = tree.end_node;
+                tree.end_node->left = tree.root;
                 return const_iterator (tree.end_node,tree.end_node,tree.root);
             }
             

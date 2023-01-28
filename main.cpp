@@ -19,28 +19,20 @@ using std::stack;
 int main()
 {
 
-    std::map<char,int> mymap;
-  std::map<char,int>::iterator it;
+	ft::map<int,int> m;
 
-  // insert some values:
-  mymap['a']=10;
-  mymap['b']=20;
-  mymap['c']=30;
-  mymap['d']=40;
-  mymap['e']=50;
-  mymap['f']=60;
+	m.insert(ft::make_pair<int,int>(10,1000));
+	m.insert(ft::make_pair<int,int>(20,2000));
+	m.insert(ft::make_pair<int,int>(30,3000));
 
-  it=mymap.find('b');
-  mymap.erase (it);                   // erasing by iterator
-
-  mymap.erase ('c');                  // erasing by key
-
-  it=mymap.find ('e');
-  mymap.erase ( it, mymap.end() );    // erasing by range
-
-  // show content:
-  for (it=mymap.begin(); it!=mymap.end(); ++it)
-    std::cout << it->first << " => " << it->second << '\n';
+	 
+	ft::map<int,int>::iterator it = m.begin();
+	 
+	
+	m.insert(it,ft::make_pair<int,int>(15,1000));
+	it = m.find(15);
+	m.insert(it,ft::make_pair<int,int>(16,1000));
+ 
  
 }
  

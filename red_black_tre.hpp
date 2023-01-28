@@ -1,7 +1,6 @@
 #ifndef RED_BLACK_TREE_HPP
 #define RED_BLACK_TREE_HPP
-enum Color {RED, BLACK};
-
+ 
 template <typename K>
 struct Node_struct  {
     K data;
@@ -14,12 +13,12 @@ struct Node_struct  {
     {
         parent = NULL;
         left = right = tNULL;
-        color = RED;
+        color = 1;
     }
     Node_struct<K>(const K & d)   : data(d)  
     {
         left = right = NULL;
-        color = BLACK;
+        color = 0;
     }
 };
 
@@ -71,7 +70,7 @@ Node_struct<K>* getPrev(Node_struct<K>* node)
     return node->parent;
 }
 
-
+// const value_type & arg => garanti cannot edit value of this argumenet for value type canot edit first  and secondQ
 template<typename key_type,typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator >
 
 class RBTree {
@@ -314,7 +313,8 @@ void rbTransplant(Node * u, Node * v) {
             while (x != TNULL) 
             {
                 y = x;
-                if (node->data < x->data) {
+                if (node->data.first < x->data.first) // use key compar
+                {
                     x = x->left;
                 } else {
                     x = x->right;
@@ -322,12 +322,16 @@ void rbTransplant(Node * u, Node * v) {
             }
 
             node->parent = y;
-            if (y == NULL) {
-            root = node;
-            } else if (node->data < y->data) {
-            y->left = node;
-            } else {
-            y->right = node;
+            if (y == NULL) 
+            {
+                root = node;
+            } 
+            else if (node->data.first < y->data.first) 
+            {
+                y->left = node;
+            } 
+            else {
+                y->right = node;
             }
 
             if (node->parent == NULL) {
@@ -341,10 +345,12 @@ void rbTransplant(Node * u, Node * v) {
 
             insertFix(node);
         }
-size_type deleteNode(const key_type & data) {
-    return deleteNodeHelper(this->root, data);
-  }
-         Node* findNode(const key_type & key) const 
+        
+        size_type deleteNode(const key_type & data) {
+            return deleteNodeHelper(this->root, data);
+        }
+        
+        Node* findNode(const key_type & key) const 
         {
             Node* current = root;
             while (current != TNULL) 
@@ -378,17 +384,32 @@ size_type deleteNode(const key_type & data) {
             }
             return (current);
         }
-        // Node* findNode(Node * node, const key_type & key)const
-        // {
-        //     if (node == TNULL || key == node->data.first) {
-        //     return node;
-        //     }
 
-        //     if (key < node->data.first) {
-        //     return findNode(node->left, key);
-        //     }
-        //     return findNode(node->right, key);
-        // }
+        Node * returnNewNode(const value_type & data)
+        {
+             
+            Node * node = alloc.allocate(1);
+            Node tmp(data,TNULL);
+            alloc.construct(node,tmp);
+            return node;
+        }
+        void printHelper(Node *root, string indent, bool last) {
+    if (root != TNULL) {
+      cout << indent;
+      if (last) {
+        cout << "R----";
+        indent += "   ";
+      } else {
+        cout << "L----";
+        indent += "|  ";
+      }
+
+      string sColor = root->color  ? "RED" : "BLACK";
+      cout << root->data.first << "(" << sColor << ")" << endl;
+      printHelper(root->left, indent, false);
+      printHelper(root->right, indent, true);
+    }
+  }
 };
 
 
