@@ -29,13 +29,13 @@ using std::pair;
 #include "reverse_iterator.hpp"
 
 namespace ft
-{
+{ 
+
     template< typename Key, typename T, typename Compare = std::less<Key> , typename Allocator = std::allocator<ft::pair<const Key, T> > >
  
     class map
     {
         public:
-
             ////////////////////
             // map member types //   
             ///////////////////
@@ -87,7 +87,8 @@ namespace ft
             ////////////////////
             // map: Modifiers
             //////////////////
-
+             
+             
             ft::pair<iterator, bool> 
             insert(const value_type & val)
             {
@@ -98,19 +99,24 @@ namespace ft
                 {
                     tree.insert(val);        
                     size_++;
-                     
-                    return pr(tree.findNode(val.first),true);
+                    iterator it(tree.findNode(val.first),tree.end_node,tree.root);
+                    return pr(it,true);
                 }
                 node = tree.findNode(val.first);// if not found return null if not du[licate]
                 if(node)
-                    return pr(node,false); 
+                {
+                    iterator it(tree.findNode(val.first),tree.end_node,tree.root);
+
+                    return pr(it,false); 
+                }
                 
                 tree.insert(val);
                 size_++;
-                iterator it(tree.findNode(val.first));
+                iterator it(tree.findNode(val.first),tree.end_node,tree.root);
                 return pr(it,true);
             }
  
+             
             template <class InputIterator>  
             void insert (InputIterator first, InputIterator last)
             {
@@ -119,63 +125,74 @@ namespace ft
                     insert(*first);
                     first++;
                 }
-                insert(*first);
+                tree.insert(tree.end_node->data);    
             }
              
-            void insert (iterator hint, const value_type& val)
+            iterator insert (iterator hint, const value_type& val)
             {
+                if(hint.node == tree.end_node)
+                    return iterator(tree.end_node,tree.end_node,tree.root);
+                
+                if(hint.node->data.first == val.first)
+                    return iterator(hint.node,tree.end_node,tree.root);
                 if(hint.node->data.first < val.first && getNext(hint.node)->data.first > val.first)
                 {
                     if(hint.node->right == tree.TNULL)// if has leaks free hint.node->right and reaclloc
                     {
                         hint.node->right = tree.returnNewNode(val);
                         hint.node->right->parent = hint.node;
-                        // cout << hint.node->right->parent->data.first << endl;
-                        tree.insertFix(hint.node->right);
+                        tree.insertFix(hint.node->right);         
+                        return iterator(hint.node->right,tree.end_node,tree.root);
+                    }
+                    else
+                    {
+                        Node_struct<value_type> * node = tree.maxValue(hint.node->right);
+                        node->left = tree.returnNewNode(val);
+                        node->left->parent = node;
+                        tree.insertFix(node);
+                        return iterator(tree.findNode(val.first),tree.end_node,tree.root);
                     }
                 }
-                // tree.printHelper(tree.root,"",true);
-                // cout << "\n\n";
-                // iterator it;
-                // return it;
+                tree.insert(val);
+                return iterator(tree.findNode(val.first),tree.end_node,tree.root);
             }
- 
-            size_type erase (const key_type& k)
-            {
-                return  tree.deleteNode(k);
-            }
-            void erase (iterator position)
-            {
-                tree.deleteNode(position.node->data.first);
-            }
-            void erase (iterator first, iterator last)
-            {
-                iterator it = first;
 
-                while (it != last)
-                {
-                    erase(it++);
-                    first = it;
-                }
+            // size_type erase (const key_type& k)
+            // {
+            //     tree.deleteNode(k);
+            //     return  1;
+            // }
+            // void erase (iterator position)
+            // {
+            //     tree.deleteNode(position.node->data.first);
+            // }
+            // void erase (iterator first, iterator last)
+            // {
+            //     iterator it = first;
+
+            //     while (it != last)
+            //     {
+            //         erase(it++);
+            //         first = it;
+            //     }
                 
-            }
+            // }
+
             ///////////////////////////////
             // map: Iterators
             ////////////////////////////////
              
             iterator begin()
             {
-                tree.root->parent = tree.end_node;
-                tree.end_node->left = tree.root;
                 tree.tmp = tree.minValue(tree.root);
                 if(tree.tmp)
-                    return iterator (tree.tmp);
-                return iterator(tree.end_node);
+                    return iterator (tree.tmp,tree.end_node,tree.root);
+                return iterator(tree.end_node,tree.end_node,tree.root);
             }
             const_iterator begin() const
             {
-                tree.root->parent = tree.end_node;
-                tree.end_node->left = tree.root;
+                // tree.root->parent = tree.end_node;
+                // tree.end_node->left = tree.root;
                 tree.tmp = tree.minValue(tree.root);
                 if(tree.tmp)
                     return const_iterator (tree.tmp);
@@ -183,36 +200,40 @@ namespace ft
             }
             iterator end()
             {
-                tree.root->parent = tree.end_node;
-                tree.end_node->left = tree.root;
                 return iterator (tree.end_node,tree.end_node,tree.root);
             }
             
             const_iterator end() const
             {
-                tree.root->parent = tree.end_node;
-                tree.end_node->left = tree.root;
+                // tree.root->parent = tree.end_node;
+                // tree.end_node->left = tree.root;
                 return const_iterator (tree.end_node,tree.end_node,tree.root);
             }
             
             reverse_iterator rbegin()
             {
-                tree.root->parent = tree.end_node;
-                tree.end_node->left = tree.root;
-                return reverse_iterator(tree.getNext(tree.maxValue(tree.root)));// this is the last element in tree and when print hi decrimrnt one index
+                // tree.root->parent = tree.end_node;
+                // tree.end_node->left = tree.root;
+                return reverse_iterator(tree.end_node,tree.end_node,tree.root);// this is the last element in tree and when print hi decrimrnt one index
             }
+
             reverse_iterator rend()// before firt element
             {
+                // tree.root->parent = tree.end_node;
+                // tree.end_node->left = tree.root;
                 return reverse_iterator(tree.minValue(tree.root));// ? 
             }
+            
             const_reverse_iterator rbegin() const
             {
-                tree.root->parent = tree.end_node;
-                tree.end_node->left = tree.root;
-                return const_reverse_iterator(tree.getNext(tree.maxValue(tree.root)));// this is the last element in tree and when print hi decrimrnt one index
+                // tree.root->parent = tree.end_node;
+                // tree.end_node->left = tree.root;
+                return const_reverse_iterator(getNext(tree.maxValue(tree.root)));// this is the last element in tree and when print hi decrimrnt one index
             }
             const_reverse_iterator rend() const // before firt element
             {
+                // tree.root->parent = tree.end_node;
+                // tree.end_node->left = tree.root;
                 return const_reverse_iterator(tree.minValue(tree.root));// ? 
             }
 
@@ -223,21 +244,21 @@ namespace ft
             {
                 return (this->insert(value_type(k, mapped_type())).first->second);
             }
-            mapped_type& at(const key_type& k) 
-            {
-                iterator it = find(k);
-                if (it == end()) 
-                    throw std::out_of_range("key not found in map");
-                return it->second;
-            }
-            const mapped_type& at(const key_type& k) const 
-            {
-                const_iterator it = find(k);
-                if (it == end()) 
-                    throw std::out_of_range("key not found in map");
+            // mapped_type& at(const key_type& k) 
+            // {
+            //     iterator it = find(k);
+            //     if (it == end()) 
+            //         throw std::out_of_range("key not found in map");
+            //     return it->second;
+            // }
+            // const mapped_type& at(const key_type& k) const 
+            // {
+            //     const_iterator it = find(k);
+            //     if (it == end()) 
+            //         throw std::out_of_range("key not found in map");
                 
-                return it->second;
-            }
+            //     return it->second;
+            // }
 
             ///////////////////
             // map: Operations
@@ -246,31 +267,31 @@ namespace ft
             iterator find (const key_type& k)
             {
                 if(size() == 0)
-                    return iterator(tree.end_node);
+                    return iterator(tree.end_node,tree.end_node,tree.root);
                 tree.tmp = tree.findNode(k);
                 if(tree.tmp)
-                    return iterator(tree.tmp);
-                return iterator(tree.end_node);
+                    return iterator(tree.tmp,tree.end_node,tree.root);
+                return iterator(tree.end_node,tree.end_node,tree.root);
             }
 
-            const_iterator find (const key_type& k) const
-            {
-                if(size() == 0)
-                    return const_iterator(tree.end_node);
-                tree.tmp = tree.findNode(k);
-                if(tree.tmp)
-                    return const_iterator(tree.tmp);
-                return const_iterator(tree.end_node);
-            }
+            // const_iterator find (const key_type& k) const
+            // {
+            //     if(size() == 0)
+            //         return const_iterator(tree.end_node);
+            //     tree.tmp = tree.findNode(k);
+            //     if(tree.tmp)
+            //         return const_iterator(tree.tmp);
+            //     return const_iterator(tree.end_node);
+            // }
 
-            size_type count (const key_type& k) const
-            {
-                if(size() == 0)
-                    return 0;
-                if(tree.findNode(k))
-                    return 1;
-                return 0;
-            }
+            // size_type count (const key_type& k) const
+            // {
+            //     if(size() == 0)
+            //         return 0;
+            //     if(tree.findNode(k))
+            //         return 1;
+            //     return 0;
+            // }
 
             // if found the element returns it, if not found returns next greter then k,
             // if k is greter then the max element in map will returns garbage value

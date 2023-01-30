@@ -14,7 +14,7 @@
 #include <algorithm>     
 #include<iterator>
  
-#include "red_black_tre.hpp"
+#include "red_black_tree.hpp"
 #include "type_traits.hpp"
    
 using std::string;
@@ -30,8 +30,7 @@ namespace ft
 {
     template <typename key_type, typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator  >
     class const_map_iterator;
-    template <typename key_type, typename T,typename key_compare,  typename Allocator  >
-    class map;
+     
 
     template <typename key_type, typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator  >
 
@@ -54,7 +53,7 @@ namespace ft
                 Node * node;
                 map_iterator():node(0){}
 
-                map_iterator( Node * n, Node * e, Node * r):node(n),end(e),root(r){}
+                map_iterator( Node * n):node(n){}
                 
                 map_iterator(const map_iterator  & it)
                 {
@@ -70,12 +69,7 @@ namespace ft
 
                 map_iterator& operator++() 
                 {
-                    cout << "=> " << node->data.first << endl;
-                    if(node == maxNode(root))
-                    {
-                        node = end;
-                        return *this;
-                    }
+                     
                     node = getNext(node);
                     return *this;                    
                 }
@@ -89,11 +83,6 @@ namespace ft
                 
                 map_iterator& operator--() 
                 { 
-                    if(node == end)
-                    {
-                        node = maxNode(root);
-                        return *this;
-                    }
                     node = getPrev(node);
                     return *this;                    
                 }
@@ -126,13 +115,12 @@ namespace ft
                         key_type getKey() const {
                     return node->data.first;
                 }
-            private:
-                Node * root;
-                Node * end;
+            private: 
 
                 
     };  
- template <typename key_type, typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator  >
+        
+        template <typename key_type, typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator  >
 
         class const_map_iterator 
         {   
@@ -150,11 +138,7 @@ namespace ft
                 const_map_iterator():node(0){}
 
                 const_map_iterator(const Node * n):node(n){}
-                const_map_iterator(const Node * n,const Node * e,const Node * r):node(n)
-                {
-                    end = e;
-                    root = r;
-                }
+                
                 /*
                     if decalare const_iterator and assign it begin() will enter in this copy constructor;
                     if decalre const map will cal begin() const and enter to const iterator.
@@ -184,7 +168,7 @@ namespace ft
 
                 const_map_iterator& operator++() 
                 {
-                    node = getNext(node,root);
+                    node = getNext(node);
                     return *this;                    
                 }
 
@@ -197,11 +181,6 @@ namespace ft
                 
                 const_map_iterator& operator--() 
                 { 
-                    if(node == end)
-                    {
-                        node = maxNode(root);
-                        return *this;
-                    }
                     node = getPrev(node);
                     return *this;                    
                 }
@@ -232,10 +211,7 @@ namespace ft
                     return node->data;
                 }
             private:
-
-                Node * node;             
-                Node * root;
-                Node * end;
+                Node * node; 
                 
     };  
  

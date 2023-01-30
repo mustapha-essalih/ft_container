@@ -18,21 +18,36 @@ using std::stack;
 
 int main()
 {
+	ft::map<char,int> mymap;
 
-	ft::map<int,int> m;
+  // first insert function version (single parameter):
+  mymap.insert ( ft::pair<char,int>('a',100) );
+  mymap.insert ( ft::pair<char,int>('z',200) );
 
-	m.insert(ft::make_pair<int,int>(10,1000));
-	m.insert(ft::make_pair<int,int>(20,2000));
-	m.insert(ft::make_pair<int,int>(30,3000));
+  ft::pair<ft::map<char,int>::iterator,bool> ret;
+  ret = mymap.insert ( ft::pair<char,int>('z',500) );
+  if (ret.second==false) {
+    std::cout << "element 'z' already existed";
+    std::cout << " with a value of " << ret.first->second << '\n';
+  }
 
-	 
-	ft::map<int,int>::iterator it = m.begin();
-	 
-	
-	m.insert(it,ft::make_pair<int,int>(15,1000));
-	it = m.find(15);
-	m.insert(it,ft::make_pair<int,int>(16,1000));
- 
- 
+  // second insert function version (with hint position):
+  ft::map<char,int>::iterator it = mymap.begin();
+  mymap.insert (it, ft::pair<char,int>('b',300));  // max efficiency inserting
+  mymap.insert (it, ft::pair<char,int>('c',400));  // no max efficiency inserting
+
+  // third insert function version (range insertion):
+  ft::map<char,int> anothermap;
+  anothermap.insert(mymap.begin(),mymap.find('c'));
+
+  // showing contents:
+  std::cout << "mymap contains:\n";
+  for (it=mymap.begin(); it!=mymap.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
+
+  std::cout << "anothermap contains:\n";
+  for (it=anothermap.begin(); it!=anothermap.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
+
 }
  
