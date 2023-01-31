@@ -1,3 +1,5 @@
+
+#include <iostream>
 #include <iostream>
 #include <algorithm>
 #include <utility>
@@ -13,41 +15,46 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::stack;
-  
+
+
 #include "map.hpp"
+
+
+void func()
+{
+	system("leaks ft_container");
+}
+
+bool fncomp (char lhs, char rhs) {return lhs<rhs;}
+
+struct classcomp {
+  bool operator() (const char& lhs, const char& rhs) const
+  {return lhs<rhs;}
+};
+// use key compar to comapar evryting
+// in iterator node privete
+
+// implement std::map::key_comp
+// implement std::map::value_comp
+
 
 int main()
 {
-	ft::map<char,int> mymap;
 
-  // first insert function version (single parameter):
-  mymap.insert ( ft::pair<char,int>('a',100) );
-  mymap.insert ( ft::pair<char,int>('z',200) );
+	ft::map<char,int> first;
+  	ft::map<char,int> second;
 
-  ft::pair<ft::map<char,int>::iterator,bool> ret;
-  ret = mymap.insert ( ft::pair<char,int>('z',500) );
-  if (ret.second==false) {
-    std::cout << "element 'z' already existed";
-    std::cout << " with a value of " << ret.first->second << '\n';
-  }
+	first['x']=8;
+	first['y']=16;
+	first['z']=32;
 
-  // second insert function version (with hint position):
-  ft::map<char,int>::iterator it = mymap.begin();
-  mymap.insert (it, ft::pair<char,int>('b',300));  // max efficiency inserting
-  mymap.insert (it, ft::pair<char,int>('c',400));  // no max efficiency inserting
+	second=first;                // second now contains 3 ints
+	
+	first = ft::map<char,int>();  // and first is now empty
 
-  // third insert function version (range insertion):
-  ft::map<char,int> anothermap;
-  anothermap.insert(mymap.begin(),mymap.find('c'));
+	std::cout << "Size of first: " << first.size() << '\n';
+	std::cout << "Size of second: " << second.size() << '\n';
 
-  // showing contents:
-  std::cout << "mymap contains:\n";
-  for (it=mymap.begin(); it!=mymap.end(); ++it)
-    std::cout << it->first << " => " << it->second << '\n';
-
-  std::cout << "anothermap contains:\n";
-  for (it=anothermap.begin(); it!=anothermap.end(); ++it)
-    std::cout << it->first << " => " << it->second << '\n';
+	atexit(func);
 
 }
- 

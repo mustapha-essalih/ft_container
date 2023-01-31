@@ -14,7 +14,7 @@
 #include<iterator>
   
 #include "iterator_traits.hpp"
-#include "red_black_tre.hpp"
+#include "red_black_tree.hpp"
  
 using std::string;
 using std::cout;
@@ -46,9 +46,7 @@ namespace ft
             reverse_iterator(){} //: _iterator(){}
 
             reverse_iterator (iterator_type it) : _iterator(it){}// take for examlpe begin()    
-            reverse_iterator (Node_struct<value_type> * it,Node_struct<value_type> * end,Node_struct<value_type> * root) : _iterator(it,end,root)// take for examlpe begin()    
-            {
-            }
+             
             reverse_iterator (const reverse_iterator & rev_it) // The copy constructor is normal.
             {
                 this->_iterator = rev_it._iterator;

@@ -43,6 +43,11 @@ struct Node_struct  {
 		{
 			left = right = tNULL;
 		}
+		Node_struct<K>(const K & d,Node_struct<K> * tNULL,Node_struct<K> *p)   : data(d)  
+		{
+			parent = p;
+			left = right = tNULL;
+		}
 };
 
 
@@ -111,17 +116,14 @@ class RedBlackTree {
         Node * TNULL;
         Node * tmp;
         Node * end_node;
-        Node * first;
-	 
+ 	 
 
      
 	RedBlackTree() 
 	{
 		end_node = alloc.allocate(1);
 		TNULL = alloc.allocate(1);
-		first = alloc.allocate(1);
 		Node tmp((value_type()));
-		alloc.construct(first,tmp);
 		alloc.construct(TNULL,tmp);
 		Node tmp1((value_type()),TNULL,1);
 		alloc.construct(end_node,tmp1);
@@ -286,25 +288,25 @@ class RedBlackTree {
       y->left->parent = y;
       y->color = z->color;
     }
-    alloc.deallocate(z,1);
-    if (y_original_color == 0) {
+    alloc.deallocate(z,sizeof(1));
+	 
+	if (y_original_color == 0) {
       deleteFix(x);
     }
 
 	root->parent = end_node;
     end_node->left = root;
-	minNode(root)->left = first;
-	first->parent = minNode(root);
+	 
 	return 1;
   }
  
   
   int deleteNode(const key_type &  data) 
   {
+
     root->parent = NULL;
     end_node->left = NULL;
-	minNode(root)->left = TNULL;
-	
+	 
     return deleteNodeHelper(this->root, data);
 
   }
@@ -381,8 +383,7 @@ class RedBlackTree {
 			
 			else
 				x = x->right;
-			if(x == first)
-				x = TNULL;
+			 
 		}
 
 		node->parent = y;
@@ -393,7 +394,10 @@ class RedBlackTree {
 			end_node->left = root;
 		} 
 		else if (node->data.first < y->data.first) 
+		{
 			y->left = node;
+			
+		}
 		else 
 			y->right = node;
 
@@ -405,11 +409,6 @@ class RedBlackTree {
 
 		if (node->parent->parent == NULL || node->parent->parent == end_node) 
 		{
-			if(root->left == TNULL)
-			{
-				root->left = first;
-				first->parent = root;
-			}
 			return;
 		}
 		  
@@ -417,16 +416,20 @@ class RedBlackTree {
 		end_node->left = root;
   	}
 
-	Node * minValue(Node * node) const
+	 
+	Node * minValue(Node * node)   const // for const iterator like end() const
 	{
 		Node * current = node;
 		
-		while (current->left->left != NULL) {
+		while (current->left->left != NULL) 
+		{
 			current = current->left;
 		}
 		return (current);
 	}
-	Node * maxValue(Node * node) const
+	
+	
+	Node * maxValue(Node * node)    const
 	{
 		Node * current = node;
 		
@@ -436,7 +439,7 @@ class RedBlackTree {
 		return (current);
 	} 
 
-	Node* findNode(const key_type & key) const 
+	Node* findNode(const key_type & key)    const
 	{
 		Node* current = root;
 		while (current != TNULL) 
@@ -458,7 +461,32 @@ class RedBlackTree {
 		alloc.construct(node,tmp);
 		return node;
 	}
+
+	 
+	void postOrderHelper(Node * node) 
+	{
+		if (node != TNULL) 
+		{
+			postOrderHelper(node->left);
+			postOrderHelper(node->right);
+			deleteNode(node->data.first);
+		}
+  }
+  
+	~RedBlackTree()
+	{
+ 		alloc.deallocate(TNULL,1);
+ 		alloc.deallocate(end_node,1);
+		postOrderHelper(root);
+	}
 };
- 
+
+
 
 #endif
+
+
+ 
+
+
+ 
