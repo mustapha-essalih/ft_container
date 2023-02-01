@@ -120,7 +120,7 @@ namespace ft
                 Node_struct<value_type> * y = NULL;
                 Node_struct<value_type> * x = tree.root;
 
-                while (x != tree.TNULL) 
+                while (x && x != tree.TNULL) 
                 {
                     y = x;
                     if (node->data.first < x->data.first)// use key compar
@@ -242,9 +242,8 @@ namespace ft
             
             iterator begin()
             {
-                // tree.tmp = tree.minValue(tree.root);
-                // if(tree.tmp)
-                //     return iterator (tree.tmp);
+                if(tree.root == tree.TNULL)
+                    return iterator(tree.end_node);
                 return iterator(tree.minValue(tree.root));
             }
             

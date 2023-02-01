@@ -482,10 +482,10 @@ class RedBlackTree {
   
 	~RedBlackTree()
 	{ 
- 		// alloc.deallocate(TNULL,1);
- 		// alloc.deallocate(end_node,1);
- 		// alloc.deallocate(tmp,1);
-		// postOrderHelper(root);
+ 		alloc.deallocate(TNULL,1);
+ 		alloc.deallocate(end_node,1);
+ 		alloc.deallocate(tmp,1);
+		postOrderHelper(root);
 	}
 };
 
