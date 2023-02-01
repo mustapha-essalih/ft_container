@@ -121,7 +121,9 @@ class RedBlackTree {
      
 	RedBlackTree() 
 	{
+	 
 		end_node = alloc.allocate(1);
+		tmp = alloc.allocate(1);
 		TNULL = alloc.allocate(1);
 		Node tmp((value_type()));
 		alloc.construct(TNULL,tmp);
@@ -133,7 +135,7 @@ class RedBlackTree {
 	void leftRotate(Node * x) 
 	{
 		if(x == root)
-      		x->parent = nullptr;
+      		x->parent = NULL;
 		Node * y = x->right;
 		x->right = y->left;
 		if (y->left != TNULL) 
@@ -153,7 +155,7 @@ class RedBlackTree {
 	void rightRotate(Node * x) 
 	{
 		if(x == root)
-      		x->parent = nullptr;
+      		x->parent = NULL;
 		Node * y = x->left;
 		x->left = y->right;
 		if (y->right != TNULL) 
@@ -231,7 +233,7 @@ class RedBlackTree {
   }
 
   void rbTransplant(Node * u, Node * v) {
-    if (u->parent == nullptr) {
+    if (u->parent == NULL) {
       root = v;
     } else if (u == u->parent->left) {
       u->parent->left = v;
@@ -365,7 +367,15 @@ class RedBlackTree {
 		root->color = 0;
 	}
 
-  
+	void getNode(Node * node,int i)
+	{
+		if(i)
+		{
+			 
+			Node t(node->data,TNULL);
+			alloc.construct(tmp,t);
+		}
+	}
 	void insert(const value_type & key) 
 	{
 		Node * node = alloc.allocate(1);
@@ -382,10 +392,8 @@ class RedBlackTree {
 				x = x->left;
 			
 			else
-				x = x->right;
-			 
+				x = x->right;	 
 		}
-
 		node->parent = y;
 		if (y == NULL) 
 		{
@@ -400,7 +408,6 @@ class RedBlackTree {
 		}
 		else 
 			y->right = node;
-
 		if (node->parent == NULL || node->parent == end_node) 
 		{
 			node->color = 0;
@@ -411,7 +418,7 @@ class RedBlackTree {
 		{
 			return;
 		}
-		  
+		insertFix(node);
 		root->parent = end_node;
 		end_node->left = root;
   	}
@@ -468,16 +475,17 @@ class RedBlackTree {
 		if (node != TNULL) 
 		{
 			postOrderHelper(node->left);
-			postOrderHelper(node->right);
 			deleteNode(node->data.first);
+			postOrderHelper(node->right);
 		}
   }
   
 	~RedBlackTree()
-	{
- 		alloc.deallocate(TNULL,1);
- 		alloc.deallocate(end_node,1);
-		postOrderHelper(root);
+	{ 
+ 		// alloc.deallocate(TNULL,1);
+ 		// alloc.deallocate(end_node,1);
+ 		// alloc.deallocate(tmp,1);
+		// postOrderHelper(root);
 	}
 };
 

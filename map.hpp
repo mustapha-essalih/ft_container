@@ -57,7 +57,8 @@ namespace ft
             typedef typename ft::reverse_iterator<iterator>                                                                                         reverse_iterator;
             typedef typename ft::reverse_iterator<const_iterator>                                                                                   const_reverse_iterator;
             
-           
+            typedef Node_struct<key_type> Node;
+
             class value_compare : public std::binary_function<value_type, value_type, bool>
             {
                 private:
@@ -104,26 +105,48 @@ namespace ft
             insert(const value_type & val)
             {
                 typedef ft::pair<iterator, bool> pr;
-                Node_struct<value_type> * node;
-
-                if(size_ == 0)
+                Node_struct<value_type> * node = alloc.allocate(1);
+                Node_struct<value_type> tmp(val,tree.TNULL);
+                alloc.construct(node,tmp);
+                if(tree.root == tree.TNULL)
                 {
-                    tree.insert(val);        
                     size_++;
-                    iterator it(tree.findNode(val.first));
-                    return pr(it,true);
+                    node->color = 0;
+                    tree.root = node;
+                    tree.root->parent = tree.end_node;
+                    tree.end_node->left = tree.root;
+                    return pr(iterator(node),true);
                 }
-                node = tree.findNode(val.first);// if not found return null if not du[licate]
-                if(node)
+                Node_struct<value_type> * y = NULL;
+                Node_struct<value_type> * x = tree.root;
+
+                while (x != tree.TNULL) 
                 {
-                    iterator it(node);
-                    return pr(it,false); 
+                    y = x;
+                    if (node->data.first < x->data.first)// use key compar
+                        x = x->left;
+                    if(node->data.first > x->data.first)
+                        x = x->right;	 
+                    else
+                        return pr(iterator(x),false);
+                }
+                node->parent = y;
+                if (node->data.first < y->data.first) 
+                    y->left = node;
+                else 
+                    y->right = node;
+
+                if (node->parent->parent == NULL || node->parent->parent == tree.end_node) // second Node
+                {
+                    size_++;
+                    return pr(iterator(node),true);
                 }
                 
-                tree.insert(val);
+                tree.insertFix(node);
                 size_++;
-                iterator it(tree.findNode(val.first));
-                return pr(it,true);
+                tree.root->parent = tree.end_node;
+                tree.end_node->left = tree.root;
+                return pr(iterator(node),true);
             }
  
             template <class InputIterator>  
@@ -162,7 +185,8 @@ namespace ft
                     }
                 }
                 tree.insert(val);
-                return iterator(tree.findNode(val.first));
+                tree.getNode(tree.root,0);
+                return iterator(tree.tmp);
             }
 
             size_type erase (const key_type& k)
@@ -210,7 +234,7 @@ namespace ft
                 std::swap(this->tree.tmp,x.tree.tmp);
                 std::swap(this->size_,x.size_);
             }
-
+            
             /* 
                 map: Iterators:
             */
@@ -218,10 +242,10 @@ namespace ft
             
             iterator begin()
             {
-                tree.tmp = tree.minValue(tree.root);
-                if(tree.tmp)
-                    return iterator (tree.tmp);
-                return iterator(tree.end_node);
+                // tree.tmp = tree.minValue(tree.root);
+                // if(tree.tmp)
+                //     return iterator (tree.tmp);
+                return iterator(tree.minValue(tree.root));
             }
             
             iterator end()
@@ -428,10 +452,10 @@ namespace ft
                 red_black_tree_ tree;
                 size_type size_;
                 key_compare key_compare_;
-                typedef typename allocator_type::template rebind<RedBlackTree<key_type,value_type,key_compare,size_type,mapped_type,allocator_type> >::other node_allocator;
+                typedef typename allocator_type::template rebind<Node_struct<value_type> >::other node_allocator;
                 node_allocator alloc;
-                red_black_tree_ * ptr;
-
+                Node_struct<value_type> * firstNode;
+                Node_struct<value_type> * lastNode;
     };
     
 
