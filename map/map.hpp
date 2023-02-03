@@ -25,8 +25,8 @@ using std::pair;
  
 #include "red_black_tree.hpp"
 #include "iterator.hpp"
-#include "reverse_iterator.hpp"
-#include "type_traits.hpp"
+#include "../utils/reverse_iterator.hpp"
+#include "../utils/type_traits.hpp"
  
 
 namespace ft
@@ -81,7 +81,7 @@ namespace ft
             {
                 insert(first,last);
             }
-            map (const map & x):tree(x.tree)// because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
+            map (const map & x)// because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
             {
                 insert(x.begin(),x.end());
             }
@@ -338,9 +338,8 @@ namespace ft
             {
                 if(size() == 0)
                     return iterator(tree.end_node);
-                tree.tmp = tree.findNode(k);
-                if(tree.tmp)
-                    return iterator(tree.tmp);
+                if(tree.findNode(k))
+                    return iterator(tree.findNode(k));
                 return iterator(tree.end_node);
             }
 
@@ -364,7 +363,8 @@ namespace ft
 
             // if found the element returns it, if not found returns next greter then k,
             // if k is greter then the max element in map will returns garbage value
-            iterator lower_bound (const key_type& k)
+            iterator lower_bound (const key_type& k) //  crete in red balck tree to evit  tree.tmp = tree.findNode(k);
+                //if(tree.tmp)
             {
                 if(size() == 0)
                     return iterator(tree.end_node);
@@ -377,12 +377,12 @@ namespace ft
                     return iterator(tree.end_node);
             }
 
-            const_iterator lower_bound (const key_type& k) const
+            const_iterator lower_bound (const key_type& k) const //  crete in red balck tree
             {
                 if(size() == 0)
                     return const_iterator(tree.end_node);
                 // tree.tmp = tree.findNode(k);
-                if(tree.findNode(k))
+                if(tree.findNode(k)) //  crete in red balck tree
                     return const_iterator(tree.findNode(k));
                 if(key_compare_(k,tree.maxValue(tree.root)->data.first))
                     return const_iterator(tree.findNode(k));
@@ -453,8 +453,7 @@ namespace ft
                 key_compare key_compare_;
                 typedef typename allocator_type::template rebind<Node_struct<value_type> >::other node_allocator;
                 node_allocator alloc;
-                Node_struct<value_type> * firstNode;
-                Node_struct<value_type> * lastNode;
+                
     };
     
 

@@ -13,8 +13,8 @@
 #include <algorithm>     
 #include<iterator>
   
-#include "iterator_traits.hpp"
-#include "red_black_tree.hpp"
+#include "../utils/iterator_traits.hpp"
+#include "../map/red_black_tree.hpp"
  
 using std::string;
 using std::cout;

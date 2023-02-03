@@ -15,8 +15,8 @@
 #include<iterator>
  
 #include "red_black_tree.hpp"
-#include "type_traits.hpp"
-#include "iterator_traits.hpp"
+#include "../utils/type_traits.hpp"
+#include "../utils/iterator_traits.hpp"
    
 using std::string;
 using std::cout;
@@ -70,7 +70,6 @@ namespace ft
 
                 map_iterator& operator++() 
                 {
-                     
                     node = getNext(node);
                     return *this;                    
                 }

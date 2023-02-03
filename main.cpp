@@ -17,13 +17,14 @@ using std::vector;
 using std::stack;
 
 
-#include "map.hpp"
+#include "map/map.hpp"
+#include "vector/vector.hpp"
 
  
 // use key compar to comapar evryting
 // in iterator node privete
 
-// implement std::map::key_comp
+// implement std::key_comp
 // implement std::map::value_comp
 
 
@@ -32,35 +33,27 @@ void func()
 	system("leaks ft_container");
 }
 
-int main()
-{
-
-	ft::map<char,int> mymap;
-
-  // first insert function version (single parameter):
-	mymap.insert ( ft::pair<char,int>('a',100) );
-	mymap.insert ( ft::pair<char,int>('z',200) );
-
+ // compar iterator with const iterator
+// handle const vector iterator 
+int main ()
+{ 
 	 
+	 ft::vector<int> myvector;
 
-	// second insert function version (with hint position):
-	ft::map<char,int>::iterator it = mymap.begin();
-	mymap.insert (it, ft::pair<char,int>('b',300));  // max efficiency inserting
-	mymap.insert (it, ft::pair<char,int>('c',400));  // no max efficiency inserting
+  // set some initial content:
+  for (int i=1;i<10;i++) myvector.push_back(i);
 
-	// third insert function version (range insertion):
-	ft::map<char,int> anothermap;
-	anothermap.insert(mymap.begin(),mymap.find('c'));
+  myvector.resize(5);
+  myvector.resize(8,100);
+  myvector.resize(12);
 
-	// showing contents:
-	std::cout << "mymap contains:\n";
-	for (it=mymap.begin(); it!=mymap.end(); ++it)
-		std::cout << it->first << " => " << it->second << '\n';
-
-	std::cout << "anothermap contains:\n";
-	for (it=anothermap.begin(); it!=anothermap.end(); ++it)
-		std::cout << it->first << " => " << it->second << '\n';
-
-
-	// atexit(func);
+  std::cout << "myvector contains:";
+  for (int i=0;i<myvector.size();i++)
+    std::cout << ' ' << myvector[i];
+  std::cout << '\n';
+ 
 }
+
+
+// atexit(func);
+
