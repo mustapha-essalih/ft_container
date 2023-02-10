@@ -21,9 +21,10 @@ namespace ft
                  
             //default constructor
             vector_iterator() : ptr(0) {}
-
+            template <typename It> // for const iterator
+			vector_iterator(const vector_iterator<It>& x) : ptr(x.base()){}
             // copy constructor
-            vector_iterator(const vector_iterator & __x): ptr(__x.ptr){}
+            vector_iterator(const vector_iterator & __x) : ptr(__x.ptr){}
 
             // copy assignement overloding
             vector_iterator& operator=(const vector_iterator& __x)
@@ -39,7 +40,7 @@ namespace ft
                 return this->ptr != other.ptr;
             }
             // operators
-            // iterator_type base() const  {return ptr;}
+            iterator_type base() const  {return ptr;}
 
             reference operator*() const {   return *ptr;    }
             pointer  operator->() const {   return *ptr;    } // ?
@@ -81,7 +82,7 @@ namespace ft
             template <class Iter1, class Iter2> // for compar if(begin() == end())
             friend bool operator==(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             { 
-                cout << "EEEE\n";
+                 
                 return (lhs.ptr == rhs.ptr);
             }
             template <class Iter1, class Iter2>
