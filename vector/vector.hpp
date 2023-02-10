@@ -70,6 +70,7 @@ namespace ft
             vector_size = n;
             vector_capacity = n;
             _alloc = alloc;
+             
             this->block = _alloc.allocate(n);
             for (size_type i = 0; i < n; i++)
                 _alloc.construct(block + i,val);
@@ -81,8 +82,9 @@ namespace ft
             difference_type n = last - first;
             if (n > 0)
             {
-                this->block = this->_alloc.allocate(n);
-                for (size_t i = 0; i < n && first != last ; i++)
+
+                block = _alloc.allocate(n);
+                for (size_type i = 0; i < n && first != last ; i++)
                 {
                     this->_alloc.construct(this->block + i, *first);
                     first++;
@@ -102,7 +104,8 @@ namespace ft
             vector_size = x.vector_size;
             vector_capacity = x.vector_capacity;
             _alloc = x._alloc;
-            this->block = _alloc.allocate(vector_size);
+            if(size())// to evet reaalocate when call same constructor, sometime call copy constructor more then time like teste
+                this->block = _alloc.allocate(vector_size);
             for (size_type i = 0; i < vector_size; i++) // deep copy
                 _alloc.construct(this->block+i,x.block[i]);
         }
@@ -115,13 +118,14 @@ namespace ft
         {
             if(this != &x) // if pass the same obj
             {
-                vector_size = x.vector_size;
-                vector_capacity = x.vector_capacity;
-                _alloc = x._alloc;
-                this->block = _alloc.allocate(vector_size);
-                for (size_type i = 0; i < vector_size; i++) // deep copy
-                    _alloc.construct(this->block+i,x.block[i]);
-                 
+                this->clear();
+				this->_alloc.deallocate(this->block, this->vector_capacity);
+				if (x.capacity())
+					this->block = this->_alloc.allocate(x.capacity());
+				for (size_t i = 0; i < x.size(); i++)
+					this->_alloc.construct(this->block + i, x[i]);
+				this->vector_size = x.size();
+				this->vector_capacity = x.capacity();
             }
             return *this;
         }
@@ -181,7 +185,7 @@ namespace ft
                 block[vector_size] = val;
                 vector_size++;
             }
-            else if (vector_size == capacity())
+            else if (vector_size == vector_capacity)
             {
                 vector_capacity = (vector_capacity * 2) ;//2
                 realloc_(capacity());
@@ -230,7 +234,7 @@ namespace ft
             else if (vector_size == capacity())
             {
                 vector_capacity = (vector_capacity * 2) ;//2
-                realloc_(capacity());
+                realloc_(vector_capacity);
                 while (j >= 0)
                 {   
                     // here replace 
@@ -251,15 +255,19 @@ namespace ft
         
         void insert (iterator position, size_type n, const value_type& val)
         {
-            difference_type d = static_cast<difference_type>(n); // because n is unsigned int and whrn pass - will overflow
-            if (d < 0)
-                throw std::out_of_range("out_of_range\n");
-            
-            while (n > 0)
+            difference_type ip = position - this->begin();
+
+            this->reserve(this->vector_size + n);
+            for (size_t i = this->vector_size - 1; i >= ip; i--)
             {
-                insert(position, val);
-                n--;
+
+                this->block[i + n] = this->block[i];
+                if (i == 0)
+                    break;
             }
+            for (size_t i = ip; i < ip + n; i++)
+                this->block[i] = val;
+            this->vector_size += n;
         }
     
         template <class InputIterator>
@@ -293,11 +301,11 @@ namespace ft
         void assign (InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
         {
             difference_type	n = last - first;
-            block = _alloc.allocate(n);// block here is NULL
-            
-            for (size_type i = 0; i < n; i++)
+            this->clear();
+            this->reserve(n);
+            for (size_t i = 0; i < n; i++)
             {
-                _alloc.construct(block + i, *first);
+                this->_alloc.construct(this->block + i, *first);
                 first++;
             }
             this->vector_size = n;
@@ -310,7 +318,7 @@ namespace ft
             for (size_type i = 0; i < n; i++)
                 _alloc.construct(block + i, val);
             this->vector_size = n;
-
+            this->vector_capacity = n;
         }
 
         iterator erase (iterator position)
@@ -344,10 +352,9 @@ namespace ft
 
         void clear()
         {
-            _alloc.deallocate(block,vector_capacity);
-            vector_size = 0;
-            vector_capacity = 0;
-            
+            for (size_type i = 0; i < size(); i++)
+				this->_alloc.destroy(block + i);
+            vector_size = 0;            
         }
 
         /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,48 +377,86 @@ namespace ft
         {
             return _alloc.max_size();
         }
-        void reserve (size_type n)
-        {
-            try {
-                if(n > capacity())
-                {
-                   realloc_(n); 
-                    if(empty())
-                        vector_capacity = n - 1;
-                    else
-                        vector_capacity = n ;
-                    // because if vector is empty capacity incremanet by 1 and if call reserve method will print capacity +1
-                }
+        // void reserve (size_type n)
+        // {
+        //     try {
+        //         if (n > this->capacity())
+		// 		{
+		// 			if (n > this->capacity() * 2)
+		// 			{
+		// 				realloc_(n);
+		// 				this->vector_capacity = n;
+		// 			}
+		// 			else
+		// 			{
+		// 				realloc_(this->capacity() * 2);
+		// 				this->vector_capacity = this->capacity() * 2;
+		// 			}
+		// 		}
                 
-            }   
-            catch (const std::length_error& le) {
-                std::cerr << "Length error: " << le.what() << '\n';
-            }
+        //     }   
+        //     catch (const std::length_error& le) {
+        //         std::cerr << "Length error: " << le.what() << '\n';
+        //     }
+        // }
+        pointer	_reallocate(size_type	n)
+        {
+            pointer tmp;
+
+            tmp = this->_alloc.allocate(n);
+            for (size_t i = 0; i < this->size(); i++)
+                this->_alloc.construct(tmp + i, this->block[i]);
+            for (size_t i = 0; i < this->vector_size; i++)
+                this->_alloc.destroy(this->block + i);
+            if (this->block)
+                this->_alloc.deallocate(this->block, this->capacity());
+            return (tmp);
         }
 
-        void resize (size_type n, value_type val = value_type())
+        void reserve( size_type new_cap )
+			{
+                if (new_cap > this->max_size())
+					throw (std::length_error("the new size exceeds the max size of the container"));
+				
+				if (new_cap > this->capacity())
+				{
+					if (new_cap > this->capacity() * 2)
+					{
+						this->block = _reallocate(new_cap);
+						this->vector_capacity = new_cap;
+					}
+					else
+					{
+						this->block = _reallocate(this->capacity() * 2);
+						this->vector_capacity = this->capacity() * 2;
+					}
+				}
+			}
+
+            void	appendObjects(size_t n, value_type value)
+            {
+                for (size_t i = this->vector_size; i < n; i++)
+                {
+                    this->_alloc.construct(this->block + i, value);
+                }
+            }
+
+        void resize(size_type count, value_type value = value_type())
         {
-            if(n < size())
+            if (count < this->size())
             {
-                for (size_type i = n; i < size(); ++i)
-                    _alloc.destroy(&block[i]);
+                for (size_t i = count; i < this->vector_size; i++)
+                {
+                    this->_alloc.destroy(this->block + i);
+                }
             }
-            if (n > capacity())
+            else if (count > this->size())
             {
-                vector_capacity = n;
-                vector_size = n;
-                realloc_(n);
-                for (size_type i = 0; i < n; i++)
-                    _alloc.construct(block + i,val);
+                if (count > this->vector_capacity)
+                    (count < (this->capacity() * 2) ? this->reserve(this->capacity() * 2) : this->reserve(count));
+                appendObjects(count, value);
             }
-            else if (n > size())
-            {
-                vector_capacity = n;
-                vector_size = n;
-                realloc_(n);
-                for (size_type i = 0; i < n; i++)
-                    _alloc.construct(block + i,val);
-             }
+            this->vector_size = count;
         }
 
         /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -484,7 +529,8 @@ namespace ft
         }
         ~vector()
         { 
-            _alloc.deallocate(block,vector_capacity);
+            if(capacity())// if not deje cleere the vector
+                _alloc.deallocate(block,vector_capacity);
             vector_size = 0;
             vector_capacity = 0;
         }
@@ -495,28 +541,30 @@ namespace ft
             size_type vector_capacity;
             pointer block; // ?
 
-            void realloc_(typename A::size_type s)
+            void realloc_(size_type s)
             {
                 pointer block_copy;
-                if(!empty())
+                 
+                block_copy = _alloc.allocate(s);//here in past error of munmap_chunk(): invalid pointer
+                if(block)
                 {
-                    block_copy = _alloc.allocate(capacity());//here in past error of munmap_chunk(): invalid pointer
-                    for (size_type i = 0; i < capacity() && i < size(); i++)
+                    for (size_type i = 0; i < s; i++) // some time size is 0 end capacity is greataer
                     {
                         _alloc.construct(block_copy + i,block[i]);
                         _alloc.destroy(block + i);
                     }
                     _alloc.deallocate(block,capacity());
-                    block = _alloc.allocate(s);
 
-                    for (size_type i = 0; i < size(); i++)
-                    {
-                        _alloc.construct(block + i,block_copy[i]);
-                        _alloc.destroy(block_copy + i);
-                    }
-                    _alloc.deallocate(block_copy,capacity());
-                    // vector_capacity = s;
+                }  
+                 
+                block = _alloc.allocate(s);
+                
+                for (size_type i = 0; i < s; i++)
+                {
+                    _alloc.construct(block + i,block_copy[i]);
+                    _alloc.destroy(block_copy + i);
                 }
+                _alloc.deallocate(block_copy,capacity());  
             }
             class throw_out_of_range : public std::exception
             {
