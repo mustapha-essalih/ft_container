@@ -19,8 +19,8 @@ using std::stack;
 
 #include "map/map.hpp"
 #include "vector/vector.hpp"
-
-#define _ratio 5
+#include "stack/stack.hpp"
+ 
 
  
 // use key compar to comapar evryting
@@ -28,66 +28,31 @@ using std::stack;
 
 // implement std::key_comp
 // implement std::map::value_comp
-
+#define _ratio 5
 
 void func()
 {
 	system("leaks ft_container");
 }
-
-//  // compar iterator with const iterator
-// // handle const vector iterator 
-
  
 
-template <typename T>
-std::vector<int> iterator_test(ft::vector<T> vector) {
-    typename ft::vector<T>::iterator it;
+template <class T, class V>
+        std::vector<int> size_test(ft::map<T, V> mp) {
     std::vector<int> v;
-    for (int i = 0; i < 10; ++i)
-        vector.push_back(i);
-    // it = vector.begin();
-    
-    // v.push_back(*(++it));
-    // v.push_back(*(--it));
-    // v.push_back(*(it + 1));
-    // it += 1;
-    // v.push_back(*(it - 1));
-    // it -= 1;
-    // v.push_back(*it);
-     return v;
-}
-
-template <typename T>
-std::vector<int> resize_test(ft::vector<T> vector) {
-    std::vector<int> v;
-    vector.assign(9900 * _ratio, 1);
-    vector.resize(5000 * _ratio);
-    vector.reserve(5000 * _ratio);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
-    vector.resize(7000 * _ratio);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
-    vector.resize(15300 * _ratio, T());
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
-    v.push_back(vector[65]);
+    for (int i = 0, j = 0; i < 100 * _ratio; ++i, ++j)
+        mp.insert(ft::make_pair(i, j));
+    v.push_back(mp.size());
+    for (int i = 0; i < 43 * _ratio; ++i)
+        mp.erase(i);
+    v.push_back(mp.size());
     return v;
-}
-
-
+} 
 int main ()
-{
-    ft::vector<int> myvector;
-
-  // set some initial content:
-    for (int i=1;i<10;i++) myvector.push_back(i);
-
-   
-    ft::vector<int>::iterator it = myvector.begin();
-
-    *it = 10;
+{   
+	ft::map<char,int> mymap;	 
+	 
+	size_test(mymap);
+	
 }
 
 

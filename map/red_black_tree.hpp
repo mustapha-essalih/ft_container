@@ -28,25 +28,11 @@ struct Node_struct  {
 		Node_struct<K>* right;
 		Node_struct<K>* parent;
 
-		Node_struct<K>(const K & d,Node_struct<K> * tNULL)   : data(d)  
+		Node_struct<K>(const K & d = K()) : data(d)
 		{
 			parent = NULL;
-			left = right = tNULL;
-			color = 1;
-		}
-		Node_struct<K>(const K & d)   : data(d)  
-		{
 			left = right = NULL;
-			color = 0;
-		}
-		Node_struct<K>(const K & d,Node_struct<K> * tNULL,int i)   : data(d)  
-		{
-			left = right = tNULL;
-		}
-		Node_struct<K>(const K & d,Node_struct<K> * tNULL,Node_struct<K> *p)   : data(d)  
-		{
-			parent = p;
-			left = right = tNULL;
+			color = 1;
 		}
 };
 
@@ -56,7 +42,7 @@ template <typename K> // for calling in map_iterator
 Node_struct<K> * minNode(Node_struct<K> * node)
 {
     Node_struct<K> * current = node;
-    while (current->left->left != NULL) 
+    while (current->left != NULL) 
         current = current->left;
     return (current);
 }
@@ -66,7 +52,7 @@ Node_struct<K> * maxNode(Node_struct<K> * node)
 {
     Node_struct<K> * current = node;
 	
-    while (current->right->right != NULL) 
+    while (current->right != NULL) 
         current = current->right;
     return (current);
 }
@@ -81,7 +67,7 @@ bool is_left_child(Node_struct<K> * node)
 template <typename K>
 Node_struct<K>* getNext(Node_struct<K>* node)
 {
-	if(node->right->right != NULL)
+	if(node->right != NULL)
 		return minNode(node->right);
 	while (!is_left_child(node))
         node = node->parent;
@@ -93,7 +79,7 @@ template <typename K>
 
 Node_struct<K>* getPrev(Node_struct<K>* node)
 {
-    if(node->left->left != NULL)
+    if(node->left != NULL)
         return maxNode(node->left);
     while (is_left_child(node))
         node = node->parent;
@@ -113,7 +99,6 @@ class RedBlackTree {
         typedef Node_struct<value_type> Node;
         node_allocator alloc;
         Node * root;
-        Node * TNULL;
         Node * tmp;
         Node * end_node;
  	 
@@ -121,371 +106,258 @@ class RedBlackTree {
      
 	RedBlackTree() 
 	{
-	 
+		root = tmp = NULL;
 		end_node = alloc.allocate(1);
 		tmp = alloc.allocate(1);
-		TNULL = alloc.allocate(1);
-		Node tmp((value_type()));
-		alloc.construct(TNULL,tmp);
-		Node tmp1((value_type()),TNULL,1);
-		alloc.construct(end_node,tmp1);
-		root = TNULL; 
+		Node tmpNode;
+		alloc.construct(end_node,tmpNode);
+		alloc.construct(tmp,tmpNode);// free 
+
 	}
-  
+
 	void leftRotate(Node * x) 
-	{
-		if(x == root)
-      		x->parent = NULL;
-		Node * y = x->right;
-		x->right = y->left;
-		if (y->left != TNULL) 
-			y->left->parent = x;
-		
-		y->parent = x->parent;
-		if (x->parent == NULL) 
-			this->root = y;
-		else if (x == x->parent->left) 
-			x->parent->left = y;
-		else 
-			x->parent->right = y;
-		y->left = x;
-		x->parent = y;
-	}
+    {
+        if(x == root)// remove end_node to evit sigfault and vielent
+            x->parent = NULL;
+        Node * y = x->right;
 
-	void rightRotate(Node * x) 
-	{
-		if(x == root)
-      		x->parent = NULL;
-		Node * y = x->left;
-		x->left = y->right;
-		if (y->right != TNULL) 
-			y->right->parent = x;
-		y->parent = x->parent;
-		if (x->parent == NULL) 
-			this->root = y;
-		else if (x == x->parent->right) 
-			x->parent->right = y;
-		else 
-			x->parent->left = y;
-		y->right = x;
-		x->parent = y;
-	}
-
-	void deleteFix(Node * x) 
-  {
-    Node * s;
-    while (x != root && x->color == 0) {
-      if (x == x->parent->left) {
-        s = x->parent->right;
-        if (s->color == 1) {
-          s->color = 0;
-          x->parent->color = 1;
-          leftRotate(x->parent);
-          s = x->parent->right;
-        }
-
-        if (s->left->color == 0 && s->right->color == 0) {
-          s->color = 1;
-          x = x->parent;
-        } else {
-          if (s->right->color == 0) {
-            s->left->color = 0;
-            s->color = 1;
-            rightRotate(s);
-            s = x->parent->right;
-          }
-
-          s->color = x->parent->color;
-          x->parent->color = 0;
-          s->right->color = 0;
-          leftRotate(x->parent);
-          x = root;
-        }
-      } else {
-        s = x->parent->left;
-        if (s->color == 1) {
-          s->color = 0;
-          x->parent->color = 1;
-          rightRotate(x->parent);
-          s = x->parent->left;
-        }
-
-        if (s->right->color == 0 && s->right->color == 0) {
-          s->color = 1;
-          x = x->parent;
-        } else {
-          if (s->left->color == 0) {
-            s->right->color = 0;
-            s->color = 1;
-            leftRotate(s);
-            s = x->parent->left;
-          }
-
-          s->color = x->parent->color;
-          x->parent->color = 0;
-          s->left->color = 0;
-          rightRotate(x->parent);
-          x = root;
-        }
-      }
-    }
-    x->color = 0;
-  }
-
-  void rbTransplant(Node * u, Node * v) {
-    if (u->parent == NULL) {
-      root = v;
-    } else if (u == u->parent->left) {
-      u->parent->left = v;
-    } else {
-      u->parent->right = v;
-    }
-    v->parent = u->parent;
-  }
-
-  int deleteNodeHelper(Node * node, const key_type & key) 
-  {
-     
-    Node * z = TNULL;
-    Node * x;
-    Node * y;
-    while (node != TNULL) {
-      if (node->data.first == key) {
-        z = node;
-      }
-
-      if (node->data.first <= key) {
-        node = node->right;
-      } else {
-        node = node->left;
-      }
-    }
-
-    if (z == TNULL) {
-      return 0;
-    }
-
-    y = z;
-    int y_original_color = y->color;
-    if (z->left == TNULL) {
-      x = z->right;
-      rbTransplant(z, z->right);
-    } else if (z->right == TNULL) {
-      x = z->left;
-      rbTransplant(z, z->left);
-    } else {
-      y = minNode(z->right);
-      y_original_color = y->color;
-      x = y->right;
-      if (y->parent == z) {
+        x->right = y->left;
+        if (y->left != NULL) 
+            y->left->parent = x;
+        
+        y->parent = x->parent;
+        if (x->parent == NULL) 
+            this->root = y;
+        else if (x == x->parent->left) 
+            x->parent->left = y;
+        else 
+            x->parent->right = y;
+        y->left = x;
         x->parent = y;
-      } else {
-        rbTransplant(y, y->right);
-        y->right = z->right;
-        y->right->parent = y;
-      }
-
-      rbTransplant(z, y);
-      y->left = z->left;
-      y->left->parent = y;
-      y->color = z->color;
-    }
-    alloc.deallocate(z,sizeof(1));
-	 
-	if (y_original_color == 0) {
-      deleteFix(x);
     }
 
-	root->parent = end_node;
-    end_node->left = root;
-	 
-	return 1;
-  }
- 
-  
-  int deleteNode(const key_type &  data) 
-  {
+    void rightRotate(Node * x) 
+    {
+        if(x == root)   
+            x->parent = NULL;
+        Node * y = x->left;
+        x->left = y->right;
+        if (y->right != NULL)
+            y->right->parent = x;
+        
+        y->parent = x->parent;
+        if (x->parent == NULL) 
+            this->root = y;
+        else if (x == x->parent->right) 
+            x->parent->right = y;
+        else 
+            x->parent->left = y;
+        y->right = x;
+        x->parent = y;
+    }
 
-    root->parent = NULL;
-    end_node->left = NULL;
-	 
-    return deleteNodeHelper(this->root, data);
-
-  }
 	void insertFix(Node * k) 
-	{
-		Node * u;
-		while (k->parent->color == 1) 
-		{
-			if (k->parent == k->parent->parent->right) 
-			{
-				u = k->parent->parent->left;
-				if (u->color == 1) 
-				{
-					u->color = 0;
-					k->parent->color = 0;
-					k->parent->parent->color = 1;
-					k = k->parent->parent;
-				} 
-				else 
-				{
-					if (k == k->parent->left) 
-					{
-						k = k->parent;
-						rightRotate(k);
-					}
-					k->parent->color = 0;
-					k->parent->parent->color = 1;
-					leftRotate(k->parent->parent);
-				}
-			} 
-			else 
-			{
-				u = k->parent->parent->right;
-				if (u->color == 1) 
-				{
-					u->color = 0;
-					k->parent->color = 0;
-					k->parent->parent->color = 1;
-					k = k->parent->parent;
-				} 
-				else 
-				{
-					if (k == k->parent->right) 
-					{
-						k = k->parent;
-						leftRotate(k);
-					}
-					k->parent->color = 0;
-					k->parent->parent->color = 1;
-					rightRotate(k->parent->parent);
-				}
-			}
-			if (k == root) 
-				break;
-		}
-		root->color = 0;
-	}
+    {
+        Node * u;
+        while (k->parent->color == 1) // for retchecken
+        {
+            if (k->parent == k->parent->parent->right) 
+            {
+                u = k->parent->parent->left;
+                if (u && u->color == 1) 
+                {
+                    u->color = 0;
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    k = k->parent->parent;
+                } 
+                else 
+                {
+                    if (k == k->parent->left) 
+                    {
+                        k = k->parent;
+                        rightRotate(k);
+                    }
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    leftRotate(k->parent->parent);
+                }
+            } 
+            else 
+            {
+                u = k->parent->parent->right;
+                // sometimes u is NULL
+                if (u && u->color == 1) 
+                {
+                    u->color = 0;
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    k = k->parent->parent;
+                } 
+                else 
+                {
+                    if (k == k->parent->right) 
+                    {
+                        k = k->parent;
+                        leftRotate(k);
+                    }
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    rightRotate(k->parent->parent);
+                }
+            }
+            if (k == root) 
+                break;
+            }
+            root->color = 0;// always root color is balck
+    }
 
-	void getNode(Node * node,int i)
-	{
-		if(i)
-		{
-			 
-			Node t(node->data,TNULL);
-			alloc.construct(tmp,t);
-		}
-	}
-	void insert(const value_type & key) 
-	{
-		Node * node = alloc.allocate(1);
-		Node tmp(key,TNULL);
-		alloc.construct(node,tmp);
-
-		Node * y = NULL;
-		Node * x = this->root;
-
-		while (x != TNULL) 
-		{
-			y = x;
-			if (node->data.first < x->data.first)// use key compar
-				x = x->left;
-			
+	Node * insert(const value_type& val) 
+    {
+		Node * newNode = alloc.allocate(1);
+		Node tempNode(val);
+		alloc.construct(newNode,tempNode);
+		
+        Node * y = NULL;
+        Node * x = root;
+        while (x != NULL) 
+        {
+            y = x;			
+			if( newNode->data.first < x->data.first)
+                x = x->left;
+            else if( newNode->data.first > x->data.first)
+                x = x->right;
 			else
-				x = x->right;	 
-		}
-		node->parent = y;
-		if (y == NULL) 
-		{
-			root = node;
-			root->parent = end_node;
-			end_node->left = root;
-		} 
-		else if (node->data.first < y->data.first) 
-		{
-			y->left = node;
-			
-		}
-		else 
-			y->right = node;
-		if (node->parent == NULL || node->parent == end_node) 
-		{
-			node->color = 0;
-			return;
-		}
+            {
+                setNode(x);
+                return NULL;
+            }
+        }
+		 
+        newNode->parent = y;
+        if (y == NULL)
+            root = newNode;
+        else if (newNode->data.first < y->data.first)  // use keycomapr
+            y->left = newNode;
+        else 
+            y->right = newNode;
+        
 
-		if (node->parent->parent == NULL || node->parent->parent == end_node) 
-		{
-			return;
-		}
-		insertFix(node);
-		root->parent = end_node;
-		end_node->left = root;
-  	}
+        if (newNode->parent == NULL) // if  newNode is the root
+        {
+            newNode->color = 0;
+            end_node->left = root;
+            root->parent = end_node;
+            return newNode;
+        }
 
-	 
-	Node * minValue(Node * node)   const // for const iterator like end() const
+        if (newNode->parent->parent == end_node) 
+            return newNode;
+
+        // pass newNode 
+        insertFix(newNode);
+        end_node->left = root;
+        root->parent = end_node;
+		return newNode;
+    }
+
+	Node * minValue(Node * node)
 	{
 		Node * current = node;
-		
-		while (current->left->left != NULL) 
-		{
+	
+		while (current->left != NULL) 
 			current = current->left;
-		}
+		
 		return (current);
 	}
-	
-	
-	Node * maxValue(Node * node)    const
+
+	Node * maxValue(Node * node)
 	{
 		Node * current = node;
-		
-		while (current->right->right != NULL) {
+	
+		while (current->right != NULL) 
 			current = current->right;
-		}
+		
 		return (current);
-	} 
+	}
 
-	Node* findNode(const key_type & key)    const
+	Node* findNode(const key_type & key)   
 	{
 		Node* current = root;
-		while (current != TNULL) 
+		while (current != NULL) 
 		{
-			if (key == current->data.first) 
+			if (key == current->data.first)
+			{
+				setNode(current);
 				return current;
+			} 
 			else if (key < current->data.first) 
 				current = current->left;
 			else 
 				current = current->right;
 		}
 		return NULL;
-	}  
-		
+	} 
+
 	Node * returnNewNode(const value_type & data)
 	{
 		Node * node = alloc.allocate(1);
-		Node tmp(data,TNULL);
+		Node tmp(data);
 		alloc.construct(node,tmp);
 		return node;
 	}
 
-	 
+	void setNode(Node * node)
+	{
+        tmp = node;
+	}
+
+	Node * getNode()
+	{
+		return tmp;
+	}
+	void printHelper(Node * root, string indent, bool last) {
+        if (root != NULL) {
+        cout << indent;
+        if (last) {
+            cout << "R----";
+            indent += "   ";
+        } else {
+            cout << "L----";
+            indent += "|  ";
+        }
+
+        string sColor = root->color ? "RED" : "BLACK";
+        cout << root->data << "(" << sColor << ")" << endl;
+        printHelper(root->left, indent, false);
+        printHelper(root->right, indent, true);
+        }
+    }
 	void postOrderHelper(Node * node) 
 	{
-		if (node != TNULL) 
+		if (node != NULL) 
 		{
 			postOrderHelper(node->left);
-			deleteNode(node->data.first);
+			// deleteNode(node->data.first);
 			postOrderHelper(node->right);
 		}
-  }
+	}
+	void printTree() 
+	{
+		if (root) {
+			printHelper(this->root, "", true);
+		}
+  	}
+	 
+	 
   
 	~RedBlackTree()
 	{ 
- 		alloc.deallocate(TNULL,1);
- 		alloc.deallocate(end_node,1);
- 		alloc.deallocate(tmp,1);
-		postOrderHelper(root);
+ 		// alloc.deallocate(end_node,1);
+ 		// alloc.deallocate(tmp,1);
+		// root->parent = NULL;
+		// postOrderHelper(root);
+		
 	}
 };
 

@@ -101,13 +101,14 @@ namespace ft
 
         vector (const vector& x)
         {
-            vector_size = x.vector_size;
-            vector_capacity = x.vector_capacity;
-            _alloc = x._alloc;
-            if(size())// to evet reaalocate when call same constructor, sometime call copy constructor more then time like teste
-                this->block = _alloc.allocate(vector_size);
-            for (size_type i = 0; i < vector_size; i++) // deep copy
-                _alloc.construct(this->block+i,x.block[i]);
+            *this = x;
+            // vector_size = x.vector_size;
+            // vector_capacity = x.vector_capacity;
+            // _alloc = x._alloc;
+            // if(size())// to evet reaalocate when call same constructor, sometime call copy constructor more then time like teste
+            //     this->block = _alloc.allocate(vector_size);
+            // for (size_type i = 0; i < vector_size; i++) // deep copy
+            //     _alloc.construct(this->block+i,x.block[i]);
         }
         
         /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,14 +119,39 @@ namespace ft
         {
             if(this != &x) // if pass the same obj
             {
-                this->clear();
-				this->_alloc.deallocate(this->block, this->vector_capacity);
-				if (x.capacity())
-					this->block = this->_alloc.allocate(x.capacity());
-				for (size_t i = 0; i < x.size(); i++)
-					this->_alloc.construct(this->block + i, x[i]);
-				this->vector_size = x.size();
-				this->vector_capacity = x.capacity();
+                // size_type i = 0;
+				  
+				// this->vector_size = x.vector_size;
+
+                // this->clear();
+				// this->block = _alloc.allocate(this->vector_size);
+				// while (i < this->vector_size)
+				// {
+				// 	_alloc.construct(block + i, x[i]);
+				// 	i++;
+				// }
+				// this->vector_capacity = x.vector_capacity;
+    
+                 clear();
+                _alloc.deallocate(block,vector_capacity);
+                this->vector_capacity = x.vector_capacity;
+                this->vector_size = x.vector_size;
+                this->block = _alloc.allocate(x.vector_size);
+                /////
+                for(size_t i = 0;i < x.vector_size;i++)
+                {
+                    //this->block[i] = x.block[i];
+                    _alloc.construct(block+i,x.block[i]);
+                }
+
+                 
+				// this->_alloc.deallocate(this->block, this->vector_capacity);
+				// if (x.capacity())
+				// 	this->block = this->_alloc.allocate(x.capacity());
+				// for (size_t i = 0; i < x.size(); i++)
+				// 	this->_alloc.construct(this->block + i, x[i]);
+				// this->vector_size = x.size();
+				// this->vector_capacity = x.capacity();
             }
             return *this;
         }
@@ -352,8 +378,8 @@ namespace ft
 
         void clear()
         {
-            for (size_type i = 0; i < size(); i++)
-				this->_alloc.destroy(block + i);
+            // for (size_type i = 0; i < size(); i++)
+			// 	this->_alloc.destroy(block + i);
             vector_size = 0;            
         }
 

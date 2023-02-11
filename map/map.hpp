@@ -66,7 +66,7 @@ namespace ft
                     key_compare  comp;
                     value_compare (key_compare c) : comp(c) {}  // constructed with tree's comparison object
                 public:
-                    bool operator() (const value_type& x, const value_type& y) const
+                    bool operator() (const value_type& x, const value_type& y) const // overloading
                     {
                         return comp(x.first, y.first);
                     }
@@ -82,74 +82,43 @@ namespace ft
             {
                 insert(first,last);
             }
-            map (const map & x)// because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
-            {
-                insert(x.begin(),x.end());
-            }
+            // map (const map & x)// because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
+            // {
+            //     insert(x.begin(),x.end());
+            // }
  
-            map& operator= (const map& x)
-            {
-                if(this != &x)// if not pass the same obj
-                {
-                    clear();
-                    insert(x.begin(),x.end());
-                    size_ = x.size_;
-                }
-                return *this;
-            }
+            // map& operator= (const map& x)
+            // {
+            //     if(this != &x)// if not pass the same obj
+            //     {
+            //         clear();
+            //         insert(x.begin(),x.end());
+            //         size_ = x.size_;
+            //     }
+            //     return *this;
+            // }
  
             /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 map: Modifiers
             *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            ft::pair<iterator, bool> 
-            insert(const value_type & val)
+            
+            ft::pair<iterator, bool>
+            insert (const value_type& val)
             {
                 typedef ft::pair<iterator, bool> pr;
-                Node_struct<value_type> * node = alloc.allocate(1);
-                Node_struct<value_type> tmp(val,tree.TNULL);
-                alloc.construct(node,tmp);
-                if(tree.root == tree.TNULL)
+                Node_struct<value_type> * node;
+                if(empty())
                 {
                     size_++;
-                    node->color = 0;
-                    tree.root = node;
-                    tree.root->parent = tree.end_node;
-                    tree.end_node->left = tree.root;
-                    return pr(iterator(node),true);
+                    return pr(iterator(tree.insert(val)),true);
                 }
-                Node_struct<value_type> * y = NULL;
-                Node_struct<value_type> * x = tree.root;
-
-                while (x && x != tree.TNULL) 
-                {
-                    y = x;
-                    if (node->data.first < x->data.first)// use key compar
-                        x = x->left;
-                    if(node->data.first > x->data.first)
-                        x = x->right;	 
-                    else
-                        return pr(iterator(x),false);
-                }
-                node->parent = y;
-                if (node->data.first < y->data.first) 
-                    y->left = node;
-                else 
-                    y->right = node;
-
-                if (node->parent->parent == NULL || node->parent->parent == tree.end_node) // second Node
-                {
-                    size_++;
-                    return pr(iterator(node),true);
-                }
-                
-                tree.insertFix(node);
+                node = tree.insert(val);
+                if(!node)
+                    return pr(iterator(tree.getNode()),false);
                 size_++;
-                tree.root->parent = tree.end_node;
-                tree.end_node->left = tree.root;
                 return pr(iterator(node),true);
             }
- 
+
             template <class InputIterator>  
             void insert (InputIterator first, InputIterator last)
             {
@@ -159,7 +128,7 @@ namespace ft
                     first++;
                 }
             }
-             
+
             iterator insert (iterator hint, const value_type& val)
             {
                 if(hint.node == tree.end_node)
@@ -170,7 +139,7 @@ namespace ft
                     
                 if(hint.node->data.first < val.first && getNext(hint.node)->data.first > val.first)
                 {
-                    if(hint.node->right == tree.TNULL)// if has leaks free hint.node->right and reaclloc
+                    if(!hint.node->right)
                     {
                         hint.node->right = tree.returnNewNode(val);
                         hint.node->right->parent = hint.node;
@@ -182,45 +151,16 @@ namespace ft
                         Node_struct<value_type> * node = tree.maxValue(hint.node->right);
                         node->left = tree.returnNewNode(val);
                         node->left->parent = node;
-                        tree.insertFix(node);
+                        tree.insertFix(node->left);
                         return iterator(tree.findNode(val.first));
                     }
                 }
-                tree.insert(val);
-                tree.getNode(tree.root,0);
-                return iterator(tree.tmp);
-            }
-
-            size_type erase (const key_type& k)
-            {
-                if(tree.deleteNode(k))
-                {
-                    --size_;
-                    return  1;
-                }
-                return 0;
-            }
-
-            void erase (iterator position)
-            {
-                tree.deleteNode(position.node->data.first);
-                --size_;
-            }
-
-            void erase (iterator first, iterator last)
-            {
-                iterator it = first;
-
-                while (it != last)
-                {
-                    erase(it++);
-                    first = it;
-                }
+                return iterator(tree.insert(val));
             }
             
             void clear()
             {
-                tree.postOrderHelper(tree.root);
+                // tree.postOrderHelper(tree.root);
                 size_ = 0;
             }
             
@@ -230,23 +170,22 @@ namespace ft
                 // have two tree and swap one by other
                 std::swap(this->tree.end_node,x.tree.end_node);
                 std::swap(this->tree.root,x.tree.root);
-                std::swap(this->tree.TNULL,x.tree.TNULL);
+                
                 this->tree.tmp = this->tree.minValue(tree.root);
                 x.tree.tmp = x.tree.minValue(tree.root);
                 std::swap(this->tree.tmp,x.tree.tmp);
                 std::swap(this->size_,x.size_);
             }
-            
+
             /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
                 map: Iterators:
-            */
+            */////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
-            
             iterator begin()
             {
-                if(tree.root == tree.TNULL)
-                    return iterator(tree.end_node);
-                return iterator(tree.minValue(tree.root));
+                if(size())
+                    return iterator(tree.minValue(tree.root));
+                return iterator(tree.end_node);
             }
             
             iterator end()
@@ -256,11 +195,9 @@ namespace ft
 
             const_iterator begin() const
             { 
-                if(tree.root == tree.TNULL)// if tree empty
-                    return tree.end_node;
-                
-                return const_iterator (tree.minValue(tree.root));
-                 
+                if(size())
+                    return const_iterator(tree.minValue(tree.root));
+                return const_iterator(tree.end_node);
             }
 
             const_iterator end() const
@@ -293,7 +230,7 @@ namespace ft
 
             mapped_type& operator[] (const key_type& k)
             {
-                return (this->insert(value_type(k, mapped_type())).first->second);
+                return ((this->insert(ft::make_pair(k,mapped_type())).first->second));
             }
             
             mapped_type& at(const key_type& k) 
@@ -309,29 +246,9 @@ namespace ft
                 const_iterator it = find(k);
                 if (it == end()) 
                     throw std::out_of_range("key not found in map");
-                
                 return it->second;
             }
-            
 
-            /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-                map: Capacity
-            *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            bool empty() const
-            {
-                return size() == 0;
-            }
-            size_type size() const
-            {
-                return size_;
-            }
-
-            size_type max_size() const 
-            {
-                return std::numeric_limits<size_type>::max() / sizeof(value_type);// ?
-            }
-           
             /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 map: Operations
             *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +258,7 @@ namespace ft
                 if(size() == 0)
                     return iterator(tree.end_node);
                 if(tree.findNode(k))
-                    return iterator(tree.findNode(k));
+                    return iterator(tree.getNode());
                 return iterator(tree.end_node);
             }
 
@@ -349,9 +266,8 @@ namespace ft
             {
                 if(size() == 0)
                     return const_iterator(tree.end_node);
-                
                 if(tree.findNode(k))
-                    return const_iterator(tree.findNode(k));
+                    return const_iterator(tree.getNode());
                 return const_iterator(tree.end_node);
             }
             size_type count (const key_type& k) const
@@ -436,14 +352,25 @@ namespace ft
                 return ft::make_pair(i, j);
             }
 
-            /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                map: Allocator
+            /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+                map: Capacity
             *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            allocator_type get_allocator() const
+            bool empty() const
             {
-                return allocator_type(tree.alloc);
+                return size() == 0;
             }
+            size_type size() const
+            {
+                return size_;
+            }
+
+            size_type max_size() const 
+            {
+                return std::numeric_limits<size_type>::max() / sizeof(value_type);// ?
+            }
+           
+            
 
             ~map()
             { 
@@ -453,8 +380,7 @@ namespace ft
                 red_black_tree_ tree;
                 size_type size_;
                 key_compare key_compare_;
-                typedef typename allocator_type::template rebind<Node_struct<value_type> >::other node_allocator;
-                node_allocator alloc;
+                
                 
     };
     
