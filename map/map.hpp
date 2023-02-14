@@ -60,15 +60,17 @@ namespace ft
             
             typedef Node_struct<key_type> Node;
 
-            class value_compare : public std::binary_function<value_type, value_type, bool>
+            class value_compare
             {
-                private:
-                    key_compare  comp;
-                    value_compare (key_compare c) : comp(c) {}  // constructed with tree's comparison object
+                friend class map;
+                
+                protected:
+                    key_compare comp;
+                    value_compare(key_compare c) : comp(c) {}
                 public:
-                    bool operator() (const value_type& x, const value_type& y) const // overloading
+                    bool operator()(const value_type &_lhs, const value_type &_rhs) const
                     {
-                        return comp(x.first, y.first);
+                        return comp(_lhs.first, _rhs.first);
                     }
             };
 
@@ -82,28 +84,33 @@ namespace ft
             {
                 insert(first,last);
             }
-            // map (const map & x)// because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
-            // {
-            //     insert(x.begin(),x.end());
-            // }
+
+            map (const map & x)  // because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
+            {
+                // clear();
+                if(x.size() > 0)
+                    insert(x.begin(),x.end());
+            }
  
-            // map& operator= (const map& x)
-            // {
-            //     if(this != &x)// if not pass the same obj
-            //     {
-            //         clear();
-            //         insert(x.begin(),x.end());
-            //         size_ = x.size_;
-            //     }
-            //     return *this;
-            // }
+            map& operator= (const map& x)
+            {
+                if(this != &x)// if not pass the same obj
+                {
+                    clear();
+                    
+                    insert(x.begin(),x.end());
+                    size_ = x.size_;
+                }
+                return *this;
+            }
  
             /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 map: Modifiers
             *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             
+           
             ft::pair<iterator, bool>
-            insert (const value_type& val)
+            insert (const value_type & val)
             {
                 typedef ft::pair<iterator, bool> pr;
                 Node_struct<value_type> * node;
@@ -158,23 +165,47 @@ namespace ft
                 return iterator(tree.insert(val));
             }
             
+            size_type erase (const key_type& k)
+            {
+                if(tree.deleteNode(k))
+                {
+                    --size_;
+                    return  1;
+                }
+                return 0;
+            }
+
+            void erase (iterator position)
+            {
+                tree.deleteNode(position.node->data.first);
+                --size_;
+            }
+
+            void erase (iterator first, iterator last)
+            {
+                iterator it = first;
+
+                while (it != last)
+                {
+                    erase(it++);
+                    first = it;
+                }
+            }
+            
             void clear()
             {
-                // tree.postOrderHelper(tree.root);
+                erase(begin(),end());
                 size_ = 0;
             }
             
             void swap (map& x)
             {
-                // swap pointers of tree
-                // have two tree and swap one by other
-                std::swap(this->tree.end_node,x.tree.end_node);
-                std::swap(this->tree.root,x.tree.root);
-                
-                this->tree.tmp = this->tree.minValue(tree.root);
-                x.tree.tmp = x.tree.minValue(tree.root);
-                std::swap(this->tree.tmp,x.tree.tmp);
-                std::swap(this->size_,x.size_);
+                if(x.size_)
+                {
+                    map tmp(x);
+                    x = *this;
+                    *this = tmp; 
+                }
             }
 
             /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -232,22 +263,7 @@ namespace ft
             {
                 return ((this->insert(ft::make_pair(k,mapped_type())).first->second));
             }
-            
-            mapped_type& at(const key_type& k) 
-            {
-                iterator it = find(k);
-                if (it == end()) 
-                    throw std::out_of_range("key not found in map");
-                return it->second;
-            }
-
-            const mapped_type& at(const key_type& k) const 
-            {
-                const_iterator it = find(k);
-                if (it == end()) 
-                    throw std::out_of_range("key not found in map");
-                return it->second;
-            }
+             
 
             /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 map: Operations
@@ -255,57 +271,54 @@ namespace ft
 
             iterator find (const key_type& k)
             {
-                if(size() == 0)
-                    return iterator(tree.end_node);
-                if(tree.findNode(k))
-                    return iterator(tree.getNode());
+                // if(size() == 0)
+                //     return iterator(tree.end_node);
+                Node_struct<value_type> * node = tree.findNode(k);
+                if(node)
+                    return iterator(node);
                 return iterator(tree.end_node);
             }
 
             const_iterator find (const key_type& k) const
             {
-                if(size() == 0)
-                    return const_iterator(tree.end_node);
-                if(tree.findNode(k))
-                    return const_iterator(tree.getNode());
+                Node_struct<value_type> * node = tree.findNode(k);
+                if(node)
+                    return const_iterator(node);
                 return const_iterator(tree.end_node);
             }
-            size_type count (const key_type& k) const
+
+            size_type count (const key_type & k) const
             {
-                if(size() == 0)
-                    return 0;
-                if(tree.findNode(k))
+                Node_struct<value_type> * node = tree.findNode(k);
+                if(node)
                     return 1;
                 return 0;
             }
 
             // if found the element returns it, if not found returns next greter then k,
             // if k is greter then the max element in map will returns garbage value
-            iterator lower_bound (const key_type& k) //  crete in red balck tree to evit  tree.tmp = tree.findNode(k);
-                //if(tree.tmp)
-            {
-                if(size() == 0)
-                    return iterator(tree.end_node);
-                tree.tmp = tree.findNode(k);
-                if(tree.tmp)
-                    return iterator(tree.tmp);
-                if(key_compare_(k,tree.maxValue(tree.root)->data.first))
-                    return iterator(tree.findNode(k));
-                else
-                    return iterator(tree.end_node);
+              iterator lower_bound(const Key& k) {
+                Node_struct<value_type> *curr = tree.root;
+                Node_struct<value_type> *result = tree.TNULL;
+                while (curr != tree.TNULL) {
+                    if (!value_compare(curr->data, k)) {
+                        result = curr;
+                        curr = curr->left;
+                    } else {
+                        curr = curr->right;
+                    }
+                }
+                return iterator(result);
             }
 
             const_iterator lower_bound (const key_type& k) const //  crete in red balck tree
             {
-                if(size() == 0)
-                    return const_iterator(tree.end_node);
-                // tree.tmp = tree.findNode(k);
-                if(tree.findNode(k)) //  crete in red balck tree
-                    return const_iterator(tree.findNode(k));
-                if(key_compare_(k,tree.maxValue(tree.root)->data.first))
-                    return const_iterator(tree.findNode(k));
-                else
-                    return const_iterator(tree.end_node);
+                const_iterator i;
+			
+				i = begin();
+				while(i.node->data.first < k && i != end())
+					i = tree.successor(i.node);
+				return (i);
             }
 
             iterator upper_bound (const key_type& k)
@@ -374,6 +387,7 @@ namespace ft
 
             ~map()
             { 
+                clear();
             }
             private:
                 typedef RedBlackTree<key_type,value_type,key_compare,size_type,mapped_type,allocator_type> red_black_tree_;
@@ -384,7 +398,34 @@ namespace ft
                 
     };
     
-
+    template <class Key, class T, class Compare, class Alloc>  void swap (map<Key,T,Compare,Alloc>& x, map<Key,T,Compare,Alloc>& y)
+    {
+        x.swap(y);
+    }
+    template <class Key, class T, class Compare, class Alloc>  bool operator== ( const map<Key,T,Compare,Alloc>& lhs,                    const map<Key,T,Compare,Alloc>& rhs )
+    {
+        return lhs.size() == rhs.size() && ft::equal(lhs.begin(),lhs.end(),rhs.begin());
+    }
+    template <class Key, class T, class Compare, class Alloc>  bool operator!= ( const map<Key,T,Compare,Alloc>& lhs,                    const map<Key,T,Compare,Alloc>& rhs )
+    {
+       return !(lhs == rhs);
+    }
+    template <class Key, class T, class Compare, class Alloc>  bool operator<  ( const map<Key,T,Compare,Alloc>& lhs,                    const map<Key,T,Compare,Alloc>& rhs )
+    {
+         return ft::lexicographical_compare(lhs.begin(),lhs.end(),rhs.begin(),rhs.end());
+    }
+    template <class Key, class T, class Compare, class Alloc>  bool operator<= ( const map<Key,T,Compare,Alloc>& lhs,                    const map<Key,T,Compare,Alloc>& rhs )
+    {
+        return !(lhs > rhs);
+    }
+    template <class Key, class T, class Compare, class Alloc>  bool operator>  ( const map<Key,T,Compare,Alloc>& lhs,                    const map<Key,T,Compare,Alloc>& rhs )
+    {
+        return (rhs < lhs);
+    }
+    template <class Key, class T, class Compare, class Alloc>  bool operator>= ( const map<Key,T,Compare,Alloc>& lhs,                    const map<Key,T,Compare,Alloc>& rhs )
+    {
+        return !(rhs > lhs);
+    }
 } 
  
 
