@@ -82,7 +82,7 @@ namespace ft
             second_type second;
 
             pair() : first(), second() {}
-            pair(first_type const &_t1, second_type const &_t2) : first(_t1), second(_t2) {}
+            pair(first_type const &_t1, second_type const &_t2 = second_type()) : first(_t1), second(_t2) {}
 
             template <class _U1, class _U2>
             pair(const pair<_U1, _U2>& _rhs) : first(_rhs.first), second(_rhs.second) {}

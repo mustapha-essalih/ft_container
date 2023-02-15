@@ -92,14 +92,14 @@ Node_struct<K>* getPrev(Node_struct<K>* node)
 }
  
  
-template<typename key_type,typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator >
+template<typename key_type,typename T,typename Compare,typename size_type,typename mapped_type,typename Allocator >
 
 class RedBlackTree {
 	
 	public:
         typedef Allocator allocator_type;
         typedef T value_type;
-        key_compare key_compare_; // key_compare_(); lambda object convet to function will call operator() (const value_type& x, const value_type& y) const
+        typedef Compare    value_compare;  // key_compare_(); lambda object convet to function will call operator() (const value_type& x, const value_type& y) const
         typedef typename allocator_type::template rebind<Node_struct<value_type> >::other node_allocator;
         typedef Node_struct<value_type> Node;
         node_allocator alloc;
@@ -107,37 +107,40 @@ class RedBlackTree {
         Node * tmp;
         Node * end_node;
         Node * TNULL;
- 	 
+
+        allocator_type      alloc_;
+        value_compare       compare;
 
      
-	RedBlackTree() 
-	{
-		end_node = alloc.allocate(1);
-		tmp = NULL;
-		TNULL = alloc.allocate(1);
-		Node tmpNode;
-		alloc.construct(end_node,tmpNode);
-		alloc.construct(TNULL,tmpNode);// free 
-        root = TNULL;
-	}
+      RedBlackTree(const value_compare& comp, const allocator_type& _alloc) : compare(comp), alloc_(_alloc) 
+      {
+        end_node = alloc.allocate(1);
+        tmp = NULL;
+        TNULL = alloc.allocate(1);
+        Node tmpNode;
+        alloc.construct(end_node,tmpNode);
+        alloc.construct(TNULL,tmpNode);// free 
+            root = TNULL;
+      }
 
-        void leftRotate(Node * x) {
-            Node * y = x->right;
-            x->right = y->left;
-            if (y->left != TNULL) {
-            y->left->parent = x;
-            }
-            y->parent = x->parent;
-            if (x->parent == nullptr) {
-            this->root = y;
-            } else if (x == x->parent->left) {
-            x->parent->left = y;
-            } else {
-            x->parent->right = y;
-            }
-            y->left = x;
-            x->parent = y;
-    }
+      void leftRotate(Node * x) 
+      {
+          Node * y = x->right;
+          x->right = y->left;
+          if (y->left != TNULL) {
+          y->left->parent = x;
+          }
+          y->parent = x->parent;
+          if (x->parent == NULL) {
+          this->root = y;
+          } else if (x == x->parent->left) {
+          x->parent->left = y;
+          } else {
+          x->parent->right = y;
+          }
+          y->left = x;
+          x->parent = y;
+      }
 
     void rightRotate(Node * x) {
         Node * y = x->left;
@@ -146,7 +149,7 @@ class RedBlackTree {
         y->right->parent = x;
         }
         y->parent = x->parent;
-        if (x->parent == nullptr) {
+        if (x->parent == NULL) {
         this->root = y;
         } else if (x == x->parent->right) {
         x->parent->right = y;
@@ -241,7 +244,8 @@ class RedBlackTree {
         z = node;
       }
 
-      if (node->data.first < key) {
+      if  (compare(node->data , key))
+      {
         node = node->right;
       } else {
         node = node->left;
@@ -300,7 +304,7 @@ class RedBlackTree {
         Node *  u;
         while (k->parent->color == 1) 
         {
-            if (k->parent == k->parent->parent->right) 
+            if (k->parent == k->parent->parent->right) // 
             {
                 u = k->parent->parent->left;
                 if (u->color == 1) {
@@ -354,11 +358,11 @@ class RedBlackTree {
             while (x != TNULL) 
             {
                 y = x;
-                if (newNode->data.first < x->data.first) 
+                if (compare(newNode->data , x->data)) 
                 {
                     x = x->left;
                 } 
-                else if( newNode->data.first > x->data.first)
+                else if(compare(x->data,newNode->data))
                     x = x->right;
                 else
                 {
@@ -372,7 +376,7 @@ class RedBlackTree {
             {
                 root = newNode;
             } 
-            else if (newNode->data < y->data) 
+            else if (compare(newNode->data , y->data)) 
             {
                 y->left = newNode;
             } 
@@ -423,12 +427,12 @@ class RedBlackTree {
       Node* current = root;
       while (current != TNULL) 
       {
-        if (key == current->data.first)
+        if (!(compare(key , current->data)) && (!(compare( current->data,key))))
         {
           // setNode(current);
           return current;
         } 
-        else if (key < current->data.first) 
+        else if (compare(key , current->data.first))
           current = current->left;
         else 
           current = current->right;

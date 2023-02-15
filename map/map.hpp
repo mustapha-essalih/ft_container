@@ -31,7 +31,12 @@ using std::pair;
 
 namespace ft
 { 
-
+    template <class Arg1, class Arg2, class Result>
+	struct binary_function {
+		typedef Arg1 first_argument_type;
+		typedef Arg2 second_argument_type;
+		typedef Result result_type;
+	};
     template< typename Key, typename T, typename Compare = std::less<Key> , typename Allocator = std::allocator<ft::pair<const Key, T> > >
  
     class map
@@ -53,41 +58,39 @@ namespace ft
             typedef typename allocator_type::const_reference                                                                                        const_reference;
             typedef size_t                                                                                                                          size_type;
 
-            typedef typename ft::map_iterator<key_type,value_type,key_compare,size_type,mapped_type,allocator_type>                                 iterator;
-            typedef typename ft::const_map_iterator<key_type,value_type,key_compare,size_type,mapped_type,allocator_type>                           const_iterator;
-            typedef typename ft::reverse_iterator<iterator>                                                                                         reverse_iterator;
-            typedef typename ft::reverse_iterator<const_iterator>                                                                                   const_reverse_iterator;
             
             typedef Node_struct<key_type> Node;
 
-            class value_compare
-            {
-                friend class map;
-                
-                protected:
-                    key_compare comp;
-                    value_compare(key_compare c) : comp(c) {}
-                public:
-                    bool operator()(const value_type &_lhs, const value_type &_rhs) const
-                    {
-                        return comp(_lhs.first, _rhs.first);
-                    }
-            };
+            class value_compare : public ft::binary_function<value_type,value_type,bool>
+			{
+				friend class map;
+				protected:
+					Compare comp;
+					value_compare (Compare c) : comp(c) {}
+				public:
+					bool operator() (const value_type& x, const value_type& y) const
+					{
+						return comp(x.first, y.first);
+					}
+			};
+            typedef typename ft::map_iterator<key_type,value_type,size_type,mapped_type,allocator_type>                                 iterator;
+            typedef typename ft::const_map_iterator<key_type,value_type,size_type,mapped_type,allocator_type>                           const_iterator;
+            typedef typename ft::reverse_iterator<iterator>                                                                                         reverse_iterator;
+            typedef typename ft::reverse_iterator<const_iterator>                                                                                   const_reverse_iterator;
 
-            map (const key_compare& comp = key_compare(),const allocator_type& alloc = allocator_type()) 
+             map (const key_compare& _comp = key_compare(),const allocator_type& alloc = allocator_type()) : tree(value_compare(_comp), alloc), key_comp(_comp), _alloc(alloc)
             { 
                 size_ = 0;
             }
             
             template <class InputIterator>  
-            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) 
+            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : tree(value_compare(comp), alloc), key_comp(comp), _alloc(alloc)  
             {
                 insert(first,last);
             }
 
-            map (const map & x)  // because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
+            map (const map & x) : tree(value_compare(x.key_comp), x._alloc), _alloc(x._alloc) // because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
             {
-                // clear();
                 if(x.size() > 0)
                     insert(x.begin(),x.end());
             }
@@ -188,13 +191,15 @@ namespace ft
                 while (it != last)
                 {
                     erase(it++);
-                    first = it;
+                    first = it; 
                 }
             }
             
             void clear()
             {
-                erase(begin(),end());
+                // if(tree.root == tree.TNULL)
+                    erase(begin(),end());
+                
                 size_ = 0;
             }
             
@@ -297,11 +302,12 @@ namespace ft
 
             // if found the element returns it, if not found returns next greter then k,
             // if k is greter then the max element in map will returns garbage value
-              iterator lower_bound(const Key& k) {
+              iterator lower_bound(const Key& k) 
+              {
                 Node_struct<value_type> *curr = tree.root;
                 Node_struct<value_type> *result = tree.TNULL;
                 while (curr != tree.TNULL) {
-                    if (!value_compare(curr->data, k)) {
+                    if (!key_comp(curr->data.first, k)) {
                         result = curr;
                         curr = curr->left;
                     } else {
@@ -315,9 +321,9 @@ namespace ft
             {
                 const_iterator i;
 			
-				i = begin();
-				while(i.node->data.first < k && i != end())
-					i = tree.successor(i.node);
+				// i = begin();
+				// while(value && i != end())
+				// 	i = tree.successor(i.node);
 				return (i);
             }
 
@@ -328,7 +334,7 @@ namespace ft
                 tree.tmp = tree.findNode(k);
                 if(tree.tmp)
                     return iterator(getNext(tree.tmp));// if element is exist returns next
-                if(key_compare_(k,tree.maxValue(tree.root)->data.first))// if smaller then max element return next of this k
+                if(key_comp(k,tree.maxValue(tree.root)->data.first))// if smaller then max element return next of this k
                     return iterator(tree.findNode(k));
                 else
                     return iterator(tree.end_node);
@@ -341,7 +347,7 @@ namespace ft
                 // tree.tmp = tree.findNode(k);
                 if(tree.tmp)
                     return const_iterator(getNext(tree.tmp));// if element is exist returns next
-                if(key_compare_(k,tree.maxValue(tree.root)->data.first))// if smaller then max element return next of this k
+                if(key_comp(k,tree.maxValue(tree.root)->data.first))// if smaller then max element return next of this k
                     return const_iterator(tree.findNode(k));
                 else
                     return const_iterator(tree.end_node);
@@ -351,7 +357,7 @@ namespace ft
             { 
                 iterator i = lower_bound(k);
                 iterator j = i;
-                if (i != end() && !(key_compare_(k, (*i).first)))
+                if (i != end() && !(key_comp(k, (*i).first)))
                     ++j;
                 return ft::make_pair(i, j);
             }
@@ -360,7 +366,7 @@ namespace ft
             { 
                 const_iterator i = lower_bound(k);
                 const_iterator j = i;
-                if (i != end() && !(key_compare_(k, (*i).first)))
+                if (i != end() && !(key_comp(k, (*i).first)))
                     ++j;
                 return ft::make_pair(i, j);
             }
@@ -383,18 +389,23 @@ namespace ft
                 return std::numeric_limits<size_type>::max() / sizeof(value_type);// ?
             }
            
+            // key_compare key_comp() const {
+            //     return (tree.key_comp());
+            // }
             
-
+            // value_compare value_comp() const {
+            //     return (value_compare(tree.key_comp()));
+            // }
             ~map()
             { 
                 clear();
             }
             private:
-                typedef RedBlackTree<key_type,value_type,key_compare,size_type,mapped_type,allocator_type> red_black_tree_;
+                typedef RedBlackTree<key_type,value_type,value_compare,size_type,mapped_type,allocator_type> red_black_tree_;
                 red_black_tree_ tree;
                 size_type size_;
-                key_compare key_compare_;
-                
+                key_compare key_comp; //   std::less<int> operator() will enter here
+                allocator_type _alloc;
                 
     };
     
@@ -431,3 +442,5 @@ namespace ft
 
 #endif
 
+// 'map_iterator<[2 * ...], ft::map<int, int, std::__1::plus<int>, std::__1::allocator<ft::pair<const int, int> > >::value_compare, [3 * ...]>'
+// 'map_iterator<[2 * ...], ft::map<int, int, std::__1::less<int>, std::__1::allocator<ft::pair<const int, int> > >::value_compare, [3 * ...]>'
