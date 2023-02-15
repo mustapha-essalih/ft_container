@@ -20,6 +20,7 @@ using std::stack;
 #include "map/map.hpp"
 #include "vector/vector.hpp"
 #include "stack/stack.hpp"
+#include "set/set.hpp"
  
 
  
@@ -28,85 +29,60 @@ using std::stack;
 
 // implement std::key_comp
 // implement std::map::value_comp
-#define _ratio 100
+#define _ratio 5
 
 void func()
 {
 	system("leaks ft_container");
 }
 
-template<typename T>
-void fillMap(ft::map<int,int,T> &mp) {
-	mp.insert(ft::make_pair(16, 3));
-	mp.insert(ft::make_pair(8, 3));
-	mp.insert(ft::make_pair(23, 3));
-	mp.insert(ft::make_pair(7, 3));
-	mp.insert(ft::make_pair(19, 3));
-	mp.insert(ft::make_pair(29, 3));
-	mp.insert(ft::make_pair(41, 3));
-	mp.insert(ft::make_pair(4, 3));
-	mp.insert(ft::make_pair(11, 3));
-}
-
-std::vector<int> comparator_test(ft::map<int,int> mp) {
+ 
+template <class T>
+std::vector<int> swap_test(ft::set<T> st) {
     std::vector<int> v;
-    fillMap(mp);
-    for (ft::map<int,int>::iterator it = mp.begin(); it != mp.end(); it++) { v.push_back(it->first); }
-    for (ft::map<int,int>::iterator it = --mp.end(); it != mp.begin(); it--) { v.push_back(it->first); }
-    ft::map<int, int, std::greater<int> > mp1;
-    fillMap(mp1);
-    v.push_back(mp1.begin()->first);
-    mp1.erase(41);
-    v.push_back(mp1.begin()->first);
-    mp1.erase(29);
-    v.push_back(mp1.begin()->first);
-    ft::map<int, int, std::greater<int> > mp2;
-    mp2.insert(ft::make_pair(3, 3));
-    v.push_back(mp2.begin()->first);
-    mp2.erase(3);
-    if (mp2.begin() == mp2.end())
-        v.push_back(1);
-    ft::map<int, int, std::plus<int> > mp3;
-    fillMap(mp3);
-    // for ( ft::map<int,int>::iterator it = mp3.begin(); it != mp3.end(); it++) { v.push_back(it->first); }
-    // for ( ft::map<int,int>::iterator it = --mp3.end(); it != mp3.begin(); it--) { v.push_back(it->first); }
-    // ft::map<int, int, std::minus<int> > mp4;
-    // fillMap(mp4);
-    // for ( ft::map<int,int>::iterator it = mp4.begin(); it != mp4.end(); it++) { v.push_back(it->first); }
-    // for ( ft::map<int,int>::iterator it = --mp4.end(); it != mp4.begin(); it--) { v.push_back(it->first); }
-    // ft::map<int, int, std::greater_equal<int> > mp5;
-    // fillMap(mp5);
-    // for ( ft::map<int,int>::iterator it = mp5.begin(); it != mp5.end(); it++) { v.push_back(it->first); }
-    // for ( ft::map<int,int>::iterator it = --mp5.end(); it != mp5.begin(); it--) { v.push_back(it->first); }
-    // ft::map<int, int, std::multiplies<int> > mp6;
-    // fillMap(mp6);
-    // for ( ft::map<int,int>::iterator it = mp6.begin(); it != mp6.end(); it++) { v.push_back(it->first); }
-    // for ( ft::map<int,int>::iterator it = --mp6.end(); it != mp6.begin(); it--) { v.push_back(it->first); }
-    // ft::map<int, int, std::bit_xor<int> > mp7;
-    // fillMap(mp7);
-    // for ( ft::map<int,int>::iterator it = mp7.begin(); it != mp7.end(); it++) { v.push_back(it->first); }
-    // for ( ft::map<int,int>::iterator it = --mp7.end(); it != mp7.begin(); it--) { v.push_back(it->first); }
-    // std::map<int, int, std::logical_and<int> > mp8;
-     
-    // fillMap(mp8);
-    // for ( std::map<int,int>::iterator it = mp8.begin(); it != mp8.end(); it++) { v.push_back(it->first); }
-    // for ( std::map<int,int>::iterator it = --mp8.end(); it != mp8.begin(); it--) { v.push_back(it->first); }
-    // v.push_back(mp1.size());
-
+    for (int i = 0; i < 25 * _ratio; ++i)
+        st.insert(i);
+    ft::set<T> st2;
+    for (int i = 25 * _ratio; i < 35 * _ratio; ++i)
+        st.insert(i);
+    long *adr1 = reinterpret_cast<long *>(&st);
+    long *adr2 = reinterpret_cast<long *>(&st2);
+    st.swap(st2);
+    if (reinterpret_cast<long *>(&st) == adr1 && reinterpret_cast<long *>(&st2) == adr2)
+    	v.push_back(1);
+    v.push_back(st2.size());
+    typename ft::set<T>::iterator it = st2.begin();
+    for (; it != st2.end(); ++it) {
+        v.push_back(*it);
+    }
+    ft::swap(st, st2);
+	std::cout << st2.size() << std::endl;
+		std::cout << "ok\n";
+    typename ft::set<T>::iterator it2 = st2.begin();
+    for (; it2 != st2.end(); ++it2) {
+        v.push_back(*it2);
+    }
     return v;
 }
- 
+
+
 int main ()
-{   
+{
+  	 
+	ft::set<int> first ;
+	swap_test(first);
+	// std::cout << "first contains:";
+	// for (ft::set<int>::iterator it=first.begin(); it!=first.end(); ++it)
+	// 	std::cout << ' ' << *it;
+	// std::cout << '\n';
 
-	ft::map<int,int> mymap;
-    comparator_test(mymap);
-	 atexit(func);
+	// std::cout << "second contains:";
+	// for (ft::set<int>::iterator it=second.begin(); it!=second.end(); ++it)
+	// 	std::cout << ' ' << *it;
+	// std::cout << '\n';
 
- 
 
+  return 0;
 }
-
-
  
  

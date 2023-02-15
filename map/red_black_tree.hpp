@@ -92,12 +92,14 @@ Node_struct<K>* getPrev(Node_struct<K>* node)
 }
  
  
-template<typename key_type,typename T,typename Compare,typename size_type,typename mapped_type,typename Allocator >
+template<typename T,typename Compare,typename Allocator >
 
 class RedBlackTree {
 	
 	public:
         typedef Allocator allocator_type;
+        typedef size_t 													  size_type;
+			  typedef ptrdiff_t 												difference_type;
         typedef T value_type;
         typedef Compare    value_compare;  // key_compare_(); lambda object convet to function will call operator() (const value_type& x, const value_type& y) const
         typedef typename allocator_type::template rebind<Node_struct<value_type> >::other node_allocator;
@@ -120,7 +122,7 @@ class RedBlackTree {
         Node tmpNode;
         alloc.construct(end_node,tmpNode);
         alloc.construct(TNULL,tmpNode);// free 
-            root = TNULL;
+        root = TNULL;
       }
 
       void leftRotate(Node * x) 
@@ -233,14 +235,16 @@ class RedBlackTree {
     v->parent = u->parent;
   }
 
-  size_type deleteNodeHelper(Node * node, const key_type & key) 
+  size_type deleteNodeHelper(Node * node, const value_type & key) 
   {
     root->parent = NULL;
     Node * z = TNULL;
     Node * x;
     Node * y;
-    while (node != TNULL) {
-      if (node->data.first == key) {
+    while (node != TNULL) 
+    {
+      if (!compare(node->data , key) && !compare(key,node->data)) 
+      {
         z = node;
       }
 
@@ -292,7 +296,7 @@ class RedBlackTree {
 
 
 
-  size_type deleteNode(const key_type & data) 
+  size_type deleteNode(const value_type & data) 
   {
     return deleteNodeHelper(this->root, data);
   }
@@ -422,7 +426,7 @@ class RedBlackTree {
             return (current);
         }
 
-    Node* findNode(const key_type & key)    const 
+    Node* findNode(const value_type & key)    const 
     {
       Node* current = root;
       while (current != TNULL) 
@@ -432,7 +436,7 @@ class RedBlackTree {
           // setNode(current);
           return current;
         } 
-        else if (compare(key , current->data.first))
+        else if (compare(key , current->data))
           current = current->left;
         else 
           current = current->right;
@@ -481,27 +485,13 @@ class RedBlackTree {
       if (node != NULL) 
       {
       	postOrderHelper(node->left);
-      	deleteNode(node->data.first);
+      	deleteNode(node->data);
       	postOrderHelper(node->right);
       }
       
     }
 
-
-    void	swap(RedBlackTree &other)
-			{
-				Node * thisRoot = this->root;
-				Node * thisNIL = this->TNULL;
-				// int thisSize =	this->_size;
-				
-				this->root = other.root;
-				this->TNULL = other.TNULL;
-				// this->_size = other._size;
-				other.root = thisRoot;
-				other.TNULL = thisNIL;
-				// other._size = thisSize;
-			}
-
+ 
 
 
     Node * successor(Node * x) {
@@ -517,7 +507,7 @@ class RedBlackTree {
     return y;
   }
 
-    Node *	lower_bound(const key_type & k)
+    Node *	lower_bound(const value_type & k)
     {
       Node * i;
     
@@ -527,7 +517,7 @@ class RedBlackTree {
       return (i);
     }
 
-    Node * upper_bound(const key_type& key)
+    Node * upper_bound(const value_type& key)
     {
         Node * i;
 
@@ -538,19 +528,41 @@ class RedBlackTree {
           i = successor(i);
         return (i);
     }
-void	clear()
-			{
-				if (this->root != this->TNULL)
-					destroyTree(this->root);
-			}
+    void	clear()
+    {
+      if (this->root != this->TNULL)
+        destroyTree(this->root);
+    }
+
+    void swap(RedBlackTree &other)
+    {
+       
+				// Node * thisRoot = this->root;
+				// Node * thisNIL = this->TNULL;
+			  				
+				// this->root = other.root;
+				// this->TNULL = other.TNULL;
+ 				// other.root = thisRoot;
+				// other.TNULL = thisNIL;
+        std::swap(root, other.root);
+        std::swap(tmp, other.tmp);
+        std::swap(end_node, other.end_node);
+        std::swap(TNULL, other.TNULL);
+ 	 
+    }
 
 	~RedBlackTree()
 	{ 
- 		root->parent = NULL;
-		postOrderHelper(root);
- 		alloc.deallocate(end_node,1);
- 		alloc.deallocate(TNULL,1);
- 		
+     
+ 		  root->parent = NULL;
+	  	postOrderHelper(root);
+
+    
+      alloc.deallocate(TNULL,1);
+    
+      alloc.deallocate(end_node,1);
+         
+ 
 	}
 };
 

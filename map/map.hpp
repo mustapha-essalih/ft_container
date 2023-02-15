@@ -73,13 +73,13 @@ namespace ft
 						return comp(x.first, y.first);
 					}
 			};
-            typedef typename ft::map_iterator<key_type,value_type,size_type,mapped_type,allocator_type>                                 iterator;
-            typedef typename ft::const_map_iterator<key_type,value_type,size_type,mapped_type,allocator_type>                           const_iterator;
+            typedef typename ft::map_iterator<value_type,allocator_type>                                 iterator;
+            typedef typename ft::const_map_iterator<value_type,allocator_type>                           const_iterator;
             typedef typename ft::reverse_iterator<iterator>                                                                                         reverse_iterator;
             typedef typename ft::reverse_iterator<const_iterator>                                                                                   const_reverse_iterator;
             key_compare _key_comp; //   std::less<int> operator() will enter here
 
-             map (const key_compare& _comp = key_compare(),const allocator_type& alloc = allocator_type()) : tree(value_compare(_comp), alloc), _key_comp(_comp), _alloc(alloc)
+            map (const key_compare& _comp = key_compare(),const allocator_type& alloc = allocator_type()) : tree(value_compare(_comp), alloc), _key_comp(_comp), _alloc(alloc)
             { 
                 size_ = 0;
             }
@@ -92,6 +92,7 @@ namespace ft
 
             map (const map & x) : tree(value_compare(x._key_comp), x._alloc), _alloc(x._alloc) // because x is const const reasigne node in  tree.tmp = tree.minValue(tree.root);
             {
+                size_ = x.size_;
                 if(x.size() > 0)
                     insert(x.begin(),x.end());
             }
@@ -181,7 +182,7 @@ namespace ft
 
             void erase (iterator position)
             {
-                tree.deleteNode(position.node->data.first);
+                tree.deleteNode(position.node->data);
                 --size_;
             }
 
@@ -206,12 +207,10 @@ namespace ft
             
             void swap (map& x)
             {
-                if(x.size_)
-                {
-                    map tmp(x);
-                    x = *this;
-                    *this = tmp; 
-                }
+                
+                  tree.swap(x.tree);// swap pointers
+                std::swap(size_, x.size_);
+               
             }
 
             /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -363,6 +362,10 @@ namespace ft
                 return _key_comp;
             }   
             
+            allocator_type get_allocator() const
+            {
+                return _alloc;
+            }
             // value_compare value_comp() const {
             //     return (value_compare(tree.key_comp()));
             // }
@@ -371,10 +374,9 @@ namespace ft
                 clear();
             }
             private:
-                typedef RedBlackTree<key_type,value_type,value_compare,size_type,mapped_type,allocator_type> red_black_tree_;
+                typedef RedBlackTree<value_type,value_compare,allocator_type> red_black_tree_;
                 red_black_tree_ tree;
                 size_type size_;
-                
                 allocator_type _alloc;
                 
     };

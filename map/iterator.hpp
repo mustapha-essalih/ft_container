@@ -33,13 +33,11 @@ namespace ft
     // class const_map_iterator;
      
 
-    template <typename key_type, typename T,typename size_type,typename mapped_type,typename Allocator  >
+    template <typename T,typename Allocator  >
 
         class map_iterator 
         {   
-            
-            // friend class const_map_iterator< key_type,   T, key_compare, size_type, mapped_type, Allocator >;            
-            // friend class map< key_type,  T,  key_compare,    Allocator  >;            
+                   
 
             public:
 
@@ -112,16 +110,13 @@ namespace ft
                 {
                     return node->data;
                 }
-                
-                key_type getKey() const {
-                    return node->data.first;
-                }
+                 
             private: 
 
                 
     };  
         
-        template <typename key_type, typename T,typename size_type,typename mapped_type,typename Allocator  >
+        template <typename T,typename Allocator  >
 
         class const_map_iterator 
         {   
@@ -144,7 +139,7 @@ namespace ft
                     if decalare const_iterator and assign it begin() will enter in this copy constructor;
                     if decalre const map will cal begin() const and enter to const iterator.
                 */ 
-                const_map_iterator(const map_iterator<key_type,value_type,size_type,mapped_type,Allocator>  & it)
+                const_map_iterator(const map_iterator<value_type,Allocator>  & it)
                 {
                     node = it.node;
                 }
@@ -160,7 +155,7 @@ namespace ft
                     return *this;
                 }
 
-                const_map_iterator& operator=(const map_iterator<key_type,value_type,size_type,mapped_type,Allocator>& it)
+                const_map_iterator& operator=(const map_iterator<value_type,Allocator>& it)
                 {
                     if(this != &it)// if not is the same obj
                         node = it.node;

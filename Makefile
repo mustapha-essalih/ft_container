@@ -5,7 +5,7 @@ CC = c++
 C_FILES = main.cpp 
 
 H_FILES =  ./map/map.hpp ./map/red_black_tree.hpp ./map/iterator.hpp  ./utils/reverse_iterator.hpp  ./utils/type_traits.hpp ./utils/iterator_traits.hpp \
-			./vector/vector.hpp ./vector/vector_iterator.hpp ./stack/stack.hpp
+			./vector/vector.hpp ./vector/vector_iterator.hpp ./stack/stack.hpp ./set/set.hpp
 
 
 
