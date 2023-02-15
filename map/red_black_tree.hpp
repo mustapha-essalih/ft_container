@@ -458,6 +458,24 @@ class RedBlackTree {
 		return tmp;
 	}
  
+    void destroyTree(Node * node)
+			{
+				if (node->left != this->TNULL )
+					destroyTree(node->left);
+				if (node->right != this->TNULL  )
+					destroyTree(node->right);
+				if (node != this->TNULL)
+				{
+					if (node != this->root && node == node->parent->right)
+						node->parent->right = this->TNULL;
+					if (node != this->root && node == node->parent->left)
+						node->parent->left = this->TNULL;
+					if (node == this->root)
+						this->root = this->TNULL;
+					this->alloc.destroy(node);
+					this->alloc.deallocate(node, 1);
+				}
+			}
     void postOrderHelper(Node * node) 
     {
       if (node != NULL) 
@@ -484,6 +502,8 @@ class RedBlackTree {
 				// other._size = thisSize;
 			}
 
+
+
     Node * successor(Node * x) {
     if (x->right != TNULL) {
       return minValue(x->right);
@@ -496,22 +516,33 @@ class RedBlackTree {
     }
     return y;
   }
-  Node *	_getSuccessor(Node * node)
-  {
-    Node *	last;
 
-    last = node;
-    if (node->right && node->right->right)
-      return minValue(node->right);
-    Node *	temp = node->parent;
-    while (temp && node == temp->right && node != temp->left) {
-      node = temp;
-      temp = temp->parent;
+    Node *	lower_bound(const key_type & k)
+    {
+      Node * i;
+    
+      i = minValue(root);
+      while(compare(i->data, k) && i != end_node)
+        i =  successor(i);
+      return (i);
     }
-    if (!temp)
-      return (last->right);
-    return temp;
-  }
+
+    Node * upper_bound(const key_type& key)
+    {
+        Node * i;
+
+        i = minValue(root);
+        while(compare(i->data, key) && i != end_node)
+          i = successor(i);
+        if (!compare(key, i->data) && i != end_node)
+          i = successor(i);
+        return (i);
+    }
+void	clear()
+			{
+				if (this->root != this->TNULL)
+					destroyTree(this->root);
+			}
 
 	~RedBlackTree()
 	{ 
@@ -532,3 +563,5 @@ class RedBlackTree {
 
 
  
+
+

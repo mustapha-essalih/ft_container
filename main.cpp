@@ -100,8 +100,11 @@ int main ()
 {   
 
 	ft::map<int,int> mymap;
-comparator_test(mymap);
+    comparator_test(mymap);
 	 atexit(func);
+
+ 
+
 }
 
 
