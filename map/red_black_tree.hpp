@@ -519,14 +519,28 @@ class RedBlackTree {
 
     Node * upper_bound(const value_type& key)
     {
-        Node * i;
+      Node * tmp =  root;
+      Node * result = end_node;
 
-        i = minValue(root);
-        while(compare(i->data, key) && i != end_node)
-          i = successor(i);
-        if (!compare(key, i->data) && i != end_node)
-          i = successor(i);
-        return (i);
+       while (tmp != NULL)
+        {
+            if (compare(key, tmp->data))
+            {
+                result = tmp;
+                tmp = tmp->left;
+            }
+            else
+                tmp = tmp->right;
+        }
+      return result;
+        // Node * i;
+
+        // i = minValue(root);
+        // while(compare(i->data, key) && i != end_node)
+        //   i = successor(i);
+        // if (!compare(key, i->data) && i != end_node)
+        //   i = successor(i);
+        // return (i);
     }
     void	clear()
     {

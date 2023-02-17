@@ -402,28 +402,39 @@ namespace ft
         template <class InputIterator>
         void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
         {
-            difference_type len = last - first;
-            if (len <= 0)
-                return ;
-            difference_type n = position - this->begin();
-            vector tmp(this->begin(), this->end());
-            try
+            vector<T> tmp(first,last);
+            
+            difference_type p =  position - begin();
+             
+            if(size() + tmp.size() >= capacity() )
             {
-                reserve(this->vector_size + len);
-                for (int i = this->vector_size - 1; i >= n; i--)
-                    this->_alloc.construct(this->block + i + len, this->block[i]);
-                for (int i = n; i < n + len && first != last; i++)
+                reallocate(size() + tmp.size());
+                vector<T> myTmp(begin(),end());
+                for (int i = this->vector_size - 1; i >= p; i--)
+                    this->_alloc.construct(this->block + i + tmp.size(), this->block[i]);
+                
+                for (int i = p; i < p + tmp.size() && first != last; i++)
+                {
+                    this->_alloc.construct(this->block + i, *first);
+                    this->vector_size++;
+                    first++;
+                }
+                vector_capacity *= 2;
+            }
+            else
+            {
+                vector<T> myTmp(begin(),end());
+                for (int i = this->vector_size - 1; i >= p; i--)
+                    this->_alloc.construct(this->block + i + tmp.size(), this->block[i]);
+                
+                for (int i = p; i < p + tmp.size() && first != last; i++)
                 {
                     this->_alloc.construct(this->block + i, *first);
                     this->vector_size++;
                     first++;
                 }
             }
-            catch (...)
-            {
-                *this = tmp;
-                throw ;
-            }
+            
         }
 
         iterator erase (iterator position)
@@ -460,9 +471,9 @@ namespace ft
             size_t xSize = x.vector_size;
             size_t xCapacity = x.vector_capacity;
 
-            std::swap(x.block,this->block);
-            x.vector_capacity = this->vector_capacity;
-            x.vector_size = this->vector_size;
+            std::swap(x.block,block);
+            x.vector_capacity = vector_capacity;
+            x.vector_size = vector_size;
             // block = tmp;
             vector_capacity = xCapacity;
             vector_size = xSize;
@@ -532,6 +543,3 @@ namespace ft
      
 
 #endif
-
-
-    
