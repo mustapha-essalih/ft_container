@@ -29,58 +29,81 @@ using std::stack;
 
 // implement std::key_comp
 // implement std::map::value_comp
-#define _ratio 5
+#define _ratio 10000
 
 void func()
 {
 	system("leaks ft_container");
 }
 
- 
-template <class T>
-std::vector<int> swap_test(ft::set<T> st) {
+template <typename T>
+std::vector<int> insert_test_2(std::vector<T> vector) {
     std::vector<int> v;
-    for (int i = 0; i < 25 * _ratio; ++i)
-        st.insert(i);
-    ft::set<T> st2;
-    for (int i = 25 * _ratio; i < 35 * _ratio; ++i)
-        st.insert(i);
-    long *adr1 = reinterpret_cast<long *>(&st);
-    long *adr2 = reinterpret_cast<long *>(&st2);
-    st.swap(st2);
-    if (reinterpret_cast<long *>(&st) == adr1 && reinterpret_cast<long *>(&st2) == adr2)
-    	v.push_back(1);
-    v.push_back(st2.size());
-    typename ft::set<T>::iterator it = st2.begin();
-    for (; it != st2.end(); ++it) {
-        v.push_back(*it);
-    }
-    ft::swap(st, st2);
-	std::cout << st2.size() << std::endl;
-		std::cout << "ok\n";
-    typename ft::set<T>::iterator it2 = st2.begin();
-    for (; it2 != st2.end(); ++it2) {
-        v.push_back(*it2);
-    }
+    vector.assign(1000, 1);
+    vector.insert(vector.end() - 50, 4200 * _ratio , 2);
+    cout << "=> " << vector.size() << endl;
+    cout << "=> " << vector.capacity() << endl;
+
+	cout << (4200 * _ratio)   << endl;
+	// cout << (4200 * _ratio) + vector.capacity() << endl;
+	// v.push_back(vector[2121]);
+    // v.push_back(vector.size());
+    // v.push_back(vector.capacity());
     return v;
 }
 
+template <typename T>
+std::vector<int> insert_test_2(ft::vector<T> vector) {
+    std::vector<int> v;
+    vector.assign(1000, 1);
+	// cout << "==> " << vector.size() << endl;
+    // cout << "==> " << vector.capacity() << endl;
+    vector.insert(vector.end() - 50, 4200 * _ratio , 2);
+cout << "=> " << vector.size() << endl;
+    cout << "=> " << vector.capacity() << endl;
+
+	cout << (4200 * _ratio)   << endl;
+
+    // v.push_back(vector[2121]);
+    // v.push_back(vector.size());
+    // v.push_back(vector.capacity());
+    return v;
+}
 
 int main ()
 {
+	    // ft::vector<int> myvector;
+		// insert_test_2(myvector);
+	    // std::vector<int> v;
+		// insert_test_2(v);
+
+
+
+    std::vector<int> myvector (3,100);
+
+    std::vector<int>::iterator it;
+
+    it = myvector.begin();
+    // it = myvector.insert ( it  , 200 );
+
+    cout << myvector.size() << endl;
+    cout << myvector.capacity() << endl;
+ 
+    myvector.insert (it ,2,300);
+    cout << myvector.size() << endl;
+    cout << myvector.capacity() << endl;
+     
+
+
+    // while (it != myvector.end())
+    // {
+      
+    //   cout << *it << endl;
+    //   it++;
+    // }
+    // 
   	 
-	ft::set<int> first ;
-	swap_test(first);
-	// std::cout << "first contains:";
-	// for (ft::set<int>::iterator it=first.begin(); it!=first.end(); ++it)
-	// 	std::cout << ' ' << *it;
-	// std::cout << '\n';
-
-	// std::cout << "second contains:";
-	// for (ft::set<int>::iterator it=second.begin(); it!=second.end(); ++it)
-	// 	std::cout << ' ' << *it;
-	// std::cout << '\n';
-
+    // atexit(func);
 
   return 0;
 }
