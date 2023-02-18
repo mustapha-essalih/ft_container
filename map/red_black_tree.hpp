@@ -66,7 +66,7 @@ template <typename K>
 
 bool is_left_child(Node_struct<K> * node)
 {
-    return node ==  node->parent->left;
+  return node ==  node->parent->left;
 }
 
 template <typename K>
@@ -258,8 +258,6 @@ class RedBlackTree {
 
     if (z == TNULL)
         return 0;
-    
-    
 
     y = z;
     size_type y_original_color = y->color;
@@ -509,38 +507,24 @@ class RedBlackTree {
 
     Node *	lower_bound(const value_type & k)
     {
-      Node * i;
-    
-      i = minValue(root);
-      while(compare(i->data, k) && i != end_node)
-        i =  successor(i);
-      return (i);
+        Node * i;
+      
+        i = minValue(root);
+        while(compare(i->data, k) && i != end_node)
+          i =  successor(i);
+        return (i);
     }
 
     Node * upper_bound(const value_type& key)
     {
-      Node * tmp =  root;
-      Node * result = end_node;
+      Node * i;
 
-       while (tmp != NULL)
-        {
-            if (compare(key, tmp->data))
-            {
-                result = tmp;
-                tmp = tmp->left;
-            }
-            else
-                tmp = tmp->right;
-        }
-      return result;
-        // Node * i;
-
-        // i = minValue(root);
-        // while(compare(i->data, key) && i != end_node)
-        //   i = successor(i);
-        // if (!compare(key, i->data) && i != end_node)
-        //   i = successor(i);
-        // return (i);
+        i = minValue(root);
+        while(compare(i->data, key) && i != end_node)
+          i = successor(i);
+        if (!compare(key, i->data) && i != end_node)
+          i = successor(i);
+        return (i);
     }
     void	clear()
     {

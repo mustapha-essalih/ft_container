@@ -61,12 +61,14 @@ namespace ft
             vector_capacity = 0;
             _alloc = alloc;
             block = NULL;
+            temp = NULL;
              
         }
     
                                                 // default value
         vector (size_type n, const value_type& val = value_type(),const allocator_type& alloc = allocator_type()) // fill constructor
         {
+            temp = NULL;
             vector_size = n;
             vector_capacity = n;
             _alloc = alloc;
@@ -111,11 +113,9 @@ namespace ft
                 // allocate new memory using the allocator of the original vector
                 block = _alloc.allocate(other_size);
                 vector_size = other_size;
-                vector_capacity = other_size;
+                vector_capacity = x.capacity();
                 for (size_type i = 0; i < vector_capacity; i++) 
                     _alloc.construct(block + i,x.block[i]);
-                // copy the elements of the original vector into the new memory
-                // std::uninitialized_copy(other.begin(), other.end(), data_);
             }
             
         }
@@ -385,9 +385,15 @@ namespace ft
 
         void insert (iterator position, size_type n, const value_type& val)
         {
+             
             difference_type ip = position - begin();
-
-            reserve(vector_size + n);
+             if(n > capacity())
+                return;
+            if(vector_size + n >= capacity())
+            {
+                vector_capacity *= 2;
+                reallocate(vector_capacity);
+            }
             for (size_type i = vector_size - 1; i >= ip; i--)
             {
                 block[i + n] = block[i];
@@ -399,43 +405,34 @@ namespace ft
             vector_size += n;
         }
         
-        template <class InputIterator>
+         template <class InputIterator>
         void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
         {
-            vector<T> tmp(first,last);
+            vector<T> tm(first,last);
             
-            difference_type p =  position - begin();
+            difference_type len = tm.size();
+
+            difference_type n = position -  begin();
+
              
-            if(size() + tmp.size() >= capacity() )
+            if(this->vector_size + len >= capacity())
             {
-                reallocate(size() + tmp.size());
-                vector<T> myTmp(begin(),end());
-                for (int i = this->vector_size - 1; i >= p; i--)
-                    this->_alloc.construct(this->block + i + tmp.size(), this->block[i]);
-                
-                for (int i = p; i < p + tmp.size() && first != last; i++)
-                {
-                    this->_alloc.construct(this->block + i, *first);
-                    this->vector_size++;
-                    first++;
-                }
                 vector_capacity *= 2;
+                reallocate(vector_capacity);
             }
-            else
+            for (int i = this->vector_size - 1; i >= n; i--)
+                this->_alloc.construct(this->block + i + len, this->block[i]);
+            for (int i = n; i < n + len && first != last; i++)
             {
-                vector<T> myTmp(begin(),end());
-                for (int i = this->vector_size - 1; i >= p; i--)
-                    this->_alloc.construct(this->block + i + tmp.size(), this->block[i]);
-                
-                for (int i = p; i < p + tmp.size() && first != last; i++)
-                {
-                    this->_alloc.construct(this->block + i, *first);
-                    this->vector_size++;
-                    first++;
-                }
+                this->_alloc.construct(this->block + i, *first);
+                this->vector_size++;
+                first++;
             }
-            
+             
+
         }
+            
+         
 
         iterator erase (iterator position)
         {
@@ -467,16 +464,9 @@ namespace ft
         }
        void swap (vector& x)
         {
-            // pointer	tmp = x.block;
-            size_t xSize = x.vector_size;
-            size_t xCapacity = x.vector_capacity;
-
-            std::swap(x.block,block);
-            x.vector_capacity = vector_capacity;
-            x.vector_size = vector_size;
-            // block = tmp;
-            vector_capacity = xCapacity;
-            vector_size = xSize;
+            std::swap(vector_size,x.vector_size);
+            std::swap(vector_capacity,x.vector_capacity);
+            std::swap(block,x.block);
         }
 
         allocator_type  get_allocator() const 
@@ -496,7 +486,7 @@ namespace ft
             size_type vector_size;
             size_type vector_capacity;
             pointer block; // ?
-
+            pointer temp;
              
             class throw_out_of_range : public std::exception
             {

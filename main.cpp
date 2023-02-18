@@ -6,7 +6,10 @@
 #include <memory>
 #include <stack>
 #include <vector>
- 
+ #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <iterator>
 
 
 
@@ -22,73 +25,67 @@ using std::stack;
 #include "stack/stack.hpp"
 #include "set/set.hpp"
  
-
+// use flags in makefile
+// use std::
  
-// use key compar to comapar evryting
-// in iterator node privete
 
-// implement std::key_comp
-// implement std::map::value_comp
 #define _ratio 10000
 
 void func()
 {
 	system("leaks ft_container");
 }
-template <typename T>
-std::vector<int> insert_std_test(std::vector<T> vector) {
+ 
+template <class T>
+std::vector<int> constructor_test(ft::stack<T> stk) {
 	std::vector<int> v;
-	std::vector<int> tmp;
-	tmp.assign(2600 * _ratio, 1);
-	vector.assign(4200 * _ratio, 7);
-	vector.insert(vector.begin(), tmp.begin(), tmp.end());
-	for (size_t i = 0; i < tmp.size(); ++i) {
-		v.push_back(vector[i]);
-	}
-	v.push_back(vector.size());
-	v.push_back(vector.capacity());
+	ft::vector<int> deque;
+	for (int i = 0; i < 100 * _ratio; ++i)
+		deque.push_back(i);
+	for (int i = 100 * _ratio; i < 200 * _ratio; ++i)
+		stk.push(i);
+	ft::stack<int> stack(deque);
+	ft::stack<int> stack2(stk);
+	// ft::stack<int> stack3;
+	// stack3 = stack2;
+	// while (stack.size() > 0) {
+	// 	v.push_back(stack.top());
+	// 	stack.pop();
+	// }
+	// while (stack2.size() > 0) {
+	// 	v.push_back(stack2.top());
+	// 	stack2.pop();
+	// }
 	return v;
 }
 
-template <typename T>
-std::vector<int> insert_std_test(ft::vector<T> vector) {
-	std::vector<int> v;
-	std::vector<int> tmp;
-	tmp.assign(2600 * _ratio, 1);
-	vector.assign(4200 * _ratio, 7);
-	vector.insert(vector.begin(), tmp.begin(), tmp.end());
-	for (size_t i = 0; i < tmp.size(); ++i) {
-		v.push_back(vector[i]);
-	}
-	v.push_back(vector.size());
-	v.push_back(vector.capacity());
-	return v;
-}
 int main ()
-{
-	std::vector<int> myvector (3,100);
-	std::vector<int>::iterator it;
+{  
 
-	it = myvector.begin();
-	it = myvector.insert ( it , 200 );
-
-	myvector.insert (it,2,300);
-
-	// "it" no longer valid, get a new one:
-	it = myvector.begin();
-
-	std::vector<int> anothervector (2,400);
-
-	myvector.insert (it+2,anothervector.begin(),anothervector.end());
-	int myarray [] = { 501,502,503 };
-	myvector.insert (myvector.begin(), myarray, myarray + 3);
-
-	for (it=myvector.begin(); it<myvector.end(); it++)
-		std::cout << ' ' << *it;
-	std::cout << '\n';
+    ft::stack<int> first;                    // empty stack
+    constructor_test(first);
+    // ft::vector<int> myvector;
+    // std::vector<int> vector;
+    // std::vector<int> v1, v2;
+    // std::vector<int> diff;
+    // v1 = insert_test_3(myvector);
+    // v2 = insert_test_3(vector);
     
-	cout << myvector.size() << " " << myvector.capacity() << endl;
-  	 
+
+
+
+    // std::set_difference(v1.begin(), v1.end(), v2.begin(), v2.end(),
+    //     std::inserter(diff, diff.begin()));
+ 
+    // for (auto i : v1) std::cout << i << ' ';
+    // std::cout << std::endl;
+    // std::cout << "minus ";
+    // std::cout << std::endl;
+    // for (auto i : v2) std::cout << i << ' ';
+    // std::cout << "is: " ;
+ 
+    // for (auto i : diff) std::cout << i << ' ';
+    // std::cout << '\n';
     // atexit(func);
 
   return 0;
