@@ -19,8 +19,7 @@ namespace ft
 
 
   template<class InputIt1, class InputIt2>
-    bool equal(InputIt1 first1, InputIt1 last1, 
-            InputIt2 first2)
+    bool equal(InputIt1 first1, InputIt1 last1,  InputIt2 first2)
     {
         for (; first1 != last1; ++first1, ++first2) {
             if (!(*first1 == *first2)) {
@@ -43,8 +42,7 @@ namespace ft
     }
 
     template<class InputIt1, class InputIt2>
-    bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
-                                InputIt2 first2, InputIt2 last2)
+    bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2)
     {
         for (; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2)
         {
@@ -58,8 +56,7 @@ namespace ft
     }
     
     template<class InputIt1, class InputIt2, class Compare>
-    bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
-                                InputIt2 first2, InputIt2 last2, Compare comp)
+    bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, Compare comp)
     {
         for (; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2)
         {
@@ -131,12 +128,15 @@ namespace ft
         bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
         { return !(lhs<rhs); }
 
+
+// if it is not here enter the insert or the constructor , because i want to work just with range of iterator
         template <typename T>
-struct is_integral {
-  static const bool value = false;
+    struct is_integral {
+      static const bool value = false;
 };
 
-template <>
+// when use template <> template specialization to <bool> is_integral <bool>
+template <> // is consept of sfine will enter all of the is_integral
 struct is_integral<bool> {
   static const bool value = true;
 };
@@ -161,11 +161,6 @@ struct is_integral<short> {
   static const bool value = true;
 };
 
-// ... more specializations for other integral types ...
-// template <>
-// struct is_integral<short> {
-//   static const bool value = true;
-// };
 
 template <>
 struct is_integral<unsigned short> {
@@ -201,9 +196,16 @@ template <>
 struct is_integral<unsigned long long> {
   static const bool value = true;
 };
+  // typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true
 
-        template<bool Cond, class T = void> struct enable_if {};
-        template<class T> struct enable_if<true, T> { typedef T type; };
+        template<bool Cond, class T = void> 
+        struct enable_if {};
+        
+        template<class T> 
+        struct enable_if<true, T> 
+        { 
+          typedef T type; 
+        };
 };
 
 

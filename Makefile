@@ -10,7 +10,7 @@ H_FILES =  ./map/map.hpp ./map/red_black_tree.hpp ./map/iterator.hpp  ./utils/re
 
 
 
-C_FLAGS = -std=c++98#-Wall -Wextra -Werror -std=c++98
+C_FLAGS =  -Wall -Wextra -Werror -std=c++98
 
 O_FILES = $(C_FILES:.cpp=.o)
 

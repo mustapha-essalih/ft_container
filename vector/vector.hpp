@@ -59,10 +59,9 @@ namespace ft
         {
             vector_size = 0;
             vector_capacity = 0;
-            _alloc = alloc;
+            _alloc = alloc;// here we create obj and initialize my alloc to can use for allocate and construct and destroy if not do that will cannot use function of alloc...
             block = NULL;
             temp = NULL;
-             
         }
     
                                                 // default value
@@ -75,95 +74,95 @@ namespace ft
             block = _alloc.allocate(n);
             for (size_type i = 0; i < n; i++)
                 _alloc.construct(block + i,val);
+            
         }
 
-        template<typename InputIterator>
-        vector(InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type(),typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0) // ?
+        template<typename InputIterator> //    reange of elements
+        vector(InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type(),typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
         {
+            
             difference_type n = last - first;
             if (n > 0)
             {
                 block = _alloc.allocate(n);
-                for (size_type i = 0; i < n && first != last ; i++)
+                for (difference_type i = 0; i < n && first != last ; i++)
                 {
-                    this->_alloc.construct(this->block + i, *first);
+                    _alloc.construct(block + i, *first);
                     first++;
                 }
-                this->vector_size = n;
-                this->vector_capacity = n;
+                vector_size = n;
+                vector_capacity = n;
             }
             else
             {
-                this->vector_size = 0;
-                this->vector_capacity = 0;
+                vector_size = 0;
+                vector_capacity = 0;
             }
+            (void)alloc;
+            // _alloc = alloc;
         }
         
 
         vector (const vector& x)
         {
-            size_t other_size = x.size();
-            if (other_size == 0) {
-                // other vector is empty, so create an empty vector
-                block = NULL;
-                vector_size = 0;
-                vector_capacity = 0;
-            } 
-            else {
-                // allocate new memory using the allocator of the original vector
-                block = _alloc.allocate(other_size);
-                vector_size = other_size;
-                vector_capacity = x.capacity();
-                for (size_type i = 0; i < vector_capacity; i++) 
-                    _alloc.construct(block + i,x.block[i]);
-            }
             
+
+
+
+
+            
+            this->vector_capacity = x.vector_capacity;
+            this->vector_size = x.vector_size;
+          //  if(x.vector_capacity)
+                this->block = _alloc.allocate(x.vector_size);
+            for(size_t i = 0;i < x.vector_size;i++)
+            {
+                _alloc.construct(block+i,x.block[i]);
+            }
         }
         
 
         vector& operator= (const vector& x)
         {
+             
             if (this != &x) // check for self-assignment
             {
-                size_t other_size = x.size();
-                
-                pointer new_data = _alloc.allocate(other_size);
-                for (size_type i = 0; i < other_size; i++) 
-                    _alloc.construct(block + i,x.block[i]);
-                _alloc.deallocate(block, capacity());
-
-                // update the size, capacity, and data pointers
-                block = new_data;
-                vector_size = other_size;
-                vector_capacity = other_size;   
+                clear();
+                _alloc.deallocate(block,vector_capacity);
+                this->vector_capacity = x.vector_capacity;
+                this->vector_size = x.vector_size;
+                this->block = _alloc.allocate(x.vector_size);
+                /////
+                for(size_t i = 0;i < x.vector_size;i++)
+                    _alloc.construct(block+i,x.block[i]);
             }
             return *this;
         }
 
 
 
-        void push_back(const value_type& val) 
-        {
-            if(empty())
+        void push_back (const value_type& val)
+    {
+            if (vector_capacity == vector_size)
             {
-                block = _alloc.allocate(1);
-                block[vector_size] = val;
-                vector_size++; 
-                vector_capacity++; 
+                pointer tmp = _alloc.allocate(vector_capacity);
+                for (size_t i = 0; i < vector_capacity; i++)
+                    _alloc.construct(tmp+i,block[i]);
+                _alloc.deallocate(block,vector_capacity);
+                
+                vector_capacity *= 2;
+                if(vector_capacity == 0)// if empty
+                    vector_capacity++;
+                block = _alloc.allocate(vector_capacity);
+                for (size_t i = 0; i < vector_size; i++)
+                    _alloc.construct(block+i,tmp[i]);
+                _alloc.construct(block+vector_size,val);
+                _alloc.deallocate(tmp,vector_capacity);
             }
-            else if(vector_size < vector_capacity)
-            {
+            else // if capacty is greter then size()
                 block[vector_size] = val;
-                vector_size++;
-            }
-            else if (vector_size == vector_capacity)
-            {
-                vector_capacity = (vector_capacity * 2) ;//2
-                reallocate(vector_capacity);
-                block[vector_size] = val;
-                vector_size++; 
-            }
-        }
+            vector_size++;
+    }
     
         void reserve(size_type n)
         {
@@ -283,7 +282,7 @@ namespace ft
             difference_type	n = last - first;
             clear();// if deallocate will double free
             reserve(n);
-            for (size_t i = 0; i < n; i++)
+            for (difference_type i = 0; i < n; i++)
             {
                 this->_alloc.construct(this->block + i, *first);
                 first++;
@@ -333,6 +332,7 @@ namespace ft
             }
             vector_size = count;
         }
+
         /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             vector : Capacity
         *///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -356,23 +356,29 @@ namespace ft
 
         void clear() 
         {
-            for (size_t i = 0; i < this->vector_size; i++)
-				this->_alloc.destroy(this->block + i);
+            // for (size_t i = 0; i < this->vector_size; i++)
+			// 	this->_alloc.destroy(this->block + i);
             vector_size = 0;
+         
         }
-
+        void func()
+        {
+            _alloc.destroy(block);
+            _alloc.deallocate(block,capacity());
+            cout << block[4] << endl;
+        }
 
         iterator insert (iterator position, const value_type& val)
         {
             difference_type n = position - begin();
-            if (n >= size() || n < 0)// protection
+            if (n >= (difference_type)size() || n < 0)// protection
                 return end();	// return garbage
             if(size() + 1 > capacity())
             {
                 reallocate(vector_size + 1);
                 vector_capacity *= 2;// because std when rellocate capacityi is extanded
             }
-            for (size_t i = vector_size - 1; i >= n; i--) // swap indexes
+            for (difference_type i = vector_size - 1; i >= n; i--) // swap indexes
             {
                 block[i + 1] = block[i];
                 if (i == 0)
@@ -387,25 +393,26 @@ namespace ft
         {
              
             difference_type ip = position - begin();
-             if(n > capacity())
+            if(n > capacity())
                 return;
             if(vector_size + n >= capacity())
             {
                 vector_capacity *= 2;
                 reallocate(vector_capacity);
             }
-            for (size_type i = vector_size - 1; i >= ip; i--)
+            
+            for (size_type i = vector_size - 1; i >= (size_type)ip; i--)
             {
                 block[i + n] = block[i];
                 if (i == 0)
                     break;
             }
-            for (size_type i = ip; i < ip + n; i++)
+            for (size_type i = ip; i < (size_type)ip + n; i++)
                 block[i] = val;
             vector_size += n;
         }
         
-         template <class InputIterator>
+        template <class InputIterator>
         void insert (iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, bool>::type = true)
         {
             vector<T> tm(first,last);
@@ -427,12 +434,8 @@ namespace ft
                 this->_alloc.construct(this->block + i, *first);
                 this->vector_size++;
                 first++;
-            }
-             
-
+            }    
         }
-            
-         
 
         iterator erase (iterator position)
         {
@@ -473,12 +476,15 @@ namespace ft
         { 
             return (_alloc); 
         }
-
+         
 
         ~vector()
         { 
-            if(capacity())
+            ///if(capacity() >= 0)
                 _alloc.deallocate(block,capacity());
+                 
+                //  vector_capacity = 0;
+             
         }
 
         private:

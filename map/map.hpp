@@ -31,12 +31,7 @@ using std::pair;
 
 namespace ft
 { 
-    template <class Arg1, class Arg2, class Result>
-	struct binary_function {
-		typedef Arg1 first_argument_type;
-		typedef Arg2 second_argument_type;
-		typedef Result result_type;
-	};
+     
     template< typename Key, typename T, typename Compare = std::less<Key> , typename Allocator = std::allocator<ft::pair<const Key, T> > >
  
     class map
@@ -61,7 +56,7 @@ namespace ft
             
             typedef Node_struct<key_type> Node;
 
-            class value_compare : public ft::binary_function<value_type,value_type,bool>
+            class value_compare : public std::binary_function<value_type,value_type,bool>
 			{
 				friend class map;
 				protected:
@@ -73,10 +68,12 @@ namespace ft
 						return comp(x.first, y.first);
 					}
 			};
+
             typedef typename ft::map_iterator<value_type,allocator_type>                                 iterator;
             typedef typename ft::const_map_iterator<value_type,allocator_type>                           const_iterator;
             typedef typename ft::reverse_iterator<iterator>                                                                                         reverse_iterator;
             typedef typename ft::reverse_iterator<const_iterator>                                                                                   const_reverse_iterator;
+            
             key_compare _key_comp; //   std::less<int> operator() will enter here
 
             map (const key_compare& _comp = key_compare(),const allocator_type& alloc = allocator_type()) : tree(value_compare(_comp), alloc), _key_comp(_comp), _alloc(alloc)
@@ -308,7 +305,6 @@ namespace ft
             const_iterator lower_bound (const key_type& k) const //  crete in red balck tree
             {
                 return const_iterator(tree.lower_bound(k));
-                
             }
 
             iterator upper_bound (const key_type& k)
@@ -414,5 +410,3 @@ namespace ft
 
 #endif
 
-// 'map_iterator<[2 * ...], ft::map<int, int, std::__1::plus<int>, std::__1::allocator<ft::pair<const int, int> > >::value_compare, [3 * ...]>'
-// 'map_iterator<[2 * ...], ft::map<int, int, std::__1::less<int>, std::__1::allocator<ft::pair<const int, int> > >::value_compare, [3 * ...]>'

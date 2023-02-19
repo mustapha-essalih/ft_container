@@ -11,6 +11,7 @@
 #include <vector>
 #include <iterator>
 
+#include <fstream>
 
 
 using std::string;
@@ -25,558 +26,292 @@ using std::stack;
 #include "stack/stack.hpp"
 #include "set/set.hpp"
  
-// use flags in makefile
-// use std::
+// // use flags in makefile
+// // use std::
  
 
-#define _ratio 10000
+// #define _ratio 10000
 
 void func()
 {
 	system("leaks ft_container");
 }
  
-template <class T>
-std::vector<int> constructor_test(ft::stack<T> stk) {
-	std::vector<int> v;
-	ft::vector<int> deque;
-	for (int i = 0; i < 100 * _ratio; ++i)
-		deque.push_back(i);
-	for (int i = 100 * _ratio; i < 200 * _ratio; ++i)
-		stk.push(i);
-	ft::stack<int> stack(deque);
-	ft::stack<int> stack2(stk);
-	// ft::stack<int> stack3;
-	// stack3 = stack2;
-	// while (stack.size() > 0) {
-	// 	v.push_back(stack.top());
-	// 	stack.pop();
-	// }
-	// while (stack2.size() > 0) {
-	// 	v.push_back(stack2.top());
-	// 	stack2.pop();
-	// }
-	return v;
-}
 
-int main ()
-{  
-
-    ft::stack<int> first;                    // empty stack
-    constructor_test(first);
-    // ft::vector<int> myvector;
-    // std::vector<int> vector;
-    // std::vector<int> v1, v2;
-    // std::vector<int> diff;
-    // v1 = insert_test_3(myvector);
-    // v2 = insert_test_3(vector);
-    
-
-
-
-    // std::set_difference(v1.begin(), v1.end(), v2.begin(), v2.end(),
-    //     std::inserter(diff, diff.begin()));
+// namespace ft = std;
  
-    // for (auto i : v1) std::cout << i << ' ';
-    // std::cout << std::endl;
-    // std::cout << "minus ";
-    // std::cout << std::endl;
-    // for (auto i : v2) std::cout << i << ' ';
-    // std::cout << "is: " ;
- 
-    // for (auto i : diff) std::cout << i << ' ';
-    // std::cout << '\n';
-    // atexit(func);
 
-  return 0;
-}
+ 
+
+int main() 
+{
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// constructor tests
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ft::vector<int> first;                                // empty vector of ints
+		ft::vector<int> second (44444,100);                       // four ints with value 100
+		ft::vector<int> third (second.begin(),second.end());  // iterating through second
+		ft::vector<int> fourth (third);                       // a copy of third
+		int myints[] = {16,2,77,29,564,6,4,64,989,87,88,6,86,76,8,68,8787,687,68,7,68,76,87,68,76,87645,54,54,8,78,7,87,8,78,9,9,789,7,89};
+		ft::vector<int> fifth (myints, myints + 20 );
+
+		 
+		for (ft::vector<int>::iterator it = fifth.begin(); it != fifth.end(); ++it)
+			cout << ' ' << *it;
+		cout << '\n';
+
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///  std::vector::operator=
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	ft::vector<string> foo (100000,"hello");
+	ft::vector<string> bar (100000,"1337");
+
+	bar = foo;
+	foo = ft::vector<string>();
+
+	cout << "Size of foo: " << int(foo.size()) << '\n';
+	cout << "Size of bar: " << int(bar.size()) << '\n';
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//// 	Iterators:
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	ft::vector<int> myvector;
+	for (int i=1; i<=10000; i++) myvector.push_back(i);
+
+ 	ft::vector<int>::iterator it = myvector.begin() ;
+	
+	for (; it != myvector.end(); ++it)
+		cout << ' ' << *it;
+	cout << '\n';
+
+	it = myvector.begin() ;
+	ft::vector<int>::iterator it2 = myvector.begin() ;
+	while (it < myvector.begin() + 500)
+	{
+		*it2 += *it;
+		cout << *it2 << endl;
+		cout << *it2 - *it << endl;
+		it++;
+	}
+
+	ft::vector<int> v;
+	for (int i=1; i<=10000; i++) v.push_back(i);
+
+	ft::vector<int>::reverse_iterator rit = v.rbegin();
+
+	int i=0;
+	int j= 1000;
+	for (rit = v.rbegin(); rit!= v.rend(); ++rit)
+	{
+		*rit = ++i;
+		cout << *rit << endl;
+		*rit = *rit -= j;
+		*rit = *rit += j;
+		cout << *rit << endl;
+		j++;
+	}
+	 
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// resize and reserve
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	ft::vector<int> vec;
   
-// #include <iostream>
-// #include <fstream>
-// #include <string>
-// #include <deque>
-// #include <map>
-// #include <set>
-// #include <stack>
-// #include <vector>
-
-// #include "map/map.hpp"
-// #include "vector/vector.hpp"
-// #include "stack/stack.hpp"
-// #include "set/set.hpp"
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec.push_back(4);
+    vec.push_back(5);
  
-// #include <stdlib.h>
+   
+    for (ft::vector<int>::size_type i = 0; i < vec.size(); i++)
+        cout << vec[i] << " ";
+ 
+    cout << endl;
+ 
+    vec.resize(4);
+  
+    for (ft::vector<int>::size_type i = 0; i < vec.size(); i++)
+        cout << vec[i] << " ";
+	cout << '\n';
 
-// // namespace ft = std;
-// #define COUNT 500000
 
-// struct Buffer
-// {
-// 	long	id;
-// 	int     ibuff[42];
-// 	char    cbuff[1337];
-// 	Buffer(int id) : id(id) {}
-// 	bool operator!=(Buffer rhs)
-// 	{
-// 		return (id != rhs.id);
-// 	}
-// };
+	vec.clear(); // clear for empty the vetetor and resize
 
-// template<typename T>
-// class MutantStack : public ft::stack<T>
-// {
-//     public:
-//     	MutantStack() {}
-//     	MutantStack(const MutantStack<T>& src) { *this = src; }
-//     	MutantStack<T>& operator=(const MutantStack<T>& rhs) 
-//     	{
-//     		this->c = rhs.c;
-//     		return *this;
-//     	}
-//     	~MutantStack() {}
+	cout << "========== another resize\n";
 
-//     	typedef typename ft::stack<T>::container_type::iterator iterator;
-
-//     	iterator begin() { return this->c.begin(); }
-//     	iterator end() { return this->c.end(); }
-// };
-// void inputf(void)
-// {
-//     // std::ifstream   infile("./tests/input");
-
-//     // ft::vector<char> words;
-
-//     // words.push_back('a');
-//     // words.push_back('b');
-//     // words.push_back('c');
-//     // words.push_back('d');
-
-//     // words.insert(words.begin() + 4 , (std::istreambuf_iterator<char>(infile)), (std::istreambuf_iterator<char>()));
+	vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec.push_back(4);
+    vec.push_back(5);
+ 
     
-//     // ft::vector<char>::iterator it = words.begin();
-//     // std::cout << std::endl << words.size() << std::endl;
-//     // for (; it != words.end(); ++it)
-//     // {
-//     //     std::cout << *it << " ";
-//     // }
-//     std::cout << std::endl;
-// }
-// void ft_tests(void)
-// {
-//     ft::vector<int>::iterator it_vi;
-
-//     ft::map<int, int>::iterator it_mi;
-//     ft::map<std::string, char>::iterator it_ms;
-
-//     ft::set<int>::iterator it_si;
-//     ft::set<std::string>::iterator it_ss;
-
-//     ft::vector<int> vector_int;
-//     ft::vector<Buffer> vector_buffer;
-
-//     ft::map<int, int> map_int;
-//     ft::map<std::string, char> map_str;
-
-//     MutantStack<int> it_stack_int;
-//     ft::stack<int, std::deque<int> > stack_deq_int;
-
-//     ft::set<int> set_int;
-//     ft::set<std::string> set_str;
-
-// /******************************* vectors tests ********************************/
-//     // inputf();
-//     //     for (int i = 0; i < COUNT; i++)
-//     //         vector_int.push_back(rand() % COUNT);
-//     // {
-//     //     ft::vector<int> vector_tmp_int(vector_int.begin(), vector_int.end());
-
-//     //     if (vector_int.size() != vector_tmp_int.size())
-//     //         std::cerr << "error: vector construction with ranges failed!!\n";
-//     //     for (int i = 0; i < COUNT; i++)
-//     //     {
-//     //         if (vector_int[i] != vector_tmp_int[i])
-//     //             std::cerr << "error: vector construction with ranges failed!!\n";
-//     //         vector_tmp_int.pop_back();
-//     //     }
-//     //     if (!vector_tmp_int.empty())
-//     //         std::cerr << "error: this vector should be empty!!\n";
-//     // }
-//     // {
-//     //     ft::vector<int> vector_tmp_int;
-
-//     //     vector_tmp_int = vector_int;
-//     //     if (vector_int.size() != vector_tmp_int.size())
-//     //         std::cerr << "error: vector assign failed!!\n";
-//     //     for (int i = 0; i < COUNT; i++)
-//     //     {
-//     //         if (vector_int[i] != vector_tmp_int[i])
-//     //             std::cerr << "error: vector assign failed!!\n";
-//     //     }
-//     //     vector_tmp_int.resize(0, 0);
-//     //     if (!vector_tmp_int.empty())
-//     //         std::cerr << "error: this vector should be empty!!\n";
-//     // }
-//     // {
-//     //     ft::vector<int> vector_tmp_int;
-//     //     int *arr;
-
-//     //     // arr = vector_int.data();
-//     //     vector_tmp_int.resize(vector_int.size());
-
-//     //     it_vi = vector_tmp_int.begin();
-//     //     ft::swap(vector_int, vector_tmp_int);
-//     //     ft::vector<int>::const_iterator it_vic = vector_int.end();
-//     //     ft::vector<int>::iterator it_vic2 = vector_int.end();
-//     //     if (it_vic == it_vic2){}
-//     //     for (; it_vi != it_vic; ++it_vi, ++arr)
-//     //         *it_vi = *arr;
-
-//     //     vector_tmp_int.erase(vector_tmp_int.begin() + (COUNT / 2), vector_tmp_int.end());
-//     //     vector_tmp_int.insert(vector_tmp_int.end(), vector_int.begin() + (COUNT / 2), vector_int.end());
-//     //     for (int i = 0; i < COUNT; i++)
-//     //     {
-//     //         if (vector_int[i] != vector_tmp_int[i])
-//     //             std::cerr << "error: vector erase/insert failed!!\n";
-//     //     }
-//     // }
-//     // {
-//     //     ft::vector<int> vector_tmp_int(vector_int.begin(), vector_int.end());
-
-//     //     int var_count = COUNT;
-
-//     //     for (int i = 0; i < var_count; i++)
-//     //     {
-//     //         if (vector_tmp_int.at(i) > COUNT - 100)
-//     //         {
-//     //             vector_tmp_int.erase(vector_tmp_int.begin() + i);
-//     //             --var_count;
-//     //         }
-//     //     }
-//     //     std::cout << "VECTOR CONTENT : " << std::endl;
-//     //     std::cout << "*****************" << std::endl;
-//     //     for (it_vi = vector_tmp_int.begin(); it_vi != vector_tmp_int.end(); ++it_vi)
-//     //         std::cout << *it_vi << ' ';
-
-//     //     std::cout << std::endl;
-//     //     std::cout << "VECTOR SIZE : " << std::endl;
-//     //     std::cout << "*****************" << std::endl;
-//     //     std::cout << vector_tmp_int.size() << std::endl;
-//     // }
-//     // for (int i = 0; i < COUNT; i++)
-//     //     vector_buffer.push_back(Buffer(rand() % COUNT));
-//     // {
-//     //     ft::vector<Buffer> vectro_tmp_buf(vector_buffer.begin(), vector_buffer.end());
-
-//     //     if (vector_buffer.size() != vectro_tmp_buf.size())
-//     //         std::cerr << "error: vector construction with ranges failed!!\n";
-//     //     for (int i = 0; i < COUNT; i++)
-//     //     {
-//     //         if (vector_buffer[i] != vectro_tmp_buf[i])
-//     //             std::cerr << "error: vector construction with ranges failed!!\n";
-//     //     }
-//     //     vectro_tmp_buf.clear();
-//     //     if (!vectro_tmp_buf.empty())
-//     //         std::cerr << "error: this vector should be empty!!\n";
-//     // }
-//     // {
-//     //     ft::vector<int> vector_tmp_int;
-
-//     //     vector_tmp_int = vector_int;
-
-//     //     ft::swap(vector_int, vector_tmp_int);
-//     //     if (vector_tmp_int == vector_int)
-//     //         std::cout << "comp eq\n";
-//     //     vector_tmp_int.pop_back();
-//     //     if (vector_tmp_int < vector_int)
-//     //         std::cout << "comp smaller\n";
-//     //     vector_int.pop_back();
-//     //     vector_int.pop_back();
-//     //     if (vector_tmp_int > vector_int)
-//     //         std::cout << "comp greater\n";
-//     // }
-//     // {
-//     //     try
-//     //     {
-//     //         vector_int.at(COUNT);
-//     //     }
-//     //     catch(...)
-//     //     {
-//     //         std::cout << "vector error at" << '\n';
-//     //     }
-        
-//     // }
-//     // std::cout << "abc struct max size:" << ft::vector<Buffer>().max_size() << std::endl;
-//     // std::cout << "Float max size:" << ft::vector<float>().max_size() << std::endl;
-//     // std::cout << "Long max size:" << ft::vector<long>().max_size() << std::endl;
-//     // std::cout << "Int max size:" << ft::vector<int>().max_size() << std::endl;
-//     // std::cout << "Short max size:" << ft::vector<short>().max_size() << std::endl;
-//     // std::cout << "Char max size:" << ft::vector<char>().max_size() << std::endl;
-//     // {
-//     //     int *arr;
-
-//     //     arr = vector_int.get_allocator().allocate(7);
-
-//     //     for (int i = 0; i < 7; i++) 
-//     //         vector_int.get_allocator().construct(&arr[i],i);
-
-//     //     for (int i = 0; i<7; i++) std::cout << ' ' << arr[i];
-//     //     std::cout << std::endl;
-
-//     //     for (int i = 0; i < 7; i++) 
-//     //         vector_int.get_allocator().destroy(&arr[i]);
-//     //     vector_int.get_allocator().deallocate(arr,7);
-//     // }
-//     /********************************** map tests *********************************/
-//     for (int i = 0; i < COUNT; i++)
-//         map_int.insert(ft::make_pair(rand() % COUNT, rand() % COUNT));
-//     {
-//         ft::map<int, int> map_tmp_int(map_int.begin(), map_int.end());
-
-//         if (map_int.size() != map_tmp_int.size())
-//             std::cerr << "error: map construction with ranges failed!!\n";
-
-//         ft::map<int, int>::iterator it_tmp = map_tmp_int.begin();
-//         for (it_mi = map_int.begin(); it_mi != map_int.end(); ++it_mi, ++it_tmp)
-//         {
-//             if (it_mi->first != it_tmp->first)
-//                 std::cerr << "error: map construction with ranges failed!!\n";
-//         }
-
-//         map_tmp_int.erase(map_tmp_int.begin(), map_tmp_int.end());
-//         if (!map_tmp_int.empty())
-//             std::cerr << "error: this map should be empty!!\n";
-//     }
-//     {
-//         ft::map<int, int> map_tmp_int;
-
-//         map_tmp_int = map_int;
-//         if (map_int.size() != map_tmp_int.size())
-//             std::cerr << "error: map construction with ranges failed!!\n";
-//         ft::map<int, int>::iterator it_tmp = map_tmp_int.begin();
-//         for (it_mi = map_int.begin(); it_mi != map_int.end(); ++it_mi, ++it_tmp)
-//         {
-//             if (it_mi->first != it_tmp->first)
-//                 std::cerr << "error: map construction with ranges failed!!\n";
-//         }
-//         map_tmp_int.erase(map_tmp_int.begin(), map_tmp_int.end());
-//         if (!map_tmp_int.empty())
-//             std::cerr << "error: this map should be empty!!\n";
-//     }
-//     {
-//         ft::map<int, int> map_tmp_int;
-
-//         map_tmp_int.insert(map_int.begin(), map_int.end());
-//         for (size_t i = 0; i < map_int.size(); i++)
-//         {
-//             if (map_int[i] != map_tmp_int[i])
-//                 std::cerr << "error: map insert failed!!\n";
-//         }
-//         for (size_t i = 0; i < COUNT; i++)
-//             map_tmp_int.erase(i);
-
-//         if (!map_tmp_int.empty())
-//             std::cerr << "error: this map should be empty!!\n";
-//     }
-//     {
-//         ft::map<int, int> map_tmp_int(map_int.begin(), map_int.end());
-
-//         ft::swap(map_int, map_tmp_int);
-
-//         ft::map<int, int>::iterator it_tmp = map_int.begin();
-//         it_mi = map_tmp_int.begin();
-//         for (; it_tmp != map_int.end(); ++it_tmp)
-//         {
-//             // if (map_tmp_int[it_tmp->first] > COUNT - 10000)
-//                 // map_tmp_int.erase(it_tmp->first);
-//             // else if (map_tmp_int[it_tmp->first] > COUNT - 20000)
-//             // {
-//             //     ft::map<int, int>::iterator _it = map_tmp_int.find(it_tmp->first);
-//             //     if (_it != map_tmp_int.end())
-//             //         map_tmp_int.erase(_it);
-//             // }
-//             // else if (map_tmp_int[it_tmp->first] > COUNT - 30000)
-//             // {
-//             //     ft::map<int, int>::iterator _it = map_tmp_int.lower_bound(it_tmp->first);
-//             //     if (_it != map_tmp_int.end())
-//             //         map_tmp_int.erase(_it);
-//             // }
-//             // else if (map_tmp_int[it_tmp->first] > COUNT - 40000)
-//             // {
-//                 ft::map<int, int>::iterator _it = map_tmp_int.upper_bound(it_tmp->first);
-//                 _it->second++;
-//             // }
-//         }
-//         // std::cout << "MAP CONTENT : " << std::endl;
-//         // std::cout << "*****************" << std::endl;
-//         // for (; it_mi != map_tmp_int.end(); ++it_mi)
-//         //     std::cout << it_mi->first << " : " << it_mi->second << '\n';
-
-//         // std::cout << std::endl;
-//         // std::cout << "MAP SIZE : " << std::endl;
-//         // std::cout << "*****************" << std::endl;
-//         // std::cout << map_tmp_int.size() << std::endl;
-//     }
-//     // for (int i = 0; i < COUNT; i++)
-//     // {
-//     //     std::string tmp;
-//     //     for (int j = 0; j < 26; j++)
-//     //         tmp.push_back((rand() % 26) + 97);
-//     //     map_str.insert(ft::make_pair(tmp, (rand() % 26) + 97));
-//     // }
-//     // {
-//     //     ft::map<std::string, char> map_tmp_str(map_str.begin(), map_str.end());
-
-//     //     ft::map<std::string, char>::iterator it_tmp = map_str.begin();
-
-//     //     for (; it_tmp != map_str.end(); ++it_tmp)
-//     //     {
-//     //         if (it_tmp->first > "t")
-//     //             map_tmp_str.erase(it_tmp->first);
-//     //         else if (it_tmp->first > "r")
-//     //         {
-//     //             ft::map<std::string, char>::iterator _it = map_tmp_str.find(it_tmp->first);
-//     //             if (_it != map_tmp_str.end())
-//     //                 map_tmp_str.erase(_it);
-//     //         }
-//     //         else if (it_tmp->first > "p")
-//     //         {
-//     //             ft::map<std::string, char>::iterator _it = map_tmp_str.lower_bound(it_tmp->first);
-//     //             if (_it != map_tmp_str.end())
-//     //                 map_tmp_str.erase(_it);
-//     //         }
-//     //         else if (it_tmp->first > "n")
-//     //         {
-//     //             ft::map<std::string, char>::iterator _it = map_tmp_str.upper_bound(it_tmp->first);
-//     //             _it->second++;
-//     //         }
-//     //     }
-//     //     std::cout << "MAP CONTENT : " << std::endl;
-//     //     std::cout << "*****************" << std::endl;
-//     //     for (it_ms = map_tmp_str.begin(); it_ms != map_tmp_str.end(); ++it_ms)
-//     //         std::cout << it_ms->first << " : " << it_ms->second << '\n';
-
-//     //     std::cout << std::endl;
-//     //     std::cout << "MAP SIZE : " << std::endl;
-//     //     std::cout << "*****************" << std::endl;
-//     //     std::cout << map_tmp_str.size() << std::endl;
-//     // }
-//     // {
-//     //     try
-//     //     {
-//     //         map_int[COUNT];
-//     //     }
-//     //     catch(...)
-//     //     {
-//     //         std::cout << "map error at" << '\n';
-//     //     }
-//     // }
-//     // /********************************* stack tests ********************************/
-//     // for (int i = 0; i < 100; ++i)
-//     //     it_stack_int.push(i);
-//     // for (MutantStack<int>::iterator it = it_stack_int.begin(); it != it_stack_int.end(); it++)
-//     //     std::cout << *it << ' ';
-//     // for (int i = 0; i < 100; i++)
-//     //     it_stack_int.pop();
-//     // if (!it_stack_int.empty())
-//     //     std::cerr << "error: this map should be empty!!\n";
-
-//     // for (int i = 0; i < 100; ++i)
-//     //     stack_deq_int.push(i);
-//     // for (int i = 0; i < 100; i++)
-//     //     stack_deq_int.pop();
-//     // if (!stack_deq_int.empty())
-//     //     std::cerr << "error: this map should be empty!!\n";
-
-//     // /********************************** set tests *********************************/
-//     // for (int i = 0; i < COUNT; i++)
-//     //     set_int.insert(rand() % COUNT);
-//     // {
-//     //     ft::set<int> set_tmp_int(set_int.begin(), set_int.end());
-
-//     //     if (set_int.size() != set_tmp_int.size())
-//     //         std::cerr << "error: set construction with ranges failed!!\n";
-
-//     //     ft::set<int>::iterator it_tmp = set_tmp_int.begin();
-//     //     for (it_si = set_int.begin(); it_si != set_int.end(); ++it_si, ++it_tmp)
-//     //     {
-//     //         if (*it_si != *it_tmp)
-//     //             std::cerr << "error: set construction with ranges failed!!\n";
-//     //     }
-
-//     //     set_tmp_int.erase(set_tmp_int.begin(), set_tmp_int.end());
-//     //     if (!set_tmp_int.empty())
-//     //         std::cerr << "error: this set should be empty!!\n";
-//     // }
-//     // {
-//     //     ft::set<int> set_tmp_int;
-
-//     //     set_tmp_int = set_int;
-//     //     if (set_int.size() != set_tmp_int.size())
-//     //         std::cerr << "error: set construction with ranges failed!!\n";
-//     //     ft::set<int>::iterator it_tmp = set_tmp_int.begin();
-//     //     for (it_si = set_int.begin(); it_si != set_int.end(); ++it_si, ++it_tmp)
-//     //     {
-//     //         if (*it_si != *it_tmp)
-//     //             std::cerr << "error: set construction with ranges failed!!\n";
-//     //     }
-//     //     set_tmp_int.erase(set_tmp_int.begin(), set_tmp_int.end());
-//     //     if (!set_tmp_int.empty())
-//     //         std::cerr << "error: this set should be empty!!\n";
-//     // }
-//     // {
-//     //     ft::set<int> set_tmp_int(set_int.begin(), set_int.end());
-
-//     //     ft::set<int>::iterator it_tmp = set_int.begin();
-
-//     //     for (; it_tmp != set_int.end(); ++it_tmp)
-//     //     {
-//     //         if (*it_tmp > COUNT - 10000)
-//     //             set_tmp_int.erase(*it_tmp);
-//     //         else if (*it_tmp > COUNT - 20000)
-//     //         {
-//     //             ft::set<int>::iterator _it = set_tmp_int.find(*it_tmp);
-//     //             if (_it != set_tmp_int.end())
-//     //                 set_tmp_int.erase(_it);
-//     //         }
-//     //         else if (*it_tmp > COUNT - 30000)
-//     //         {
-//     //             ft::set<int>::iterator _it = set_tmp_int.lower_bound(*it_tmp);
-//     //             if (_it != set_tmp_int.end())
-//     //                 set_tmp_int.erase(_it);
-//     //         }
-//     //         else if (*it_tmp > COUNT - 40000)
-//     //         {
-//     //             ft::set<int>::iterator _it = set_tmp_int.upper_bound(*it_tmp);
-//     //             set_tmp_int.erase(_it);
-//     //         }
-//     //     }
-//     //     std::cout << std::endl;
-//     //     std::cout << "SET CONTENT : " << std::endl;
-//     //     std::cout << "*****************" << std::endl;
-//     //     for (it_si = set_tmp_int.begin(); it_si != set_tmp_int.end(); ++it_si)
-//     //         std::cout << *it_si << ' ';
-
-//     //     std::cout << std::endl;
-//     //     std::cout << "SET SIZE : " << std::endl;
-//     //     std::cout << "*****************" << std::endl;
-//     //     std::cout << set_tmp_int.size() << std::endl;
-//     // }
-
-// }
-
-// int main(int argc, char **argv)
-// {
-//     if (argc != 2)
-//     {
-//         std::cerr << "Usage: ./test seed" << std::endl;
-//         std::cerr << "Provide a seed please" << std::endl;
-//         return 1;
-//     }
-//     const int seed = atoi(argv[1]);
-//     srand(seed);
-
-//     ft_tests();
-//     system("leaks ft_container");
-//     return (0);
-// }
+    for (ft::vector<int>::size_type i = 0; i < vec.size(); i++)
+        cout << vec[i] << " ";
  
+    cout << endl;
+ 
+ 
+    vec.resize(8);
+ 
+   
+    for (ft::vector<int>::size_type i = 0; i < vec.size(); i++)
+        cout << vec[i] << " ";
+	cout << '\n';
+
+	cout << "========== another resize\n";
+	
+	vec.clear();
+	
+	vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec.push_back(4);
+    vec.push_back(5);
+ 
+   
+    for (ft::vector<int>::size_type i = 0; i < vec.size(); i++)
+        cout << vec[i] << " ";
+ 
+    cout << endl;
+  
+    vec.resize(12, 9);
+  
+    for (ft::vector<int>::size_type i = 0; i < vec.size(); i++)
+        cout << vec[i] << " ";
+
+	cout << "\n";
+
+
+	ft::vector<int> vec1;
+	ft::vector<int> vec2;
+ 	 
+	vec2.reserve(35);
+	for (ft::vector<int>::size_type i = 0; i < 25; ++i) 
+		vec2.push_back(i);
+	cout << vec2.size() << " " << vec2.capacity() << endl;
+	
+		ft::vector<int> foo1 (3,100);   // three ints with a value of 100
+		ft::vector<int> bar1 (5,200);   // five ints with a value of 200
+
+		foo1.swap(bar1);
+
+		for (ft::vector<int>::size_type i=0; i<foo1.size(); i++)
+			std::cout << ' ' << foo1[i];
+		std::cout << '\n';
+
+		std::cout << "bar1 contains:";
+		for (unsigned i=0; i<bar1.size(); i++)
+			std::cout << ' ' << bar1[i];
+		std::cout << '\n';
+
+ 
+
+	cout << "\n";
+
+
+	ft::vector<int> first1;
+	ft::vector<int> second1;
+	ft::vector<int> third1;
+
+	first1.assign (7,100);             // 7 ints with a value of 100
+
+	ft::vector<int>::iterator it1;
+	it1=first1.begin()+1;
+
+	second1.assign (it1,first1.end()-1); // the 5 central values of first1
+
+	int myints_ [] = {1776,7,4};
+	third1.assign (myints_ ,myints_ +3);   // assigning from array.
+
+	std::cout << "Size of first1: " <<  (first1.size()) << '\n';
+	std::cout << "Size of second1: " <<  (second1.size()) << '\n';
+	std::cout << "Size of third1: " <<  (third1.size()) << '\n';
+
+
+	cout << "\n";
+
+
+	ft::vector<int> vc;
+
+	vc.push_back(78);
+	vc.push_back(16);
+
+	// now front equals 78, and back 16
+
+	vc.front() -= vc.back();
+
+	std::cout << "vc.front() is now " << vc.front() << '\n';
+
+	cout << "\n";
+
+	ft::vector<int> vc1;
+
+	vc1.push_back(10);
+
+	while (vc1.back() != 0)
+	{
+		vc1.push_back ( vc1.back() -1 );
+	}
+ 
+	for (unsigned i=0; i<vc1.size() ; i++)
+		std::cout << ' ' << vc1[i];
+	std::cout << '\n';
+
+	ft::vector<int> vv;
+
+  // set some values (from 1 to 10)
+  for (int i=1; i<=10; i++) vv.push_back(i);
+
+  // erase the 6th element
+  vv.erase (vv.begin()+5);
+
+  // erase the first 3 elements:
+  vv.erase (vv.begin(),vv.begin()+3);
+
+  std::cout << "vv contains:";
+  for (unsigned i=0; i<vv.size(); ++i)
+    std::cout << ' ' << vv[i];
+  std::cout << '\n';
+
+
+	ft::vector<int> myvector_ (3,100);
+	ft::vector<int>::iterator _it;
+
+	_it = myvector_.begin();
+	_it = myvector_.insert ( _it , 200 );
+
+	myvector_.insert (_it,2,300);
+
+	// "_it" no longer valid, get a new one:
+	_it = myvector_.begin();
+
+	std::vector<int> anothervector (2,400);
+	myvector_.insert (_it+2,anothervector.begin(),anothervector.end());
+
+	int myarray [] = { 501,502,503 };
+	myvector_.insert (myvector_.begin(), myarray, myarray+3);
+
+	std::cout << "myvector_ contains:";
+	for (_it=myvector_.begin(); _it<myvector_.end(); _it++)
+		std::cout << ' ' << *_it;
+	std::cout << '\n';
+
+	system("leaks ft_container");
+	// atexit(func);
+}

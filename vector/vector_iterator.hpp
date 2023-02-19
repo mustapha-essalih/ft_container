@@ -10,7 +10,6 @@ namespace ft
 
         class vector_iterator  
         {
-            
             public:
                 typedef T                                                                       iterator_type;
                 typedef typename iterator_traits<iterator_type>::iterator_category              iterator_category;
@@ -82,7 +81,6 @@ namespace ft
             template <class Iter1, class Iter2> // for compar if(begin() == end())
             friend bool operator==(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             { 
-                 
                 return (lhs.ptr == rhs.ptr);
             }
             template <class Iter1, class Iter2>
