@@ -37,7 +37,7 @@ namespace ft
             typedef T                                                                           key_type;
             typedef key_type                                                                    value_type;
             typedef Compare                                                                     key_compare;
-            typedef key_compare                                                                 value_compare;
+            typedef key_compare                                                                 value_compare;// it used to init value copmar in tree
             typedef Alloc                                                                       allocator_type;
             typedef typename allocator_type::reference                                          reference;
             typedef typename allocator_type::const_reference                                    const_reference;
@@ -65,13 +65,7 @@ namespace ft
 			set (const set& x) : tree(x._key_comp, x._alloc)  
             { 
                 size_ = x.size_;
-                // if(x.size() > 0)
-                // {
-
-                //     insert(x.begin(),x.end()); 
-                //     cout << "WWW\n";
-                // }
-                    
+                insert(x.first, x.last);
             };
 
 
@@ -170,31 +164,7 @@ namespace ft
 
             iterator insert (iterator hint, const value_type& val)
             {
-                if(hint == tree.end_node) 
-                    return iterator(tree.end_node);
-                
-                if(hint.node->data == val) 
-                    return iterator(hint.node);
-                    
-                if(hint.node->data < val && getNext(hint.node)->data > val)
-                {
-                    if(hint.node->right == tree.TNULL)
-                    {
-                        hint.node->right = tree.returnNewNode(val);
-                        hint.node->right->parent = hint.node;
-                        tree.insertFix(hint.node->right);         
-                        return iterator(hint.node->right);
-                    }
-                    else
-                    {
-                        Node_struct<value_type> * node = tree.maxValue(hint.node->right);
-                        node->left = tree.returnNewNode(val);
-                        node->left->parent = node;
-                        tree.insertFix(node->left);
-                        return iterator(tree.findNode(val));
-                    }
-                }
-                return iterator(tree.insert(val));
+                return  iterator(tree.insert_hint(hint.node,val));
             }
             
             size_type erase (const value_type & k)
@@ -226,9 +196,7 @@ namespace ft
             
              
             void clear()
-            {
-                // if(tree.root == tree.TNULL)
-                    // erase(begin(),end());
+            { 
                 tree.clear();
                 size_ = 0;
             }
@@ -292,18 +260,15 @@ namespace ft
             ft::pair<iterator,iterator>  equal_range (const value_type& k)
             { 
                 iterator i = lower_bound(k);
-                iterator j = i;
-                if (i != end() && !(_key_comp(k, (*i))))
-                    ++j;
+                iterator j = upper_bound(k);
                 return ft::make_pair(i, j);
             }
 
             ft::pair<const_iterator,const_iterator> equal_range (const value_type& k) const
             { 
                 const_iterator i = lower_bound(k);
-                const_iterator j = i;
-                if (i != end() && !(_key_comp(k, (*i))))
-                    ++j;
+                const_iterator j = upper_bound(k);
+                
                 return ft::make_pair(i, j);
             }
             key_compare key_comp() const
@@ -343,31 +308,38 @@ namespace ft
     };      
 
 
-    template <class T, class Compare, class Alloc>  void swap (set<T,Compare,Alloc>& x, set<T,Compare,Alloc>& y)
+    template <class T, class Compare, class Alloc>  
+    void swap (set<T,Compare,Alloc>& x, set<T,Compare,Alloc>& y)
     {
         x.swap(y);
     }
-    template <class T, class Compare, class Alloc>  bool operator== ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
+    template <class T, class Compare, class Alloc>  
+    bool operator== ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
     {
         return lhs.size() == rhs.size() && ft::equal(lhs.begin(),lhs.end(),rhs.begin());
     }
-    template <class T, class Compare, class Alloc>  bool operator!= ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
+    template <class T, class Compare, class Alloc>  
+    bool operator!= ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
     {
        return !(lhs == rhs);
     }
-    template <class T, class Compare, class Alloc>  bool operator<  ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
+    template <class T, class Compare, class Alloc>  
+    bool operator<  ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
     {
          return ft::lexicographical_compare(lhs.begin(),lhs.end(),rhs.begin(),rhs.end());
     }
-    template <class T, class Compare, class Alloc>  bool operator<= ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
+    template <class T, class Compare, class Alloc>  
+    bool operator<= ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
     {
         return !(lhs > rhs);
     }
-    template <class T, class Compare, class Alloc>  bool operator>  ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
+    template <class T, class Compare, class Alloc>  
+    bool operator>  ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
     {
         return (rhs < lhs);
     }
-    template <class T, class Compare, class Alloc>  bool operator>= ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
+    template <class T, class Compare, class Alloc>  
+    bool operator>= ( const set<T,Compare,Alloc>& lhs,                    const set<T,Compare,Alloc>& rhs )
     {
         return !(rhs > lhs);
     }

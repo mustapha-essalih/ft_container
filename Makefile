@@ -16,7 +16,7 @@ O_FILES = $(C_FILES:.cpp=.o)
 
 all : $(NAME)
 
-%.o: %.cpp ${H_FILES}
+%.o: %.cpp ${C_FILES} ${H_FILES}
 	@${CC} ${C_FLAGS} -c $< -o $@
 
 

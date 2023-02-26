@@ -20,7 +20,7 @@ namespace ft
                  
             //default constructor
             vector_iterator() : ptr(0) {}
-            template <typename It> // for const iterator
+            template <typename It> // When a type is substituted for It, all instances of It within the vector_iterator class will be replaced with that type. This allows for greater flexibility and reusability of the code,    crete new template class vector_iterator some time const value sometime non const
 			vector_iterator(const vector_iterator<It>& x) : ptr(x.base()){}
             // copy constructor
             vector_iterator(const vector_iterator & __x) : ptr(__x.ptr){}
@@ -41,8 +41,8 @@ namespace ft
             // operators
             iterator_type base() const  {return ptr;}
 
-            reference operator*() const {   return *ptr;    }
-            pointer  operator->() const {   return *ptr;    } // ?
+            reference operator*() const {   return *ptr;    } // used for *it
+            pointer  operator->() const {   return *ptr;    } // used that have members, such as a struct or class or pair
             vector_iterator & operator++(){  ++ptr;  return *this; }
             vector_iterator  operator++(int) {vector_iterator __tmp(*this); ++(*this); return __tmp;}
             vector_iterator& operator--()  {  --ptr; return *this; }
@@ -78,39 +78,39 @@ namespace ft
         private:
             iterator_type  ptr;
 
-            template <class Iter1, class Iter2> // for compar if(begin() == end())
-            friend bool operator==(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
-            { 
-                return (lhs.ptr == rhs.ptr);
-            }
-            template <class Iter1, class Iter2>
-            friend bool operator!=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
-            {
-                return (lhs.ptr != rhs.ptr);
-            }
-            template <class Iter1, class Iter2>
-            friend bool operator<(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
-            {
-                return (lhs.ptr < rhs.ptr);
-            }
-            template <class Iter1, class Iter2>
-            friend bool operator>(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
-            {
-                return (lhs.ptr > rhs.ptr);
-            }
-            template <class Iter1, class Iter2>
-            friend bool operator<=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
-            {
-                return (lhs.ptr <= rhs.ptr);
-            }
-            template <class Iter1, class Iter2>
-            friend bool operator>=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
-            {
-                return (lhs.ptr >= rhs.ptr);
-            }
 
              
     };
+        template <class Iter1, class Iter2> // for compar if(begin() == end())
+        bool operator==(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
+        { 
+            return (lhs.base() == rhs.base());
+        }
+        template <class Iter1, class Iter2>
+        bool operator!=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
+        {
+            return (lhs.base() != rhs.base());
+        }
+        template <class Iter1, class Iter2>
+        bool operator<(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
+        {
+            return (lhs.base() < rhs.base());
+        }
+        template <class Iter1, class Iter2>
+        bool operator>(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
+        {
+            return (lhs.base() > rhs.base());
+        }
+        template <class Iter1, class Iter2>
+        bool operator<=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
+        {
+            return (lhs.base() <= rhs.base());
+        }
+        template <class Iter1, class Iter2>
+        bool operator>=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
+        {
+            return (lhs.base() >= rhs.base());
+        }
          
          
         
@@ -118,8 +118,5 @@ namespace ft
 
  
 #endif
-
-
-
 
 

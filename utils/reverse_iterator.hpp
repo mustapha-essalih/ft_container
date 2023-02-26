@@ -160,13 +160,13 @@ namespace ft
             return __x.base() >= __y.base();
         }
         
-        template <class _Iter1, class _Iter2>
+        template <class _Iter1, class _Iter2> //  returns the difference between the base iterators of __x and __y. In other words, it returns the number of elements between the two iterators. 
         typename reverse_iterator<_Iter1>::difference_type operator-(const reverse_iterator<_Iter1>& __x, const reverse_iterator<_Iter2>& __y)
         {
             return __y.base() - __x.base();
         }
         
-        template <class _Iter> reverse_iterator<_Iter>
+        template <class _Iter> reverse_iterator<_Iter>// returns a new reverse_iterator that is __n positions before __x. It does this by subtracting __n from the base iterator of __x, and creating a new reverse_iterator from the resulting iterator.
         operator+(typename reverse_iterator<_Iter>::difference_type __n, const reverse_iterator<_Iter>& __x)
         {
             return reverse_iterator<_Iter>(__x.base() - __n);

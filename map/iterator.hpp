@@ -25,20 +25,15 @@ using std::vector;
 using std::stack;
 using std::map;
 
-// crete class iterator and inhert from it here
-
+ 
 namespace ft 
-{
-    // template <typename key_type, typename T,typename key_compare,typename size_type,typename mapped_type,typename Allocator  >
-    // class const_map_iterator;
-     
+{ 
 
     template <typename T,typename Allocator  >
 
         class map_iterator 
-        {   
-                   
-
+        {         
+            
             public:
 
                 typedef T                                                                               value_type;
@@ -48,8 +43,8 @@ namespace ft
                 typedef     std::bidirectional_iterator_tag                                                 iterator_category;// ft::
                 
                 typedef Node_struct<T> Node;
-            
                 Node * node;
+            
                 map_iterator():node(0){}
 
                 map_iterator( Node * n):node(n){}
@@ -92,15 +87,9 @@ namespace ft
                     --(*this);
                     return it;
                 }
-                
-
-                // sometime compar const iteartor with non const iterator
-                // search for friend bool // because in the stantard
-                friend bool operator==(const map_iterator& __x, const map_iterator& __y)
-                {return __x.node == __y.node;}// compar nodes if have sime addrsess or not
-
-                friend bool operator!=(const map_iterator& __x, const map_iterator& __y)
-                {return !(__x == __y);}
+                bool	operator==(const map_iterator &y) {return (node == y.node);}
+			    bool	operator!=(const map_iterator &y) {return (node != y.node);}
+                 
 
                 pointer  operator->() const
                 {
@@ -111,7 +100,7 @@ namespace ft
                 {
                     return node->data;
                 }
-                 
+                  
             private: 
 
                 
@@ -131,6 +120,7 @@ namespace ft
                 typedef std::bidirectional_iterator_tag                                                 iterator_category;// ft::
                 
                 typedef Node_struct<T> Node;
+                Node * node; 
             
                 const_map_iterator():node(0){}
 
@@ -190,13 +180,8 @@ namespace ft
                     return it;
                 }
 
-                // sometime compar const iteartor with non const iterator
-                // search for friend bool // because in the stantard
-                friend bool operator==(const const_map_iterator& __x, const const_map_iterator& __y)
-                {return __x.node == __y.node;}// compar nodes if have sime addrsess or not
-
-                friend bool operator!=(const const_map_iterator& __x, const const_map_iterator& __y)
-                {return !(__x == __y);}
+                bool	operator==(const const_map_iterator &y) {return (node == y.node);}
+			    bool	operator!=(const const_map_iterator &y) {return (node != y.node);}
 
                 pointer  operator->() const
                 {
@@ -208,7 +193,6 @@ namespace ft
                     return node->data;
                 }
             private:
-                Node * node; 
                 
     };  
  
